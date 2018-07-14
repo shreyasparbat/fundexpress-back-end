@@ -7,7 +7,10 @@ const logger = require('morgan');
 
 // Router imports
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/userLoginOnboard');
+const userLoginOnboardRouter = require('./routes/userLoginOnboard');
+const userProfileRouter = require('./routes/userProfile');
+const homeRouter = require('./routes/home');
+const pawnRouter = require('./routes/pawn');
 
 // Custom imports
 const {mongoose} = require('./db/mongoose'); // don't remove
@@ -28,7 +31,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Add routers
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', userLoginOnboardRouter);
+app.use('/profile', userProfileRouter);
+app.use('/home', homeRouter);
+app.use('/pawn', pawnRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
