@@ -6,12 +6,14 @@ const router = express.Router();
 const {User} = require('../db/models/user');
 const {authenticate} = require('../middleware/authenticate');
 
-// Add authentication middleware
+// Add middleware
 router.use(authenticate);
 
 // GET: get user profile
 router.get('/profile', (req, res) => {
     res.send(req.user);
 });
+
+
 
 module.exports = router;

@@ -7,7 +7,7 @@ const logger = require('morgan');
 
 // Router imports
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/userNotAuthenticated');
+const usersRouter = require('./routes/userLoginOnboard');
 
 // Custom imports
 const {mongoose} = require('./db/mongoose'); // don't remove
