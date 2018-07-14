@@ -3,9 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // Custom imports
-const {mongoose} = require('../db/mongoose');
 const {User} = require('../db/models/user');
-const {authenticate} = require('../middleware/authenticate');
 
 // POST: add user (On boarding)
 router.post('/onboard', (req, res) => {
@@ -56,11 +54,6 @@ router.post('/login', (req, res) => {
     }).catch((e) => {
         res.status(400).send(e);
     });
-});
-
-// GET: get user profile
-router.get('/profile', authenticate, (req, res) => {
-    res.send(req.user);
 });
 
 module.exports = router;
