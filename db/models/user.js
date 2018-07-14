@@ -64,7 +64,6 @@ const UserSchema = new mongoose.Schema({
     },
     creditRating: {
         type: Number,
-        required: true,
         value: 0
     },
     itemsPawned: [{
@@ -74,7 +73,6 @@ const UserSchema = new mongoose.Schema({
     }],
     ethHash: {
         type: String,
-        required: true,
         value: 'nothing here yet'
     }
 });
@@ -171,11 +169,11 @@ UserSchema.statics.findByCredentials = function (email, password) {
         } else {
             return new Promise((resolve, reject) => {
                 // Check if password is correct
-                bcrypt.compare(user.password, password, (err, result) => {
+                bcrypt.compare(password, user.password, (err, result) => {
                     if (result) {
                         resolve(user);
                     } else {
-                        reject(err);
+                        reject('Passwords do not match');
                     }
                 });
             });

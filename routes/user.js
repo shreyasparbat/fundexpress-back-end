@@ -1,4 +1,5 @@
 // Library imports
+const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 
@@ -11,7 +12,6 @@ router.post('/onboard', (req, res) => {
     let body = _.pick(req.body, [
         'email',
         'password',
-        'tokens',
         'fullName',
         'gender',
         'age',
@@ -50,7 +50,11 @@ router.post('/login', (req, res) => {
 
     // Find that user
     User.findByCredentials(body.email, body.password).then((user) => {
-        res.send(user);
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send({
+            user
+        });
     }).catch((e) => {
         res.status(400).send(e);
     });
