@@ -7,8 +7,8 @@ const logger = require('morgan');
 
 // Router imports
 const indexRouter = require('./routes/index');
-const userLoginOnboardRouter = require('./routes/userLoginOnboard');
-const userProfileRouter = require('./routes/userProfile');
+const userRouter = require('./routes/user');
+const profileRouter = require('./routes/profile');
 const homeRouter = require('./routes/home');
 const pawnRouter = require('./routes/pawn');
 
@@ -31,8 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Add routers
 app.use('/', indexRouter);
-app.use('/user', userLoginOnboardRouter);
-app.use('/profile', userProfileRouter);
+app.use('/user', userRouter);
+app.use('/profile', profileRouter);
 app.use('/home', homeRouter);
 app.use('/pawn', pawnRouter);
 
