@@ -71,15 +71,48 @@ const UserSchema = new mongoose.Schema({
         itemId: {
             type: String
         }
-    }]
+    }],
+    ethHash: {
+        type: String,
+        required: true,
+        value: 'nothing here yet'
+    }
 });
 
-// Override toJson
+// Add password hashing middleware
+UserSchema.pre('save', function (next) {
+    const user = this;
+
+    // Check if password has already been hashed
+    if (!user.isModified('password')) {
+        // Generate salt and hash password
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                // Update document
+                user.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
+
+// Override toJson (for returning user profile)
 UserSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject();
-
-    return _.pick(userObject, ['_id', 'email'])
+    return _.pick(userObject, [
+        '_id',
+        'email',
+        'fullName',
+        'gender',
+        'age',
+        'ic',
+        'phoneNumber',
+        'address',
+        'ethHash'
+    ])
 };
 
 // Generate Authentication tokens
@@ -97,6 +130,16 @@ UserSchema.methods.generateAuthToken = function () {
     return user.save().then(() => {
         return token;
     })
+};
+
+// TODO: Generate credit rating when signing up
+UserSchema.methods.generateCreditRating = function () {
+    return Promise.resolve();
+};
+
+// TODO: Generate User's block
+UserSchema.methods.generateBlock = function () {
+    return Promise.resolve();
 };
 
 // Find user by token
@@ -139,25 +182,6 @@ UserSchema.statics.findByCredentials = function (email, password) {
         }
     });
 };
-
-// Add password hashing middleware
-UserSchema.pre('save', function (next) {
-    const user = this;
-
-    // Check if password has already been hashed
-    if (!user.isModified('password')) {
-        // Generate salt and hash password
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
-                // Update document
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        next();
-    }
-});
 
 // Create model and export
 const User = mongoose.model('User', UserSchema);

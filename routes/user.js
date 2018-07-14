@@ -8,15 +8,33 @@ const {User} = require('../db/models/user');
 const {authenticate} = require('../middleware/authenticate');
 
 // POST: add user (On boarding)
-app.post('/onboard', (req, res) => {
+router.post('/onboard', (req, res) => {
     // Get info and save
-    let body = _.pick(req.body, ['email', 'password', 'tokens']);
+    let body = _.pick(req.body, [
+        'email',
+        'password',
+        'tokens',
+        'fullName',
+        'gender',
+        'age',
+        'ic',
+        'phoneNumber',
+        'address'
+    ]);
     let user = new User(body);
 
     // Save user
     user.save().then(() => {
+        // Generate user's credit rating
+        return user.generateCreditRating();
+    }).then(() => {
+        // Generate user's block
+        return user.generateBlock();
+    }).then(() => {
+        // Generate user's authentication token
         return user.generateAuthToken();
     }).then((token) => {
+        // Send back token
         res.header('x-auth', token).send({
             user
         });
@@ -28,13 +46,8 @@ app.post('/onboard', (req, res) => {
     });
 });
 
-// GET: get user profile
-app.get('/profile', authenticate, (req, res) => {
-    res.send(req.user);
-});
-
 // POST: User login
-app.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
     let body = _.pick(req.body, ['email', 'password']);
 
     // Find that user
@@ -43,6 +56,11 @@ app.post('/login', (req, res) => {
     }).catch((e) => {
         res.status(400).send(e);
     });
+});
+
+// GET: get user profile
+router.get('/profile', authenticate, (req, res) => {
+    res.send(req.user);
 });
 
 module.exports = router;
