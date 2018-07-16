@@ -130,6 +130,18 @@ UserSchema.methods.generateAuthToken = function () {
     })
 };
 
+// Delete token (log out user)
+UserSchema.methods.removeToken = function (token) {
+    const user = this;
+
+    // Delete token if token passed is user's
+    user.update({
+        $pull: {
+            tokens: {token}
+        }
+    })
+};
+
 // TODO: Generate credit rating when signing up
 UserSchema.methods.generateCreditRating = function () {
     return Promise.resolve();

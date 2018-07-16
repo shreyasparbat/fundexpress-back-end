@@ -14,4 +14,13 @@ router.post('/me', (req, res) => {
     res.send(req.user);
 });
 
+// DELETE: log user out
+router.delete('/logout', (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.send('Log out successful')
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+});
+
 module.exports = router;
