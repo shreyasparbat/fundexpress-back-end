@@ -9,11 +9,9 @@ const {authenticate} = require('../middleware/authenticate');
 // Add middleware
 router.use(authenticate);
 
-// GET: get user profile
-router.get('/profile', (req, res) => {
+// POST: get user profile
+router.post('/me', (req, res) => {
     res.send(req.user);
 });
-
-
 
 module.exports = router;
