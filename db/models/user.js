@@ -135,7 +135,7 @@ UserSchema.methods.removeToken = function (token) {
     const user = this;
 
     // Delete token if token passed is user's
-    user.update({
+    return user.update({
         $pull: {
             tokens: {token}
         }

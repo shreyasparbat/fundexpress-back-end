@@ -6,7 +6,7 @@ const authenticate = (req, res, next) => {
     // Find user with that token
     User.findByToken(token).then((user) => {
         if (!user) {
-            return Promise.reject('User not found');
+            return Promise.reject('User not found or logged out');
         } else {
             // Add user data to req
             req.user = user;
