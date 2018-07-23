@@ -34,12 +34,11 @@ router.post('/onboard', (req, res) => {
     }).then((token) => {
         // Send back token
         res.header('x-auth', token).send({
-            user
+            msg: 'success'
         });
     }).catch((err) => {
         res.status(500).send({
-            msg: 'error',
-            err
+            error: err
         });
     });
 });
@@ -53,10 +52,10 @@ router.post('/login', (req, res) => {
         return user.generateAuthToken();
     }).then((token) => {
         res.header('x-auth', token).send({
-            user
+            msg: 'success'
         });
-    }).catch((e) => {
-        res.status(400).send(e);
+    }).catch((error) => {
+        res.status(400).send({error});
     });
 });
 

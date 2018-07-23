@@ -17,7 +17,9 @@ router.post('/me', (req, res) => {
 // DELETE: log user out
 router.delete('/logout', (req, res) => {
     req.user.removeToken(req.token).then(() => {
-        res.send('Log out successful')
+        res.send({
+            msg: 'Log out successful'
+        })
     }).catch((e) => {
         res.status(400).send(e);
     })

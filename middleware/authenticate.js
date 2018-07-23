@@ -15,8 +15,8 @@ const authenticate = (req, res, next) => {
             // Call next() so that program moves forward
             next();
         }
-    }).catch((e) => {
-        res.status(401).send(e);
+    }).catch((error) => {
+        res.status(401).send({error});
     });
 };
 
