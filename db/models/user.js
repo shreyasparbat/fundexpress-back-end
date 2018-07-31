@@ -52,21 +52,42 @@ const UserSchema = new mongoose.Schema({
         minlength: 9,
         maxlength: 9
     },
-    phoneNumber: {
+    mobileNumber: {
         type: Number,
         required: true,
         minlength: 8,
         maxlength: 8
     },
+    landlineNumber: {
+        type: Number,
+        required: true
+    },
     address: {
         type: String,
         required: true,
+    },
+    citizenship: {
+        type: String,
+        required: true
+    },
+    nationality: {
+        type: String,
+        required: true
     },
     creditRating: {
         type: Number,
         value: 0
     },
+    ltvPercentage: {
+        type: Number,
+        value: 0
+    },
     itemsPawned: [{
+        itemId: {
+            type: String
+        }
+    }],
+    itemsSold: [{
         itemId: {
             type: String
         }
@@ -107,8 +128,11 @@ UserSchema.methods.toJSON = function () {
         'gender',
         'age',
         'ic',
-        'phoneNumber',
+        'mobileNumber',
+        'landlineNumber',
         'address',
+        'citizenship',
+        'nationality',
         'ethHash'
     ])
 };
