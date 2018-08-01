@@ -16,8 +16,11 @@ router.post('/onboard', (req, res) => {
         'gender',
         'age',
         'ic',
-        'phoneNumber',
-        'address'
+        'mobileNumber',
+        'landlineNumber',
+        'address',
+        'citizenship',
+        'nationality'
     ]);
     let user = new User(body);
 
@@ -31,6 +34,11 @@ router.post('/onboard', (req, res) => {
     }).then(() => {
         // Generate user's authentication token
         return user.generateAuthToken();
+    }).then(() => {
+        // Save IC image to digitalocean
+        const icImageFront = req.header('x-ic-image-front');
+        const icImageBack = req.header('x-ic-image-back');
+        return saveIcImage(body.ic, icImageFront, icImageBack);
     }).then((token) => {
         // Send back token
         res.header('x-auth', token).send({
