@@ -8,7 +8,7 @@ const ItemSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        minlength: 1,
+        minlength: 1
     },
     type: {
         type: String,
@@ -22,7 +22,7 @@ const ItemSchema = new mongoose.Schema({
     },
     dateOfPurchase: {
         type: String,
-        required: true,
+        required: true
     },
     placeOfPurchase: {
         type: String,
@@ -38,7 +38,7 @@ const ItemSchema = new mongoose.Schema({
         },
         sellingOfferedValue: {
             type: double
-        },
+        }
     }]
 });
 
