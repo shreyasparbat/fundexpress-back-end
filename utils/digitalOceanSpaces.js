@@ -9,6 +9,11 @@ const s3 = new aws.S3({
 
 // Save IC image to digitalOcean
 const saveIcImage = (icNumber, icImageFront, icImageBack) => {
+    // Check if image has been passed or not
+    if (icImageFront === undefined || icImageBack === undefined) {
+        return Promise.reject('IC image not given')
+    }
+
     // Save front image
     s3.putObject({
         Body: icImageFront,
@@ -30,6 +35,9 @@ const saveIcImage = (icNumber, icImageFront, icImageBack) => {
             return Promise.reject(err);
         }
     });
+
+    // Images saved successfully
+    return Promise.resolve()
 };
 
 // Retrieve IC image from digitalOcean

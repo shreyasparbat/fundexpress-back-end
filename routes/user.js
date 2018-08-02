@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // Custom imports
+const {User} = require('../db/models/user');
 const {saveIcImage} = require('../utils/digitalOceanSpaces');
 
 // POST: add user (On boarding)
@@ -32,13 +33,13 @@ router.post('/onboard', (req, res) => {
         // Generate user's block
         return user.generateBlock();
     }).then(() => {
-        // Generate user's authentication token
-        return user.generateAuthToken();
-    }).then(() => {
-        // Save IC image to digitalocean
+        // Save IC image to digitalOcean
         const icImageFront = req.header('x-ic-image-front');
         const icImageBack = req.header('x-ic-image-back');
         return saveIcImage(body.ic, icImageFront, icImageBack);
+    }).then(() => {
+        // Generate user's authentication token
+        return user.generateAuthToken();
     }).then((token) => {
         // Send back token
         res.header('x-auth', token).send({
