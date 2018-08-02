@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // Custom imports
-const {User} = require('../db/models/user');
+const {saveIcImage} = require('../utils/digitalOceanSpaces');
 
 // POST: add user (On boarding)
 router.post('/onboard', (req, res) => {
