@@ -42,7 +42,39 @@ const saveIcImage = (icNumber, icImageFront, icImageBack) => {
 
 // Retrieve IC image from digitalOcean
 const retrieveIcImage = (icNumber) => {
+    let imageList = [];
 
+    // Get front image
+    s3.getObject({
+        Bucket: "fundexpress-api-storage",
+        Key: "ic-images/" + icNumber + "-front.png",
+    }, (err, data) =>  {
+        if (err) {
+            return Promise.reject(err);
+        } else {
+            imageList.push({
+                type: 'front',
+                image: data
+            })
+        }
+    });
+
+    // Get back image
+    s3.getObject({
+        Bucket: "fundexpress-api-storage",
+        Key: "ic-images/" + icNumber + "-back.png",
+    }, (err, data) =>  {
+        if (err) {
+            return Promise.reject(err);
+        } else {
+            imageList.push({
+                type: 'back',
+                image: data
+            })
+        }
+    });
+
+    return imageList;
 };
 
 module.exports = {
