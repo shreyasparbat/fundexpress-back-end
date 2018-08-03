@@ -40,8 +40,23 @@ const saveIcImage = (icNumber, icImageFront, icImageBack) => {
     return Promise.resolve()
 };
 
-// Retrieve IC image from digitalOcean
-const retrieveIcImage = (icNumber) => {
+//Retrieve only front IC image from digitalOcean
+const retrieveIcImages = (icNumber) => {
+    // Get and return image
+    s3.getObject({
+        Bucket: "fundexpress-api-storage",
+        Key: "ic-images/" + icNumber + "-front.png",
+    }, (err, data) =>  {
+        if (err) {
+            return Promise.reject(err);
+        } else {
+            return Promise.resolve(data);
+        }
+    });
+};
+
+// Retrieve both front and back IC image from digitalOcean
+const retrieveIcImages = (icNumber) => {
     let imageList = [];
 
     // Get front image
@@ -79,5 +94,6 @@ const retrieveIcImage = (icNumber) => {
 
 module.exports = {
     saveIcImage,
-    retrieveIcImage
+    retrieveIcImage,
+    retrieveIcImages
 };

@@ -45,10 +45,8 @@ router.post('/onboard', (req, res) => {
         res.header('x-auth', token).send({
             msg: 'success'
         });
-    }).catch((err) => {
-        res.status(500).send({
-            error: err
-        });
+    }).catch((error) => {
+        res.status(500).send({error});
     });
 });
 
