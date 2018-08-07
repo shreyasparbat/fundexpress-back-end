@@ -53,11 +53,18 @@ router.post('/edit', (req, res) => {
     ]);
 
     // Update the user
-    User.findByIdAndUpdate(req.user._id, {
+    const _id = req.user._id;
+    User.findByIdAndUpdate(_id, {
         $set: body
-    }, (error, user) => {
+    }, (error) => {
         if (error) res.status(500).send({error});
+
+        // Send back updated user (the user provided to this callback is the old one)
+        User.findById(_id).then((user) => {
         res.send(user);
+        }).catch((error) => {
+            res.status(500).send({error});
+        });
     });
 });
 
