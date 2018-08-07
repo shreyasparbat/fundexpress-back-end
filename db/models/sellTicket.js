@@ -3,50 +3,41 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 
-// Define pawnTicket Schema
-const pawnTicketSchema = new mongoose.Schema({
+// Define sellTicket Schema
+const sellTicketSchema = new mongoose.Schema({
     userId: {
-        type: String,
-        required: true,
-        minlength: 1,
+        type: ObjectId,
+        required: true
     },
     itemId: {
-        type: String,
-        required: true,
-        minlength: 6
+        type: ObjectId,
+        required: true
     },
     ticketNumber: {
         type: String,
-        required: true,
-        minlength: 1
+        required: true
     },
     dateCreated: {
-        type: String,
-        required: true
-    },
-    expiryDate: {
-        type: String,
-        required: true
-    },
-    interestPayable: {
-        type: double,
+        type: Date,
         required: true
     },
     offeredValue: [{
         upperLimit: {
-            type: double
+            type: Number,
+            required: true
         },
         lowerLimit: {
-            type: double
+            type: Number,
+            required: true
         }
     }]
 });
 
-// Override toJson (for returning pawnTicket profile)
-pawnTicketSchema.methods.toJSON = function () {
-    const pawnTicket = this;
-    const pawnTicketObject = pawnTicket.toObject();
-    return _.pick(pawnTicketObject, [
+// Override toJson (for returning sellTicket profile)
+sellTicketSchema.methods.toJSON = function () {
+    const sellTicket = this;
+    const sellTicketObject = sellTicket.toObject();
+    return _.pick(sellTicketObject, [
         'userId',
         'itemId',
         'ticketNumber',

@@ -6,38 +6,37 @@ const jwt = require('jsonwebtoken');
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
     userId: {
-        type: String,
-        required: true,
-        minlength: 1,
+        type: ObjectId,
+        required: true
     },
     itemId: {
-        type: String,
-        required: true,
-        minlength: 6
+        type: ObjectId,
+        required: true
     },
     ticketNumber: {
         type: String,
-        required: true,
-        minlength: 1
+        required: true
     },
     dateCreated: {
-        type: String,
+        type: Date,
         required: true
     },
     expiryDate: {
-        type: String,
+        type: Date,
         required: true
     },
     interestPayable: {
-        type: double,
+        type: Number,
         required: true
     },
     offeredValue: [{
         upperLimit: {
-            type: double
+            type: Number,
+            required: true
         },
         lowerLimit: {
-            type: double
+            type: Number,
+            required: true
         }
     }]
 });
@@ -51,8 +50,6 @@ pawnTicketSchema.methods.toJSON = function () {
         'itemId',
         'ticketNumber',
         'dateCreated',
-        'expiryDate',
-        'interestPayable',
         'offeredValue'
     ])
 };
