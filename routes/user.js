@@ -5,6 +5,7 @@ const router = express.Router();
 
 // Custom imports
 const {User} = require('../db/models/user');
+const {saveIcImage} = require('../utils/digitalOceanSpaces');
 
 // POST: add user (On boarding)
 router.post('/onboard', (req, res) => {
@@ -16,8 +17,11 @@ router.post('/onboard', (req, res) => {
         'gender',
         'age',
         'ic',
-        'phoneNumber',
-        'address'
+        'mobileNumber',
+        'landlineNumber',
+        'address',
+        'citizenship',
+        'nationality'
     ]);
     let user = new User(body);
 
@@ -29,6 +33,11 @@ router.post('/onboard', (req, res) => {
         // Generate user's block
         return user.generateBlock();
     }).then(() => {
+        // Save IC image to digitalOcean
+        const icImageFront = req.header('x-ic-image-front');
+        const icImageBack = req.header('x-ic-image-back');
+        return saveIcImage(body.ic, icImageFront, icImageBack);
+    }).then(() => {
         // Generate user's authentication token
         return user.generateAuthToken();
     }).then((token) => {
@@ -36,10 +45,8 @@ router.post('/onboard', (req, res) => {
         res.header('x-auth', token).send({
             msg: 'success'
         });
-    }).catch((err) => {
-        res.status(500).send({
-            error: err
-        });
+    }).catch((error) => {
+        res.status(500).send({error});
     });
 });
 

@@ -5,6 +5,7 @@ const router = express.Router();
 // Custom imports
 const {User} = require('../db/models/user');
 const {authenticate} = require('../middleware/authenticate');
+const {retrieveIcImage} = require('../utils/digitalOceanSpaces');
 
 // Add middleware
 router.use(authenticate);
@@ -22,6 +23,16 @@ router.delete('/logout', (req, res) => {
         })
     }).catch((e) => {
         res.status(400).send(e);
+    })
+});
+
+// POST: get ic image from digitalOcean
+router.post('/icImage', (req, res) => {
+    const icNumber = req.user.ic;
+    retrieveIcImage(icNumber).then((image) => {
+        res.send({image});
+    }).catch((error) => {
+        res.status(500).send({error})
     })
 });
 
