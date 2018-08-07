@@ -10,7 +10,7 @@ const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
 const profileRouter = require('./routes/profile');
 const homeRouter = require('./routes/home');
-const pawnRouter = require('./routes/pawn');
+const itemRouter = require('./routes/item');
 
 // Custom imports
 const {mongoose} = require('./db/mongoose'); // don't remove
@@ -34,7 +34,7 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/profile', profileRouter);
 app.use('/home', homeRouter);
-app.use('/pawn', pawnRouter);
+app.use('/item', itemRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
