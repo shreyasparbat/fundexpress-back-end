@@ -1,4 +1,5 @@
 // Library imports
+const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 
@@ -34,6 +35,30 @@ router.post('/icImage', (req, res) => {
     }).catch((error) => {
         res.status(500).send({error})
     })
+});
+
+// POST: update user
+router.post('/edit', (req, res) => {
+    let body = _.pick(req.body, [
+        'email',
+        'password',
+        'fullName',
+        'gender',
+        'dateOfBirth',
+        'phoneNumber',
+        'landlineNumber',
+        'address',
+        'citizenship',
+        'nationality'
+    ]);
+
+    // Update the user
+    User.findByIdAndUpdate(req.user._id, {
+        $set: body
+    }, (error, user) => {
+        if (error) res.status(500).send({error});
+        res.send(user);
+    });
 });
 
 module.exports = router;
