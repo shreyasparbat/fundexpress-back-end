@@ -8,62 +8,66 @@ const {User} = require('../db/models/user');
 const {saveIcImage} = require('../utils/digitalOceanSpaces');
 
 // POST: add user (On boarding)
-router.post('/onboard', (req, res) => {
-    // Get info and save
-    let body = _.pick(req.body, [
-        'email',
-        'password',
-        'fullName',
-        'gender',
-        'age',
-        'ic',
-        'mobileNumber',
-        'landlineNumber',
-        'address',
-        'citizenship',
-        'nationality'
-    ]);
-    let user = new User(body);
+router.post('/onboard', async (req, res) => {
+    try {
+        // Get info and save
+        let body = _.pick(req.body, [
+            'email',
+            'password',
+            'fullName',
+            'gender',
+            'dateOfBirth',
+            'ic',
+            'mobileNumber',
+            'landlineNumber',
+            'address',
+            'citizenship',
+            'nationality'
+        ]);
+        let user = new User(body);
 
-    // Save user
-    user.save().then(() => {
+        // Save user
+        await user.save;
+
         // Generate user's credit rating
-        return user.generateCreditRating();
-    }).then(() => {
+        await user.generateCreditRating();
+
         // Generate user's block
-        return user.generateBlock();
-    }).then(() => {
-        // Save IC image to digitalOcean
-        const icImageFront = req.header('x-ic-image-front');
-        const icImageBack = req.header('x-ic-image-back');
-        return saveIcImage(body.ic, icImageFront, icImageBack);
-    }).then(() => {
+        await user.generateBlock();
+
+        // // Save IC image to digitalOcean
+        // const icImageFront = req.header('x-ic-image-front');
+        // const icImageBack = req.header('x-ic-image-back');
+        // await saveIcImage(body.ic, icImageFront, icImageBack);
+
         // Generate user's authentication token
-        return user.generateAuthToken();
-    }).then((token) => {
+        const token = await user.generateAuthToken();
+
         // Send back token
         res.header('x-auth', token).send({
             msg: 'success'
         });
-    }).catch((error) => {
-        res.status(500).send({error});
-    });
+    } catch (error) {
+        res.status(500).send({error})
+    }
 });
 
 // POST: User login
-router.post('/login', (req, res) => {
-    let body = _.pick(req.body, ['email', 'password']);
+router.post('/login', async (req, res) => {
+    try {
+        let body = _.pick(req.body, ['email', 'password']);
 
-    // Find that user
-    User.findByCredentials(body.email, body.password).then((user) => {
-        return user.generateAuthToken();
-    }).then((token) => {
+        // Find that user
+        const user = await User.findByCredentials(body.email, body.password);
+
+        // Generate and return token
+        const token = await user.generateAuthToken();
         res.header('x-auth', token).send({
             msg: 'success'
-        });
-    }).catch((error) => {
+        })
+    } catch (error) {
         res.status(400).send({error});
-    });
+    }
 });
 
 module.exports = router;
