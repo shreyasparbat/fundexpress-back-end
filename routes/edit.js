@@ -5,38 +5,31 @@ const router = express.Router();
 
 // Custom imports
 const {User} = require('../db/models/user');
-const {saveIcImage} = require('../utils/digitalOceanSpaces');
+const {authenticate} = require('../middleware/authenticate');
 
-// POST: add user (On boarding)
-router.post('/onboard', (req, res) => {
-    // Get info and save
+// Add middleware
+router.use(authenticate);
+
+// POST: update user profile
+router.post('/profile/edit', (req, res) => {
+    // Get info and update
     let body = _.pick(req.body, [
         'email',
         'password',
         'fullName',
         'gender',
         'age',
-        'ic',
-        'mobileNumber',
+        'phoneNumber',
         'landlineNumber',
         'address',
         'citizenship',
-        'nationality'
+        'nationality',
     ]);
-    let user = new User(body);
 
     // Save user
     user.save().then(() => {
         // Generate user's credit rating
         return user.generateCreditRating();
-    }).then(() => {
-        // Generate user's block
-        return user.generateBlock();
-    }).then(() => {
-        // Save IC image to digitalOcean
-        const icImageFront = req.header('x-ic-image-front');
-        const icImageBack = req.header('x-ic-image-back');
-        return saveIcImage(body.ic, icImageFront, icImageBack);
     }).then(() => {
         // Generate user's authentication token
         return user.generateAuthToken();
@@ -45,8 +38,10 @@ router.post('/onboard', (req, res) => {
         res.header('x-auth', token).send({
             msg: 'success'
         });
-    }).catch((error) => {
-        res.status(500).send({error});
+    }).catch((err) => {
+        res.status(500).send({
+            error: err
+        });
     });
 });
 
