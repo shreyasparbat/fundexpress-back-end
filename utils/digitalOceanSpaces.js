@@ -8,7 +8,7 @@ const s3 = new aws.S3({
 });
 
 // Save IC image to digitalOcean
-const saveIcImage = (icNumber, icImageFront, icImageBack) => {
+const saveIcImages = (icNumber, icImageFront, icImageBack) => {
     return new Promise((resolve, reject) => {
         //Check if image has been passed or not
         if (icImageFront === undefined || icImageBack === undefined) {
@@ -104,7 +104,7 @@ const retrieveIcImages = (icNumber) => {
 };
 
 module.exports = {
-    saveIcImage,
+    saveIcImages,
     retrieveIcImage,
     retrieveIcImages
 };
