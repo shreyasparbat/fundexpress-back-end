@@ -27,7 +27,7 @@ router.post('/onboard', async (req, res) => {
         let user = new User(body);
 
         // Save user
-        await user.save;
+        await user.save();
 
         // Generate user's credit rating
         await user.generateCreditRating();
