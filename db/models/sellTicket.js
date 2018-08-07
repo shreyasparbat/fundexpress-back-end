@@ -58,5 +58,5 @@ pawnTicketSchema.methods.toJSON = function () {
 };
 
 // Create model and export
-const PawnTicket = mongoose.model('PawnTicket', pawnTicketSchema);
+const PawnTicket = mongoose.model('Item', ItemSchema);
 module.exports = {PawnTicket};
