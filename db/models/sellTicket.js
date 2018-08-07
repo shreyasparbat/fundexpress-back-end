@@ -1,7 +1,6 @@
 // Library imports
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
 
 // Define sellTicket Schema
 const sellTicketSchema = new mongoose.Schema({
@@ -49,5 +48,5 @@ sellTicketSchema.methods.toJSON = function () {
 };
 
 // Create model and export
-const PawnTicket = mongoose.model('Item', ItemSchema);
-module.exports = {PawnTicket};
+const SellTicket = mongoose.model('SellTicket', sellTicketSchema);
+module.exports = {SellTicket};

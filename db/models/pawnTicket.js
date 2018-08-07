@@ -1,7 +1,6 @@
 // Library imports
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
 
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
