@@ -9,87 +9,98 @@ const s3 = new aws.S3({
 
 // Save IC image to digitalOcean
 const saveIcImage = (icNumber, icImageFront, icImageBack) => {
-    // Check if image has been passed or not
-    if (icImageFront === undefined || icImageBack === undefined) {
-        return Promise.reject('IC image not given')
-    }
-
-    // Save front image
-    s3.putObject({
-        Body: icImageFront,
-        Bucket: "fundexpress-api-storage",
-        Key: "ic-images/" + icNumber + "-front.png",
-    }, (err) =>  {
-        if (err) {
-            return Promise.reject(err);
+    return new Promise((resolve, reject) => {
+        //Check if image has been passed or not
+        if (icImageFront === undefined || icImageBack === undefined) {
+            reject('IC image not given')
         }
-    });
 
-    // Save back image
-    s3.putObject({
-        Body: icImageBack,
-        Bucket: "fundexpress-api-storage",
-        Key: "ic-images/" + icNumber + "-back.png",
-    }, (err) =>  {
-        if (err) {
-            return Promise.reject(err);
-        }
-    });
+        // Save front image
+        s3.putObject({
+            Body: icImageFront,
+            ContentType: 'image/jpeg',
+            Bucket: "fundexpress-api-storage",
+            Key: "ic-images/" + icNumber + "-front.jpg",
+        }, (err) =>  {
+            if (err) reject(err)
+        });
 
-    // Images saved successfully
-    return Promise.resolve()
+        // Save back image
+        s3.putObject({
+            Body: icImageBack,
+            ContentType: 'image/jpeg',
+            Bucket: "fundexpress-api-storage",
+            Key: "ic-images/" + icNumber + "-back.jpg",
+        }, (err) =>  {
+            if (err) reject(err)
+        });
+
+        // Images saved successfully
+        resolve();
+    })
 };
 
 //Retrieve only front IC image from digitalOcean
-const retrieveIcImages = (icNumber) => {
-    // Get and return image
-    s3.getObject({
-        Bucket: "fundexpress-api-storage",
-        Key: "ic-images/" + icNumber + "-front.png",
-    }, (err, data) =>  {
-        if (err) {
-            return Promise.reject(err);
-        } else {
-            return Promise.resolve(data);
-        }
-    });
+const retrieveIcImage = (icNumber) => {
+    return new Promise((resolve, reject) => {
+        // Get and return image
+        s3.getObject({
+            Bucket: "fundexpress-api-storage",
+            ResponseContentType: 'image/jpeg',
+            Key: "ic-images/" + icNumber + "-front.jpg",
+        }, (err, data) => {
+            if (err) reject(err);
+            return resolve(data);
+        })
+    })
 };
+
+// //Retrieve only front IC image from digitalOcean
+// const retrieveIcImage = async (icNumber) => {
+//     // Get and return image
+//     s3.getObject({
+//         Bucket: "fundexpress-api-storage",
+//         ResponseContentType: 'image/jpeg',
+//         Key: "ic-images/" + icNumber + "-front.jpg",
+//     }, (err, data) => {
+//         if (err) throw err;
+//         return data;
+//     })
+// };
 
 // Retrieve both front and back IC image from digitalOcean
 const retrieveIcImages = (icNumber) => {
-    let imageList = [];
+    return new Promise((resolve, reject) => {
+        let imageList = [];
 
-    // Get front image
-    s3.getObject({
-        Bucket: "fundexpress-api-storage",
-        Key: "ic-images/" + icNumber + "-front.png",
-    }, (err, data) =>  {
-        if (err) {
-            return Promise.reject(err);
-        } else {
+        // Get front image
+        s3.getObject({
+            Bucket: "fundexpress-api-storage",
+            ResponseContentType: 'image/jpeg',
+            Key: "ic-images/" + icNumber + "-front.jpg",
+        }, (err, data) =>  {
+            if (err) reject(err);
             imageList.push({
                 type: 'front',
                 image: data
             })
-        }
-    });
+        });
 
-    // Get back image
-    s3.getObject({
-        Bucket: "fundexpress-api-storage",
-        Key: "ic-images/" + icNumber + "-back.png",
-    }, (err, data) =>  {
-        if (err) {
-            return Promise.reject(err);
-        } else {
+        // Get back image
+        s3.getObject({
+            Bucket: "fundexpress-api-storage",
+            ResponseContentType: 'image/jpeg',
+            Key: "ic-images/" + icNumber + "-back.jpg",
+        }, (err, data) =>  {
+            if (err) reject(err);
             imageList.push({
                 type: 'back',
                 image: data
             })
-        }
-    });
+        });
 
-    return imageList;
+        resolve(imageList)
+    })
 };
 
 module.exports = {
