@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-// Define pawnTicket Schema
-const pawnTicketSchema = new mongoose.Schema({
+// Define sellTicket Schema
+const sellTicketSchema = new mongoose.Schema({
     userId: {
         type: ObjectId,
         required: true
@@ -20,14 +20,6 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    expiryDate: {
-        type: Date,
-        required: true
-    },
-    interestPayable: {
-        type: Number,
-        required: true
-    },
     offeredValue: [{
         upperLimit: {
             type: Number,
@@ -40,19 +32,21 @@ const pawnTicketSchema = new mongoose.Schema({
     }]
 });
 
-// Override toJson (for returning pawnTicket profile)
-pawnTicketSchema.methods.toJSON = function () {
-    const pawnTicket = this;
-    const pawnTicketObject = pawnTicket.toObject();
-    return _.pick(pawnTicketObject, [
+// Override toJson (for returning sellTicket profile)
+sellTicketSchema.methods.toJSON = function () {
+    const sellTicket = this;
+    const sellTicketObject = sellTicket.toObject();
+    return _.pick(sellTicketObject, [
         'userId',
         'itemId',
         'ticketNumber',
         'dateCreated',
+        'expiryDate',
+        'interestPayable',
         'offeredValue'
     ])
 };
 
 // Create model and export
-const PawnTicket = mongoose.model('PawnTicket', pawnTicketSchema);
-module.exports = {PawnTicket};
+const SellTicket = mongoose.model('SellTicket', sellTicketSchema);
+module.exports = {SellTicket};

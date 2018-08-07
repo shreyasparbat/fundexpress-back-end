@@ -48,8 +48,7 @@ const UserSchema = new mongoose.Schema({
     },
     age: {
         type: Number,
-        required: false,
-        value: 0
+        required: false
     },
     ic: {
         type: String,
@@ -89,12 +88,12 @@ const UserSchema = new mongoose.Schema({
     },
     itemsPawned: [{
         itemId: {
-            type: String
+            type: ObjectId
         }
     }],
     itemsSold: [{
         itemId: {
-            type: String
+            type: ObjectId
         }
     }],
     ethHash: {
@@ -131,7 +130,7 @@ UserSchema.methods.toJSON = function () {
         'email',
         'fullName',
         'gender',
-        'age',
+        'dateOfBirth',
         'ic',
         'mobileNumber',
         'landlineNumber',
