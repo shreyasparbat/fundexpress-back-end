@@ -42,9 +42,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    dateOfBirth: {
+        type: Date,
+        required: false
+    },
     age: {
         type: Number,
-        required: true
+        required: false,
+        value: 0
     },
     ic: {
         type: String,
