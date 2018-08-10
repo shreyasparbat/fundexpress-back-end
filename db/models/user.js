@@ -88,12 +88,12 @@ const UserSchema = new mongoose.Schema({
     },
     itemsPawned: [{
         itemId: {
-            type: ObjectId
+            type: mongoose.Schema.Types.ObjectId
         }
     }],
     itemsSold: [{
         itemId: {
-            type: ObjectId
+            type: mongoose.Schema.Types.ObjectId
         }
     }],
     ethHash: {

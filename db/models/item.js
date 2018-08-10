@@ -34,10 +34,10 @@ const ItemSchema = new mongoose.Schema({
             type: String
         },
         pawningOfferedValue: {
-            type: double
+            type: Number
         },
         sellingOfferedValue: {
-            type: double
+            type: Number
         }
     }]
 });

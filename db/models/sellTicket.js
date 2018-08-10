@@ -5,11 +5,11 @@ const _ = require('lodash');
 // Define sellTicket Schema
 const sellTicketSchema = new mongoose.Schema({
     userId: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     itemId: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     ticketNumber: {

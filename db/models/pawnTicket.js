@@ -5,11 +5,11 @@ const _ = require('lodash');
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
     userId: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     itemId: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     ticketNumber: {

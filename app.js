@@ -11,6 +11,7 @@ const userRouter = require('./routes/user');
 const profileRouter = require('./routes/profile');
 const homeRouter = require('./routes/home');
 const itemRouter = require('./routes/item');
+const historyRouter = require('./routes/history');
 
 // Custom imports
 const {mongoose} = require('./db/mongoose'); // don't remove
@@ -35,6 +36,7 @@ app.use('/user', userRouter);
 app.use('/profile', profileRouter);
 app.use('/home', homeRouter);
 app.use('/item', itemRouter);
+app.use('/history', historyRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
