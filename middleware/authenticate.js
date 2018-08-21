@@ -5,6 +5,7 @@ const {User} = require('../db/models/user');
 const authenticate = (req, res, next) => {
     const token = req.body.auth;
     console.log(token);
+    console.log('body' + req.body);
 
     // Find user with that token
     User.findByToken(token).then((user) => {
