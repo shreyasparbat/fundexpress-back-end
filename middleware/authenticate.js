@@ -2,7 +2,7 @@ const {User} = require('../db/models/user');
 
 
 const authenticate = (req, res, next) => {
-    const token = req.header('x-auth');
+    const token = req.body('x-auth');
 
     // Find user with that token
     User.findByToken(token).then((user) => {
@@ -17,6 +17,7 @@ const authenticate = (req, res, next) => {
             next();
         }
     }).catch((error) => {
+        console.log(error);
         res.status(401).send({error});
     });
 };
