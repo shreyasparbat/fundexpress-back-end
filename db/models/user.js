@@ -83,39 +83,39 @@ const UserSchema = new mongoose.Schema({
     noOfC: {
       type: Number,
       required: true,
-      value: 0
+      default: 0
     }
     noOfL: {
       type: Number,
       required: true,
-      value: 0
+      default: 0
     }
     noOfD: {
       type: Number,
       required: true,
-      value: 0
+      default: 0
     }
     initialProbabilities: [{
       cPercent: {
         type: Number,
         required: true,
-        value: 0
+        default: 0
       },
       lPercent: {
         type: Number,
         required: true,
-        value: 0
+        default: 0
       },
       dPercent: {
         type: Number,
         required: true,
-        value: 0
+        default: 0
       }
     }],
     initialCreditRating: {
       type: Number,
       required: true,
-      value: 0
+      default: 0
     }
     currentCreditRating: {
         type: Number,
@@ -123,7 +123,7 @@ const UserSchema = new mongoose.Schema({
     },
     currentLtvPercentage: {
         type: Number,
-        value: 0
+        default: 0
     },
     itemsPawned: [{
         itemId: {
@@ -137,7 +137,7 @@ const UserSchema = new mongoose.Schema({
     }],
     ethHash: {
         type: String,
-        value: 'nothing here yet'
+        default: 'nothing here yet'
     }
 });
 
