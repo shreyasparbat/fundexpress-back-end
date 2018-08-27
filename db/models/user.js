@@ -86,16 +86,6 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         value: 0
     },
-    itemsPawned: [{
-        itemId: {
-            type: ObjectId
-        }
-    }],
-    itemsSold: [{
-        itemId: {
-            type: ObjectId
-        }
-    }],
     ethHash: {
         type: String,
         value: 'nothing here yet'

@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken');
 
 // Define Item Schema
 const ItemSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     name: {
         type: String,
         required: true,
@@ -30,14 +34,11 @@ const ItemSchema = new mongoose.Schema({
         minlength: 1
     },
     values: [{
-        userId: {
-            type: String
-        },
         pawningOfferedValue: {
-            type: double
+            type: Number
         },
         sellingOfferedValue: {
-            type: double
+            type: Number
         }
     }]
 });
