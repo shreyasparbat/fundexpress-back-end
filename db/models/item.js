@@ -49,14 +49,14 @@ const ItemSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     },
-    values: [{
-        pawningOfferedValue: {
-            type: Number
-        },
-        sellingOfferedValue: {
-            type: Number
-        }
-    }]
+    pawnOfferedValue: {
+        type: Number,
+        required: true
+    },
+    sellOfferedValue: {
+        type: Number,
+        required: true
+    }
 });
 
 // Override toJson (for returning item profile)
