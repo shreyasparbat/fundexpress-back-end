@@ -65,6 +65,8 @@ const UserSchema = new mongoose.Schema({
     landlineNumber: {
         type: Number,
         required: true
+        minlength: 8,
+        maxlength: 8
     },
     address: {
         type: String,
@@ -78,14 +80,61 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    creditRating: {
+    noOfC: {
+      type: Number,
+      required: true,
+      value: 0
+    }
+    noOfL: {
+      type: Number,
+      required: true,
+      value: 0
+    }
+    noOfD: {
+      type: Number,
+      required: true,
+      value: 0
+    }
+    initialProbabilities: [{
+      cPercent: {
+        type: Number,
+        required: true,
+        value: 0
+      },
+      lPercent: {
+        type: Number,
+        required: true,
+        value: 0
+      },
+      dPercent: {
+        type: Number,
+        required: true,
+        value: 0
+      }
+    }],
+    initialCreditRating: {
+      type: Number,
+      required: true,
+      value: 0
+    }
+    currentCreditRating: {
+        type: Number,
+        required: true,
+    },
+    currentLtvPercentage: {
         type: Number,
         value: 0
     },
-    ltvPercentage: {
-        type: Number,
-        value: 0
-    },
+    itemsPawned: [{
+        itemId: {
+            type: ObjectId
+        }
+    }],
+    itemsSold: [{
+        itemId: {
+            type: ObjectId
+        }
+    }],
     ethHash: {
         type: String,
         value: 'nothing here yet'
@@ -121,12 +170,20 @@ UserSchema.methods.toJSON = function () {
         'fullName',
         'gender',
         'dateOfBirth',
+        'age',
         'ic',
         'mobileNumber',
         'landlineNumber',
         'address',
         'citizenship',
         'nationality',
+        'noOfC',
+        'noOfL',
+        'noOfD',
+        'initialProbabilities',
+        'initialCreditRating',
+        'currentCreditRating',
+        'currentLtvPercentage',
         'ethHash'
     ])
 };
