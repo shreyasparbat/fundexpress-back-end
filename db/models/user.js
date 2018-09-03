@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
+const querystring = require('querystring');
 
 // Define User Schema
 const UserSchema = new mongoose.Schema({
@@ -81,42 +83,40 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     noOfC: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+        type: Number,
+        required: true,
+        default: 0
+    },
     noOfL: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+        type: Number,
+        required: true,
+        default: 0
+    },
     noOfD: {
-      type: Number,
-      required: true,
-      default: 0
-    }
-    initialProbabilities: [{
-      cPercent: {
         type: Number,
         required: true,
         default: 0
-      },
-      lPercent: {
+    },
+    cPercent: {
         type: Number,
         required: true,
         default: 0
-      },
-      dPercent: {
+    },
+    lPercent: {
         type: Number,
         required: true,
         default: 0
-      }
-    }],
+    },
+    dPercent: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     initialCreditRating: {
       type: Number,
       required: true,
       default: 0
-    }
+    },
     currentCreditRating: {
         type: Number,
         required: true,
@@ -217,9 +217,28 @@ UserSchema.methods.removeToken = function (token) {
     })
 };
 
-// TODO: Generate credit rating when signing up
-UserSchema.methods.generateCreditRating = function () {
-    return Promise.resolve();
+// Generate credit rating when signing up
+UserSchema.methods.generateCreditRating = async function () {
+    try {
+        const user = this;
+
+        // Get predicted default probabilities
+        let bodyFormData = new FormData();
+        bodyFormData.set();
+        const response = await axios.post('/foo', querystring.stringify({
+            age: user.age,
+            nric = user.ic[0],
+            race =
+            sex = request.form['sex']
+            nation = request.form['nation']
+            address = request.form['address']
+            tel = request.form['tel']
+        }));
+
+        return 0;
+    } catch (error) {
+        throw error
+    }
 };
 
 // TODO: Generate User's block
