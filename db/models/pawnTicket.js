@@ -28,16 +28,18 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    offeredValue: [{
-        upperLimit: {
-            type: Number,
-            required: true
-        },
-        lowerLimit: {
-            type: Number,
-            required: true
-        }
-    }]
+    offeredValue: {
+        type: Number,
+        required: true
+    },
+    specifiedValue: {
+        type: Number,
+        required: true
+    },
+    approvalStatus: {
+        type: Boolean,
+        required: true
+    }
 });
 
 // Override toJson (for returning pawnTicket profile)
