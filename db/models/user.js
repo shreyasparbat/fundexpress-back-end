@@ -66,7 +66,6 @@ const UserSchema = new mongoose.Schema({
     },
     landlineNumber: {
         type: Number,
-        required: true,
         minlength: 8,
         maxlength: 8
     },
@@ -74,11 +73,15 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    addressType: {
+        type: String,
+        required: true
+    },
     citizenship: {
         type: String,
         required: true
     },
-    nationality: {
+    race: {
         type: String,
         required: true
     },
@@ -165,15 +168,12 @@ UserSchema.methods.toJSON = function () {
         'mobileNumber',
         'landlineNumber',
         'address',
+        'addressType',
         'citizenship',
-        'nationality',
+        'race',
         'noOfC',
         'noOfL',
         'noOfD',
-        'initialProbabilities',
-        'initialCreditRating',
-        'currentCreditRating',
-        'currentLtvPercentage',
         'ethHash'
     ])
 };
@@ -217,12 +217,12 @@ UserSchema.methods.generateCreditRating = async function () {
         bodyFormData.set();
         const response = await axios.post('/foo', querystring.stringify({
             age: user.age,
-            nric = user.ic[0],
-            race =
-            sex = request.form['sex']
-            nation = request.form['nation']
-            address = request.form['address']
-            tel = request.form['tel']
+            nric: user.ic[0],
+            race: user.race[0],
+            sex: user.gender,
+            nation: user.citizenship[0],
+            address: user.addressType,
+            tel: user.landlineNumber === null ? 'L' : 'H'
         }));
 
         return 0;

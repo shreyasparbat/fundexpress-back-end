@@ -21,8 +21,9 @@ router.post('/onboard', async (req, res) => {
             'mobileNumber',
             'landlineNumber',
             'address',
+            'addressType',
             'citizenship',
-            'nationality'
+            'race'
         ]);
         let user = new User(body);
 

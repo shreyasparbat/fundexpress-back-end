@@ -45,11 +45,13 @@ router.post('/edit', (req, res) => {
         'fullName',
         'gender',
         'dateOfBirth',
-        'phoneNumber',
+        'ic',
+        'mobileNumber',
         'landlineNumber',
         'address',
+        'addressType',
         'citizenship',
-        'nationality'
+        'race'
     ]);
 
     // Update the user
