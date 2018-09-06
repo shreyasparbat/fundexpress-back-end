@@ -230,15 +230,16 @@ UserSchema.methods.generateCreditRating = async function () {
         };
 
         // Get predicted default probabilities and credit rating
-        const response = await axios.post('http://localhost:5000/predict', requestBody, config);
+        const response = await axios.post('http://0.0.0.0:5000/predict', querystring.stringify(requestBody), config);
+        console.log(response.data)
 
         // Update user
         user.set({
-            cPercent: response.cPercent,
-            dPercent: response.dPercent,
-            lPercent: response.lPercent,
-            initialCreditRating: response.creditRating,
-            currentLtvPercentage: response.ltvPercentage
+            cPercent: response.data.cPercent,
+            dPercent: response.data.dPercent,
+            lPercent: response.data.lPercent,
+            initialCreditRating: response.data.creditRating,
+            currentLtvPercentage: response.data.ltvPercentage
         });
         return await user.save();
     } catch (error) {
@@ -250,6 +251,13 @@ UserSchema.methods.generateCreditRating = async function () {
 UserSchema.methods.generateBlock = function () {
     return Promise.resolve();
 };
+
+// Update credit rating
+UserSchema.methods.updateCreditRating = function (deal) {
+    const user = this;
+
+    // Get user's past dealing information
+}
 
 // Find user by token
 UserSchema.statics.findByToken = function (token) {

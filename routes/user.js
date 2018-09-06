@@ -50,7 +50,6 @@ router.post('/onboard', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        console.log('Im here');
         res.status(500).send(error);
     }
 });
