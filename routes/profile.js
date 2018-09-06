@@ -33,7 +33,7 @@ router.post('/icImage', (req, res) => {
     retrieveIcImage(icNumber).then((image) => {
         res.send({image});
     }).catch((error) => {
-        res.status(500).send({error})
+        res.status(500).send(error)
     })
 });
 
@@ -59,13 +59,13 @@ router.post('/edit', (req, res) => {
     User.findByIdAndUpdate(_id, {
         $set: body
     }, (error) => {
-        if (error) res.status(500).send({error});
+        if (error) res.status(500).send(error);
 
         // Send back updated user (the user provided to this callback is the old one)
         User.findById(_id).then((user) => {
         res.send(user);
         }).catch((error) => {
-            res.status(500).send({error});
+            res.status(500).send(error);
         });
     });
 });

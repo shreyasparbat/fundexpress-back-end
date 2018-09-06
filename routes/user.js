@@ -49,7 +49,9 @@ router.post('/onboard', async (req, res) => {
             msg: 'success'
         });
     } catch (error) {
-        res.status(500).send({error})
+        console.log(error);
+        console.log('Im here');
+        res.status(500).send(error);
     }
 });
 

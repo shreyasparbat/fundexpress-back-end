@@ -116,21 +116,22 @@ const UserSchema = new mongoose.Schema({
         default: 0
     },
     initialCreditRating: {
-      type: Number,
+      type: String,
       required: true,
-      default: 0
+      default: 'B'
     },
     currentCreditRating: {
-        type: Number,
+        type: String,
         required: true,
+        default: 'B'
     },
     currentLtvPercentage: {
         type: Number,
-        default: 0
+        default: 0.9
     },
     ethHash: {
-        type: String,
-        default: 'nothing here yet'
+        type: 'String',
+        default: '0000000000'
     }
 });
 
@@ -212,20 +213,34 @@ UserSchema.methods.generateCreditRating = async function () {
     try {
         const user = this;
 
-        // Get predicted default probabilities
-        let bodyFormData = new FormData();
-        bodyFormData.set();
-        const response = await axios.post('/foo', querystring.stringify({
-            age: user.age,
+        // Setup request parameters
+        const requestBody = {
+            age: getAge(user.dateOfBirth),
             nric: user.ic[0],
             race: user.race[0],
             sex: user.gender,
             nation: user.citizenship[0],
             address: user.addressType,
             tel: user.landlineNumber === null ? 'L' : 'H'
-        }));
+        };
+        const config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        };
 
-        return 0;
+        // Get predicted default probabilities and credit rating
+        const response = await axios.post('http://localhost:5000/predict', requestBody, config);
+
+        // Update user
+        user.set({
+            cPercent: response.cPercent,
+            dPercent: response.dPercent,
+            lPercent: response.lPercent,
+            initialCreditRating: response.creditRating,
+            currentLtvPercentage: response.ltvPercentage
+        });
+        return await user.save();
     } catch (error) {
         throw error
     }
@@ -275,6 +290,17 @@ UserSchema.statics.findByCredentials = function (email, password) {
             });
         }
     });
+};
+
+// Util: Get Age
+const getAge = (dateOfBirth) => {
+    const today = new Date();
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const m = today.getMonth() - dateOfBirth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+        age--;
+    }
+    return age;
 };
 
 // Create model and export
