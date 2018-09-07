@@ -121,13 +121,15 @@ const UserSchema = new mongoose.Schema({
       default: 'B'
     },
     currentCreditRating: {
-        type: String,
+        type: String
+    },
+    initialLtvPercentage: {
+        type: Number,
         required: true,
-        default: 'B'
+        default: 0.9
     },
     currentLtvPercentage: {
-        type: Number,
-        default: 0.9
+        type: Number
     },
     ethHash: {
         type: 'String',
@@ -239,6 +241,8 @@ UserSchema.methods.generateCreditRating = async function () {
             dPercent: response.data.dPercent,
             lPercent: response.data.lPercent,
             initialCreditRating: response.data.creditRating,
+            currentCreditRating: response.data.creditRating,
+            initialLtvPercentage: response.data.ltvPercentage,
             currentLtvPercentage: response.data.ltvPercentage
         });
         return await user.save();
@@ -253,13 +257,65 @@ UserSchema.methods.generateBlock = function () {
 };
 
 // Update credit rating
-UserSchema.methods.updateCreditRating = function (deal) {
+UserSchema.methods.updateCreditRating = async function (deal) {
     const user = this;
+    const userObject = user.toObject();
+    let ltvPercentage = userObject.initialLtvPercentage;
 
-    // Update credit rating according to deal type
+
+    // Update ltvPercentage according to deal type
     if (deal === 'C') {
-        
+        let noOfC = userObject.noOfC;
+        noOfC += 1;
+        if (noOfC % 5 === 0) {
+            ltvPercentage += 0.001;
+        }
+        user.set({noOfC});
+    } else if (deal === 'L') {
+        let noOfL = userObject.noOfL;
+        noOfL += 1;
+        user.set({noOfL})
+        ltvPercentage -= 0.001;
+    } else if (deal === 'D') {
+        let noOfD = userObject.noOfD;
+        noOfD += 1;
+        user.set({noOfD});
+        ltvPercentage -= 0.01;
+    } else {
+        throw new Error('Deal type not found');
     }
+
+    // Check whether ltvPercentage is still within acceptable range
+    if (ltvPercentage > 0.95) {
+        ltvPercentage = 0.95;
+    }
+    if (ltvPercentage < 0.7) {
+        ltvPercentage = 0.7;
+    }
+
+    // Update credit rating
+    if (ltvPercentage >= 0.95) {
+        const creditRating = 'A'; 
+    } else if (ltvPercentage >= 0.9) {
+        const creditRating = 'B';
+    } else if (ltvPercentage >= 0.85) {
+        const creditRating = 'C';
+    } else if (ltvPercentage >= 0.8) {
+        const creditRating = 'D';
+    } else if (ltvPercentage >= 0.75) {
+        const creditRating = 'E';
+    } else if (ltvPercentage >= 0.7) {
+        const creditRating = 'F';
+    } else {
+        throw new Error('Credit rating has fallen too low');
+    }
+    user.set({
+        currentCreditRating: creditRating,
+        currentLtvPercentage: ltvPercentage
+    })
+
+    // Save user
+    return await user.save();
 }
 
 // Find user by token
