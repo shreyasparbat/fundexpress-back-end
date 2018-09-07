@@ -247,6 +247,7 @@ UserSchema.methods.generateCreditRating = async function () {
         });
         return await user.save();
     } catch (error) {
+        console.log(error)
         throw error
     }
 };
