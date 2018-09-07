@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
+const querystring = require('querystring');
 
 // Define User Schema
 const UserSchema = new mongoose.Schema({
@@ -64,7 +66,6 @@ const UserSchema = new mongoose.Schema({
     },
     landlineNumber: {
         type: Number,
-        required: true
         minlength: 8,
         maxlength: 8
     },
@@ -72,72 +73,67 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    addressType: {
+        type: String,
+        required: true
+    },
     citizenship: {
         type: String,
         required: true
     },
-    nationality: {
+    race: {
         type: String,
         required: true
     },
     noOfC: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+        type: Number,
+        required: true,
+        default: 0
+    },
     noOfL: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+        type: Number,
+        required: true,
+        default: 0
+    },
     noOfD: {
-      type: Number,
-      required: true,
-      default: 0
-    }
-    initialProbabilities: [{
-      cPercent: {
         type: Number,
         required: true,
         default: 0
-      },
-      lPercent: {
+    },
+    cPercent: {
         type: Number,
         required: true,
         default: 0
-      },
-      dPercent: {
+    },
+    lPercent: {
         type: Number,
         required: true,
         default: 0
-      }
-    }],
+    },
+    dPercent: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     initialCreditRating: {
-      type: Number,
+      type: String,
       required: true,
-      default: 0
-    }
+      default: 'B'
+    },
     currentCreditRating: {
+        type: String
+    },
+    initialLtvPercentage: {
         type: Number,
         required: true,
+        default: 0.9
     },
     currentLtvPercentage: {
-        type: Number,
-        default: 0
+        type: Number
     },
-    itemsPawned: [{
-        itemId: {
-            type: ObjectId
-        }
-    }],
-    itemsSold: [{
-        itemId: {
-            type: ObjectId
-        }
-    }],
     ethHash: {
-        type: String,
-        default: 'nothing here yet'
+        type: 'String',
+        default: '0000000000'
     }
 });
 
@@ -175,15 +171,12 @@ UserSchema.methods.toJSON = function () {
         'mobileNumber',
         'landlineNumber',
         'address',
+        'addressType',
         'citizenship',
-        'nationality',
+        'race',
         'noOfC',
         'noOfL',
         'noOfD',
-        'initialProbabilities',
-        'initialCreditRating',
-        'currentCreditRating',
-        'currentLtvPercentage',
         'ethHash'
     ])
 };
@@ -217,15 +210,114 @@ UserSchema.methods.removeToken = function (token) {
     })
 };
 
-// TODO: Generate credit rating when signing up
-UserSchema.methods.generateCreditRating = function () {
-    return Promise.resolve();
+// Generate credit rating when signing up
+UserSchema.methods.generateCreditRating = async function () {
+    try {
+        const user = this;
+
+        // Setup request parameters
+        const requestBody = {
+            age: getAge(user.dateOfBirth),
+            nric: user.ic[0],
+            race: user.race[0],
+            sex: user.gender,
+            nation: user.citizenship[0],
+            address: user.addressType,
+            tel: user.landlineNumber === null ? 'L' : 'H'
+        };
+        const config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        };
+
+        // Get predicted default probabilities and credit rating
+        const response = await axios.post('http://0.0.0.0:5000/predict', querystring.stringify(requestBody), config);
+        console.log(response.data)
+
+        // Update user
+        user.set({
+            cPercent: response.data.cPercent,
+            dPercent: response.data.dPercent,
+            lPercent: response.data.lPercent,
+            initialCreditRating: response.data.creditRating,
+            currentCreditRating: response.data.creditRating,
+            initialLtvPercentage: response.data.ltvPercentage,
+            currentLtvPercentage: response.data.ltvPercentage
+        });
+        return await user.save();
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
 };
 
 // TODO: Generate User's block
 UserSchema.methods.generateBlock = function () {
     return Promise.resolve();
 };
+
+// Update credit rating
+UserSchema.methods.updateCreditRating = async function (deal) {
+    const user = this;
+    const userObject = user.toObject();
+    let ltvPercentage = userObject.initialLtvPercentage;
+
+
+    // Update ltvPercentage according to deal type
+    if (deal === 'C') {
+        let noOfC = userObject.noOfC;
+        noOfC += 1;
+        if (noOfC % 5 === 0) {
+            ltvPercentage += 0.001;
+        }
+        user.set({noOfC});
+    } else if (deal === 'L') {
+        let noOfL = userObject.noOfL;
+        noOfL += 1;
+        user.set({noOfL})
+        ltvPercentage -= 0.001;
+    } else if (deal === 'D') {
+        let noOfD = userObject.noOfD;
+        noOfD += 1;
+        user.set({noOfD});
+        ltvPercentage -= 0.01;
+    } else {
+        throw new Error('Deal type not found');
+    }
+
+    // Check whether ltvPercentage is still within acceptable range
+    if (ltvPercentage > 0.95) {
+        ltvPercentage = 0.95;
+    }
+    if (ltvPercentage < 0.7) {
+        ltvPercentage = 0.7;
+    }
+
+    // Update credit rating
+    if (ltvPercentage >= 0.95) {
+        const creditRating = 'A'; 
+    } else if (ltvPercentage >= 0.9) {
+        const creditRating = 'B';
+    } else if (ltvPercentage >= 0.85) {
+        const creditRating = 'C';
+    } else if (ltvPercentage >= 0.8) {
+        const creditRating = 'D';
+    } else if (ltvPercentage >= 0.75) {
+        const creditRating = 'E';
+    } else if (ltvPercentage >= 0.7) {
+        const creditRating = 'F';
+    } else {
+        throw new Error('Credit rating has fallen too low');
+    }
+    user.set({
+        currentCreditRating: creditRating,
+        currentLtvPercentage: ltvPercentage
+    })
+
+    // Save user
+    return await user.save();
+}
 
 // Find user by token
 UserSchema.statics.findByToken = function (token) {
@@ -266,6 +358,17 @@ UserSchema.statics.findByCredentials = function (email, password) {
             });
         }
     });
+};
+
+// Util: Get Age
+const getAge = (dateOfBirth) => {
+    const today = new Date();
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const m = today.getMonth() - dateOfBirth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+        age--;
+    }
+    return age;
 };
 
 // Create model and export

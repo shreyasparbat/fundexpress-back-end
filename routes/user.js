@@ -21,8 +21,9 @@ router.post('/onboard', async (req, res) => {
             'mobileNumber',
             'landlineNumber',
             'address',
+            'addressType',
             'citizenship',
-            'nationality'
+            'race'
         ]);
         let user = new User(body);
 
@@ -48,7 +49,8 @@ router.post('/onboard', async (req, res) => {
             msg: 'success'
         });
     } catch (error) {
-        res.status(500).send({error})
+        console.log(error);
+        res.status(500).send(error);
     }
 });
 
