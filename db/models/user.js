@@ -256,7 +256,10 @@ UserSchema.methods.generateBlock = function () {
 UserSchema.methods.updateCreditRating = function (deal) {
     const user = this;
 
-    // Get user's past dealing information
+    // Update credit rating according to deal type
+    if (deal === 'C') {
+        
+    }
 }
 
 // Find user by token
