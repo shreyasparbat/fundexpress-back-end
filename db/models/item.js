@@ -44,11 +44,6 @@ const ItemSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    placeOfPurchase: {
-        type: String,
-        required: true,
-        minlength: 1
-    },
     pawnOfferedValue: {
         type: Number,
         required: true
@@ -67,9 +62,13 @@ ItemSchema.methods.toJSON = function () {
         'name',
         'type',
         'material',
+        'brand',
+        'purity',
+        'weight',
+        'condition',
         'dateOfPurchase',
-        'placeOfPurchase',
-        'values'
+        'pawnOfferedValue',
+        'sellOfferedValue'
     ])
 };
 

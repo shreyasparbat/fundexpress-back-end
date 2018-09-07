@@ -243,6 +243,7 @@ UserSchema.methods.generateCreditRating = async function () {
         });
         return await user.save();
     } catch (error) {
+        console.log(error)
         throw error
     }
 };
@@ -258,7 +259,7 @@ UserSchema.methods.updateCreditRating = function (deal) {
 
     // Update credit rating according to deal type
     if (deal === 'C') {
-        
+
     }
 }
 
