@@ -20,16 +20,14 @@ const sellTicketSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    offeredValue: [{
-        upperLimit: {
-            type: Number,
-            required: true
-        },
-        lowerLimit: {
-            type: Number,
-            required: true
-        }
-    }]
+    offeredValue: {
+        type: Number,
+        required: true
+    },
+    approvalStatus: {
+        type: Boolean,
+        required: true
+    }
 });
 
 // Override toJson (for returning sellTicket profile)

@@ -24,23 +24,34 @@ const ItemSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     },
-    dateOfPurchase: {
+    condition:{
         type: String,
+        required: false
+    },
+    weight:{
+        type: Number,
+        required: false
+    },
+    purity: {
+        type: Number,
+        required: false
+    },
+    brand: {
+        type: String,
+        required: false
+    },
+    dateOfPurchase: {
+        type: Date,
         required: true
     },
-    placeOfPurchase: {
-        type: String,
-        required: true,
-        minlength: 1
+    pawnOfferedValue: {
+        type: Number,
+        required: true
     },
-    values: [{
-        pawningOfferedValue: {
-            type: Number
-        },
-        sellingOfferedValue: {
-            type: Number
-        }
-    }]
+    sellOfferedValue: {
+        type: Number,
+        required: true
+    }
 });
 
 // Override toJson (for returning item profile)
@@ -51,9 +62,13 @@ ItemSchema.methods.toJSON = function () {
         'name',
         'type',
         'material',
+        'brand',
+        'purity',
+        'weight',
+        'condition',
         'dateOfPurchase',
-        'placeOfPurchase',
-        'values'
+        'pawnOfferedValue',
+        'sellOfferedValue'
     ])
 };
 
