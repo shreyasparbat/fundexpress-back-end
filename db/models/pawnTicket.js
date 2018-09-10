@@ -32,10 +32,6 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    specifiedValue: {
-        type: Number,
-        required: true
-    },
     approvalStatus: {
         type: Boolean,
         required: true
@@ -51,7 +47,10 @@ pawnTicketSchema.methods.toJSON = function () {
         'itemId',
         'ticketNumber',
         'dateCreated',
-        'offeredValue'
+        'expiryDate',
+        'interestPayable',
+        'offeredValue',
+        'approvalStatus'
     ])
 };
 

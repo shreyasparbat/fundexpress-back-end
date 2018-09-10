@@ -1,5 +1,8 @@
 // Library imports
 const aws = require('aws-sdk');
+const express = require('express');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 // Setup S3 endpoint to DigitalOcean Spaces
 const spacesEndpoint = new aws.Endpoint('sgp1.digitaloceanspaces.com');
@@ -16,24 +19,50 @@ const saveIcImages = (icNumber, icImageFront, icImageBack) => {
         }
 
         // Save front image
-        s3.putObject({
-            Body: icImageFront,
-            ContentType: 'image/jpeg',
-            Bucket: "fundexpress-api-storage",
-            Key: "ic-images/" + icNumber + "-front.jpg",
-        }, (err) =>  {
-            if (err) reject(err)
-        });
+        // s3.putObject({
+        //     Body: icImageFront,
+        //     ContentType: 'image/jpeg',
+        //     Bucket: "fundexpress-api-storage",
+        //     Key: "ic-images/" + icNumber + "-front.jpg",
+        // }, (err) =>  {
+        //     if (err) reject(err)
+        // });
+
+        // Save front image
+        const icImageFront = multer({
+            storage: multerS3({
+                s3: s3,
+                bucket: 'fundexpress-api-storage',
+                acl: 'private-read', // 'public-read' if you want it accessible from the web
+                key: function (request, file, cb) {
+                  console.log(file);
+                  cb(null, file.originalname);
+                }
+            })
+        }).single('front');
 
         // Save back image
-        s3.putObject({
-            Body: icImageBack,
-            ContentType: 'image/jpeg',
-            Bucket: "fundexpress-api-storage",
-            Key: "ic-images/" + icNumber + "-back.jpg",
-        }, (err) =>  {
-            if (err) reject(err)
-        });
+        // s3.putObject({
+        //     Body: icImageBack,
+        //     ContentType: 'image/jpeg',
+        //     Bucket: "fundexpress-api-storage",
+        //     Key: "ic-images/" + icNumber + "-back.jpg",
+        // }, (err) =>  {
+        //     if (err) reject(err)
+        // });
+
+        // Save back image
+        const icImageBack = multer({
+            storage: multerS3({
+                s3: s3,
+                bucket: 'fundexpress-api-storage',
+                acl: 'private-read', // 'public-read' if you want it accessible from the web
+                key: function (request, file, cb) {
+                  console.log(file);
+                  cb(null, file.originalname);
+                }
+            })
+        }).single('back');
 
         // Images saved successfully
         resolve();

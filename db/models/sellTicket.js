@@ -39,9 +39,8 @@ sellTicketSchema.methods.toJSON = function () {
         'itemId',
         'ticketNumber',
         'dateCreated',
-        'expiryDate',
-        'interestPayable',
-        'offeredValue'
+        'offeredValue',
+        'approvalStatus'
     ])
 };
 
