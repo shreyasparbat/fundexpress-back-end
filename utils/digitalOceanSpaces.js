@@ -39,7 +39,7 @@ const saveIcImages = (icNumber, icImageFront, icImageBack) => {
                   cb(null, file.originalname);
                 }
             })
-        }).single('front');
+        }).single("ic-images/" + icNumber + "-front.jpg");
 
         // Save back image
         // s3.putObject({
