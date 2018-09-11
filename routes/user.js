@@ -6,6 +6,11 @@ const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 
+// Custom imports
+const {User} = require('../db/models/user');
+const {saveIcImage} = require('../utils/digitalOceanSpaces');
+const date = new Date();
+
 aws.config.update({
     accessKeyId: 'MYGXL6K2SUTP4JYKXUOG',
     secretAccessKey: '08Ie+rca1DsgxoiHpVGeEQF9smEnkVx2Nu391xec96M',
@@ -17,78 +22,72 @@ const s3 = new aws.S3({
     endpoint: spacesEndpoint
 });
 
-const frontUpload = multer({
+const upload = multer({
   storage: multerS3({
     s3,
     bucket: 'fundexpress-api-storage',
     acl: 'public-read',
     key: function (req, file, cb) {
       console.log(file);
-      cb(null, Date.now() + "_front");
+      cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
+            + file.fieldname + '.jpg');
     },
   }),
-}).single('front');
-
-const backUpload = multer({
-  storage: multerS3({
-    s3,
-    bucket: 'fundexpress-api-storage',
-    acl: 'public-read',
-    key: function (req, file, cb) {
-      console.log(file);
-      cb(null, Date.getFullYear().toString() + "_back");
-    },
-  }),
-}).single('back');
-
-//fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
+}).fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
 
 
-// Custom imports
-const {User} = require('../db/models/user');
-const {saveIcImage} = require('../utils/digitalOceanSpaces');
+
 
 // POST: add user (On boarding)
-router.post('/onboard', async (req, res) => {
+router.post('/onboard', (req, res) => {
     try {
-        // Get info and save
-        let body = _.pick(req.body, [
-            'email',
-            'password',
-            'fullName',
-            'gender',
-            'dateOfBirth',
-            'ic',
-            'mobileNumber',
-            'landlineNumber',
-            'address',
-            'addressType',
-            'citizenship',
-            'race'
-        ]);
-        let user = new User(body);
+        upload(async (req, res) => {
+            // Get info and save
+            let body = _.pick(req.body, [
+                'email',
+                'password',
+                'fullName',
+                'gender',
+                'dateOfBirth',
+                'ic',
+                'mobileNumber',
+                'landlineNumber',
+                'address',
+                'addressType',
+                'citizenship',
+                'race'
+            ]);
+            let user = new User(body);
 
-        // Save user
-        await user.save();
+            // Save user
+            await user.save();
 
-        // Generate user's credit rating
-        await user.generateCreditRating();
+            // Generate user's credit rating
+            await user.generateCreditRating();
 
-        // Generate user's block
-        await user.generateBlock();
+            // Generate user's block
+            await user.generateBlock();
+            // console.log(req.body.ic)
 
-        // Save IC image to digitalOcean
-        // const icImageFront = req.header('x-ic-image-front');
-        // const icImageBack = req.header('x-ic-image-back');
+            // Generate user's authentication token
+            const token = await user.generateAuthToken();
+
+            // Send back token
+            res.header('x-auth', token).send({
+                msg: 'success'
+            });
+
+            if (e) {
+                console.log(e)
+                return
+            } else {
+                console.log('image successfully uploaded');
+            }
+        });
+
+        // call functions from digitalocean
         // await saveIcImage(body.ic, icImageFront, icImageBack);
 
-        // Generate user's authentication token
-        const token = await user.generateAuthToken();
-
-        // Send back token
-        res.header('x-auth', token).send({
-            msg: 'success'
-        });
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -115,22 +114,7 @@ router.post('/login', async (req, res) => {
 
 // POST: Uplaod IC Images
 router.post('/uploadIc', (req, res) => {
-    frontUpload(req, res, function (e) {
-        if (e) {
-          console.log(e)
-          return
-      } else {
-          console.log('front image successfully uploaded');
-      }
-    });
-     backUpload(req, res, function (e) {
-        if (e) {
-          console.log(e)
-          return
-      } else {
-          console.log('back image successfully uploaded');
-      }
-    });
+
 });
 
 module.exports = router;
