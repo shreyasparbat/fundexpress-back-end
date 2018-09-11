@@ -4,14 +4,16 @@ const router = express.Router();
 const {ObjectID} = require('mongodb');
 const multer = require('multer');
 const storage = multer.diskStorage({ destination: function (req, file, cb) {
-    cb(null, 'images/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.fieldname + '.jpg')
-  }
+        cb(null, 'images/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + file.fieldname + '.jpg')
+    }
 });
-const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1},
-    {name: 'back', maxCount: 1}]);
+const upload = multer({storage: storage}).fields([
+    { name: 'front', maxCount: 1},
+    {name: 'back', maxCount: 1}
+]);
 
 
 // Custom imports
@@ -99,8 +101,8 @@ router.post('/uploadImage', async (req, res) => {
     // create a new item
     // upload item image to digitalOcean
     // if gold bar, get details from image
-    // send back item
 
+        // Create new Item
         let itemObject = {
             'userId': new ObjectID (req.user._id),
             'name': 'NA',
@@ -115,12 +117,11 @@ router.post('/uploadImage', async (req, res) => {
             'pawnOfferedValue': -1,
             'sellOfferedValue': -1,
         }
-
         let item = new Item(itemObject);
-
-        // Save itemObject
         let savedItem = await item.save();
 
+        // Upload Item image to digital Ocean
+        // Send back item
         res.send(savedItem);
     } catch (e) {
         console.log(e);
