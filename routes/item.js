@@ -35,7 +35,7 @@ router.post('/pawn', async (req, res) => {
     ]);
     let pawnTicketObject = {
         'userId': new ObjectID (req.user._id),
-        'itemId': body.itemId, // confirm this
+        'itemId': body.itemId,
         'ticketNumber': 'NA',
         'dateCreated': new Date (1111-01-01),
         'expiryDate': 'NA',
@@ -100,7 +100,6 @@ router.post('/uploadImage', async (req, res) => {
     // upload item image to digitalOcean
     // if gold bar, get details from image
     // send back item
-    console.log(req.files);
 
         let itemObject = {
             'userId': new ObjectID (req.user._id),
