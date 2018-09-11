@@ -33,7 +33,7 @@ const saveIcImages = (icNumber, icImageFront, icImageBack) => {
             storage: multerS3({
                 s3: s3,
                 bucket: 'fundexpress-api-storage',
-                acl: 'private-read', // 'public-read' if you want it accessible from the web
+                acl: 'private-read',
                 key: function (request, file, cb) {
                   console.log(file);
                   cb(null, file.originalname);
@@ -56,13 +56,13 @@ const saveIcImages = (icNumber, icImageFront, icImageBack) => {
             storage: multerS3({
                 s3: s3,
                 bucket: 'fundexpress-api-storage',
-                acl: 'private-read', // 'public-read' if you want it accessible from the web
+                acl: 'private-read',
                 key: function (request, file, cb) {
                   console.log(file);
                   cb(null, file.originalname);
                 }
             })
-        }).single('back');
+        }).single("ic-images/" + icNumber + "-back.jpg");
 
         // Images saved successfully
         resolve();

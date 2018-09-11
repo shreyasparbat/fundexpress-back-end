@@ -37,7 +37,7 @@ router.post('/pawn', async (req, res) => {
     ]);
     let pawnTicketObject = {
         'userId': new ObjectID (req.user._id),
-        'itemId': body.itemId, // confirm this
+        'itemId': body.itemId,
         'ticketNumber': 'NA',
         'dateCreated': new Date (1111-01-01),
         'expiryDate': 'NA',
