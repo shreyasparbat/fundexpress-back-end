@@ -26,36 +26,79 @@ const {authenticate} = require('../middleware/authenticate');
 router.use(authenticate);
 
 // POST: add item
+router.post('/add', async (req, res) => {
+    try {
+        // Get request body
+        const body = _.pick(req.body, [
+            'itemID',
+            'name',
+            'type',
+            'material',
+            'brand',
+            'purity',
+            'weight',
+            'condition',
+            'dateOfPurchase'
+        ]);
 
+        // Update item of that object ID
+        const item = Item.findById(new ObjectID(body.itemID));
+        item.set({
+            name: body.name,
+            type: body.type,
+            material: body.material,
+            brand: body.brand,
+            purity: body.purity,
+            weight: body.weight,
+            condition: body.condition,
+            dateOfPurchase: new Date(body.dateOfPurchase)
+        })
+        item.save();
+
+        // Calculate pawn and sell offered value
+        await item.calculateOfferedValues();
+
+        // Return objectID and offered values
+        const itemObject = item.toObject();
+        res.send({
+            itemID: itemObject._id,
+            pawnOfferedValue: itemObject.pawnOfferedValue,
+            sellOfferedValue: itemObject.sellOfferedValue
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+})
 
 // POST: pawn new item (create pawn ticket)
 router.post('/pawn', async (req, res) => {
-  try {
-    let body = _.pick(req.body, [
-        'itemId',
-        'specifiedValue' //relation between this and offeredValue?
-    ]);
-    let pawnTicketObject = {
-        'userId': new ObjectID (req.user._id),
-        'itemId': body.itemId,
-        'ticketNumber': 'NA',
-        'dateCreated': new Date (1111-01-01),
-        'expiryDate': 'NA',
-        'interestPayable': -1,
-        'offeredValue': -1,
-        'approvalStatus': false
+    try {
+        let body = _.pick(req.body, [
+            'itemId',
+            'specifiedValue' //relation between this and offeredValue?
+        ]);
+        let pawnTicketObject = {
+            'userId': new ObjectID (req.user._id),
+            'itemId': body.itemId,
+            'ticketNumber': 'NA',
+            'dateCreated': new Date (1111-01-01),
+            'expiryDate': 'NA',
+            'interestPayable': -1,
+            'offeredValue': -1,
+            'approvalStatus': false
+        }
+
+        let pawnTicket = new PawnTicket (pawnTicketObject);
+
+        //save pawn ticket
+        let savedPawnTicket = await pawnTicket.save();
+
+        res.send(savedPawnTicket);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
     }
-
-    let pawnTicket = new PawnTicket (pawnTicketObject);
-
-    //save pawn ticket
-    let savedPawnTicket = await pawnTicket.save();
-
-    res.send(savedPawnTicket);
-  } catch (e) {
-      console.log(e);
-      res.status(500).send(e);
-  }
 });
 
 

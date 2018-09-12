@@ -72,6 +72,11 @@ ItemSchema.methods.toJSON = function () {
     ])
 };
 
+// Calculate pawn and sell offered values
+ItemSchema.methods.calculateOfferedValues = function() {
+    return Promise.resolve();
+};
+
 // Create model and export
 const Item = mongoose.model('Item', ItemSchema);
 module.exports = {Item};
