@@ -2,18 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const {ObjectID} = require('mongodb');
+const aws = require('aws-sdk');
 const multer = require('multer');
-const storage = multer.diskStorage({ destination: function (req, file, cb) {
-        cb(null, 'images/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + file.fieldname + '.jpg')
-    }
-});
-const upload = multer({storage: storage}).fields([
-    { name: 'front', maxCount: 1},
-    {name: 'back', maxCount: 1}
-]);
+const multerS3 = require('multer-s3');
 
 
 // Custom imports
@@ -21,6 +12,31 @@ const {Item} = require('../db/models/item');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
+const date = new Date();
+
+aws.config.update({
+    accessKeyId: 'MYGXL6K2SUTP4JYKXUOG',
+    secretAccessKey: '08Ie+rca1DsgxoiHpVGeEQF9smEnkVx2Nu391xec96M',
+    region: 'sgp1'
+});
+
+const spacesEndpoint = new aws.Endpoint('sgp1.digitaloceanspaces.com/item-images');
+const s3 = new aws.S3({
+    endpoint: spacesEndpoint
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3,
+    bucket: 'fundexpress-api-storage',
+    acl: 'public-read',
+    key: function (req, file, cb) {
+      console.log(file);
+      cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
+            req.user._id + '_' + file.fieldname + '.jpg');
+    },
+  }),
+}).fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
 
 // Add middleware
 router.use(authenticate);
