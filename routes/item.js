@@ -12,34 +12,54 @@ const {Item} = require('../db/models/item');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
-const date = new Date();
+const {uploadItem} = require('../utils/digitalOceanSpaces');
 
-aws.config.update({
-    accessKeyId: 'MYGXL6K2SUTP4JYKXUOG',
-    secretAccessKey: '08Ie+rca1DsgxoiHpVGeEQF9smEnkVx2Nu391xec96M',
-    region: 'sgp1'
-});
 
-const spacesEndpoint = new aws.Endpoint('sgp1.digitaloceanspaces.com/item-images');
-const s3 = new aws.S3({
-    endpoint: spacesEndpoint
-});
-
-const upload = multer({
-  storage: multerS3({
-    s3,
-    bucket: 'fundexpress-api-storage',
-    acl: 'public-read',
-    key: function (req, file, cb) {
-      console.log(file);
-      cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
-            req.user._id + '_' + file.fieldname + '.jpg');
-    },
-  }),
-}).fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
 
 // Add middleware
 router.use(authenticate);
+
+// POST: upload an item image
+router.post('/uploadImage', async (req, res) => {
+    uploadItem(req, res, function (e) {
+        if (e) {
+            console.log(e)
+            return
+        } else {
+            console.log('successfully uploaded');
+        }
+    });
+    try {
+    // create a new item
+    // upload item image to digitalOcean
+    // if gold bar, get details from image
+
+        // Create new Item
+        let itemObject = {
+            'userId': new ObjectID (req.user._id),
+            'name': 'NA',
+            //'type': req.body.type,
+            'type': 'gold bar',
+            'material': 'NA',
+            'brand': 'NA',
+            'purity': -1,
+            'weight': -1,
+            'condition': 'NA',
+            'dateOfPurchase': new Date(1111,01,01),
+            'pawnOfferedValue': -1,
+            'sellOfferedValue': -1,
+        }
+        let item = new Item(itemObject);
+        let savedItem = await item.save();
+
+        // Upload Item image to digital Ocean
+        // Send back item
+        res.send(savedItem);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
+    }
+});
 
 // POST: add item
 router.post('/add', async (req, res) => {
@@ -117,7 +137,6 @@ router.post('/pawn', async (req, res) => {
     }
 });
 
-
 // POST: sell new item (create sell ticket)
 router.post('/sell', async (req, res) => {
   try {
@@ -142,50 +161,6 @@ router.post('/sell', async (req, res) => {
   } catch (e) {
     res.status(500).send(e);
   }
-});
-
-// POST: upload an item image
-//const itemImages = upload.fields([{ name: 'front', maxCount: 1},{name: 'back', maxCount: 1}]);
-
-router.post('/uploadImage', async (req, res) => {
-    upload(req, res, function (e) {
-        if (e) {
-          console.log(e)
-          return
-      } else {
-          console.log('successfully uploaded');
-      }
-    });
-    try {
-    // create a new item
-    // upload item image to digitalOcean
-    // if gold bar, get details from image
-
-        // Create new Item
-        let itemObject = {
-            'userId': new ObjectID (req.user._id),
-            'name': 'NA',
-            //'type': req.body.type,
-            'type': 'gold bar',
-            'material': 'NA',
-            'brand': 'NA',
-            'purity': -1,
-            'weight': -1,
-            'condition': 'NA',
-            'dateOfPurchase': new Date(1111,01,01),
-            'pawnOfferedValue': -1,
-            'sellOfferedValue': -1,
-        }
-        let item = new Item(itemObject);
-        let savedItem = await item.save();
-
-        // Upload Item image to digital Ocean
-        // Send back item
-        res.send(savedItem);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e);
-    }
 });
 
 module.exports = router;
