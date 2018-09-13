@@ -37,6 +37,7 @@ const uploadItem = multer({
         bucket: 'fundexpress-api-storage/item-images',
         acl: 'public-read',
         key: function (req, file, cb) {
+            const date = new Date();
             console.log(file);
             cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
                 req.user._id + '_' + file.fieldname + '.jpg');

@@ -29,36 +29,36 @@ router.post('/uploadImage', async (req, res) => {
             console.log('successfully uploaded');
         }
     });
-    try {
-    // create a new item
-    // upload item image to digitalOcean
-    // if gold bar, get details from image
-
-        // Create new Item
-        let itemObject = {
-            'userId': new ObjectID (req.user._id),
-            'name': 'NA',
-            //'type': req.body.type,
-            'type': 'gold bar',
-            'material': 'NA',
-            'brand': 'NA',
-            'purity': -1,
-            'weight': -1,
-            'condition': 'NA',
-            'dateOfPurchase': new Date(1111,01,01),
-            'pawnOfferedValue': -1,
-            'sellOfferedValue': -1,
-        }
-        let item = new Item(itemObject);
-        let savedItem = await item.save();
-
-        // Upload Item image to digital Ocean
-        // Send back item
-        res.send(savedItem);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e);
-    }
+    // try {
+    // // create a new item
+    // // upload item image to digitalOcean
+    // // if gold bar, get details from image
+    //
+    //     // Create new Item
+    //     let itemObject = {
+    //         'userId': new ObjectID (req.user._id),
+    //         'name': 'NA',
+    //         //'type': req.body.type,
+    //         'type': 'gold bar',
+    //         'material': 'NA',
+    //         'brand': 'NA',
+    //         'purity': -1,
+    //         'weight': -1,
+    //         'condition': 'NA',
+    //         'dateOfPurchase': new Date(1111,01,01),
+    //         'pawnOfferedValue': -1,
+    //         'sellOfferedValue': -1,
+    //     }
+    //     let item = new Item(itemObject);
+    //     let savedItem = await item.save();
+    //
+    //     // Upload Item image to digital Ocean
+    //     // Send back item
+    //     res.send(savedItem);
+    // } catch (e) {
+    //     console.log(e);
+    //     res.status(500).send(e);
+    // }
 });
 
 // POST: add item
