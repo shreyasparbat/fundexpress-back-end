@@ -11,8 +11,8 @@ aws.config.update({
 });
 
 // Setup S3 endpoint to DigitalOcean Spaces
-const spacesEndpoint = new aws.Endpoint('sgp1.digitaloceanspaces.com/ic-images');
-const s3 = new aws.S3({
+var spacesEndpoint = new aws.Endpoint('sgp1.digitaloceanspaces.com');
+var s3 = new aws.S3({
     endpoint: spacesEndpoint
 });
 
@@ -20,12 +20,12 @@ const s3 = new aws.S3({
 const uploadIC = multer({
     storage: multerS3({
         s3,
-        bucket: 'fundexpress-api-storage',
+        bucket: 'fundexpress-api-storage/ic-images',
         acl: 'public-read',
         key: function (req, file, cb) {
             const date = new Date();
             cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
-                file.fieldname + '.jpg');
+                req.user.ic + "_" + file.fieldname + '.jpg');
         },
     }),
 }).fields([{ name: 'ic-front', maxCount: 1}, {name: 'ic-back', maxCount: 1}]);
@@ -34,14 +34,14 @@ const uploadIC = multer({
 const uploadItem = multer({
     storage: multerS3({
         s3,
-        bucket: 'fundexpress-api-storage',
+        bucket: 'fundexpress-api-storage/item-images',
         acl: 'public-read',
         key: function (req, file, cb) {
             console.log(file);
             cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
                 req.user._id + '_' + file.fieldname + '.jpg');
         },
-    }), 
+    }),
 }).fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
 
 // Export

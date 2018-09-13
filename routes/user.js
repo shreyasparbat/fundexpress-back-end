@@ -5,55 +5,51 @@ const router = express.Router();
 
 // Custom imports
 const {User} = require('../db/models/user');
-const {uploadIC} = require('../utils/digitalOceanSpaces');
+const {authenticate} = require('../middleware/authenticate');
+//const {uploadIC} = require('../utils/digitalOceanSpaces');
 
 // POST: add user (On boarding)
-router.post('/onboard', (req, res) => {
+router.post('/onboard', async (req, res) => {
     try {
-        uploadIC(async (req, res) => {
-            // Get info and save
-            let body = _.pick(req.body, [
-                'email',
-                'password',
-                'fullName',
-                'gender',
-                'dateOfBirth',
-                'ic',
-                'mobileNumber',
-                'landlineNumber',
-                'address',
-                'addressType',
-                'citizenship',
-                'race'
-            ]);
-            let user = new User(body);
+        // Get info and save
+        let body = _.pick(req.body, [
+            'email',
+            'password',
+            'fullName',
+            'gender',
+            'dateOfBirth',
+            'ic',
+            'mobileNumber',
+            'landlineNumber',
+            'address',
+            'addressType',
+            'citizenship',
+            'race'
+        ]);
+        let user = new User(body);
 
-            // Save user
-            await user.save();
+        // Save user
+        await user.save();
 
-            // Generate user's credit rating
-            await user.generateCreditRating();
+        // Generate user's credit rating
+        await user.generateCreditRating();
 
-            // Generate user's block
-            await user.generateBlock();
-            // console.log(req.body.ic)
+        // Generate user's block
+        await user.generateBlock();
+        // console.log(req.body.ic)
 
-            // Generate user's authentication token
-            const token = await user.generateAuthToken();
+        // Generate user's authentication token
+        const token = await user.generateAuthToken();
 
-            // Send back token
-            res.header('x-auth', token).send({
-                msg: 'success'
-            });
-
-            // Console log if everything goes well
-            console.log('Onboarding complete, image uploaded')
+        // Send back token
+        res.header('x-auth', token).send({
+            msg: 'success'
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
     }
+
 });
 
 // POST: User login
@@ -72,11 +68,6 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         res.status(400).send({error});
     }
-});
-
-// POST: Uplaod IC Images
-router.post('/uploadIc', (req, res) => {
-
 });
 
 module.exports = router;

@@ -2,11 +2,15 @@
 const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 // Custom imports
 const {User} = require('../db/models/user');
 const {authenticate} = require('../middleware/authenticate');
 const {retrieveIcImage} = require('../utils/digitalOceanSpaces');
+const {uploadIC} = require('../utils/digitalOceanSpaces');
 
 // Add middleware
 router.use(authenticate);
@@ -69,5 +73,16 @@ router.post('/edit', (req, res) => {
         });
     });
 });
+
+router.post('/uploadIc', (req, res) => {
+    uploadIC(req, res, function (e) {
+        if (e) {
+            console.log(e);
+            return
+        } else {
+            console.log('successfully uploaded');
+        }
+    });
+})
 
 module.exports = router;
