@@ -5,7 +5,7 @@ const {ObjectID} = require('mongodb');
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-
+const bodyParser = require('body-parser');
 
 // Custom imports
 const {Item} = require('../db/models/item');
@@ -14,8 +14,8 @@ const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
 
-
-
+router.use(bodyParser.urlencoded({extended: false}));
+router.use(bodyParser.json());
 // Add middleware
 router.use(authenticate);
 
@@ -29,36 +29,34 @@ router.post('/uploadImage', async (req, res) => {
             console.log('successfully uploaded');
         }
     });
-    // try {
-    // // create a new item
-    // // upload item image to digitalOcean
-    // // if gold bar, get details from image
-    //
-    //     // Create new Item
-    //     let itemObject = {
-    //         'userId': new ObjectID (req.user._id),
-    //         'name': 'NA',
-    //         //'type': req.body.type,
-    //         'type': 'gold bar',
-    //         'material': 'NA',
-    //         'brand': 'NA',
-    //         'purity': -1,
-    //         'weight': -1,
-    //         'condition': 'NA',
-    //         'dateOfPurchase': new Date(1111,01,01),
-    //         'pawnOfferedValue': -1,
-    //         'sellOfferedValue': -1,
-    //     }
-    //     let item = new Item(itemObject);
-    //     let savedItem = await item.save();
-    //
-    //     // Upload Item image to digital Ocean
-    //     // Send back item
-    //     res.send(savedItem);
-    // } catch (e) {
-    //     console.log(e);
-    //     res.status(500).send(e);
-    // }
+    try {
+    // create a new item
+    // upload item image to digitalOcean
+    // if gold bar, get details from image
+    // Create new Item
+        let itemObject = {
+            'userId': new Object (req.user._id),
+            'name': 'NA',
+            'type': req.body.type,
+            'material': 'NA',
+            'brand': 'NA',
+            'purity': -1,
+            'weight': -1,
+            'condition': 'NA',
+            'dateOfPurchase': new Date(1111,01,01),
+            'pawnOfferedValue': -1,
+            'sellOfferedValue': -1,
+        }
+        let item = new Item(itemObject);
+        let savedItem = await item.save();
+
+        // Upload Item image to digital Ocean
+        // Send back item
+        res.send(savedItem);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send(e);
+    }
 });
 
 // POST: add item
