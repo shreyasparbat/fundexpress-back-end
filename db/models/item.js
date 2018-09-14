@@ -74,6 +74,26 @@ ItemSchema.methods.toJSON = function () {
 
 // Calculate pawn and sell offered values
 ItemSchema.methods.calculateOfferedValues = function() {
+    try {
+        const item = this;
+
+        // Setup request parameters
+        const requestBody = {
+            name: item.name,
+            type: item.type,
+        }
+    }
+
+
+    // value of gold taken as 50 for now
+    const goldValue = 50;
+    const ltvPercentage = req.user.currentLtvPercentage;
+    const meltingPrice = item.purity * goldValue;
+
+    const pawnOfferedValue = ltvPercentage * meltingPrice * item.weight;
+    //arbitrary value of sellOfferedValue until logic is set
+    const sellOfferedValue = 100;
+
     return Promise.resolve();
 };
 

@@ -1,11 +1,12 @@
 // Library imports
+const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const {ObjectID} = require('mongodb');
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 // Custom imports
 const {Item} = require('../db/models/item');
@@ -14,8 +15,6 @@ const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
 
-router.use(bodyParser.urlencoded({extended: false}));
-router.use(bodyParser.json());
 // Add middleware
 router.use(authenticate);
 
@@ -37,7 +36,7 @@ router.post('/uploadImage', async (req, res) => {
         let itemObject = {
             'userId': new Object (req.user._id),
             'name': 'NA',
-            'type': req.body.type,
+            'type': req.get('type'),
             'material': 'NA',
             'brand': 'NA',
             'purity': -1,
@@ -77,6 +76,7 @@ router.post('/add', async (req, res) => {
 
         // Update item of that object ID
         const item = Item.findById(new ObjectID(body.itemID));
+        if (!item) throw new Error('No item found');
         item.set({
             name: body.name,
             type: body.type,
@@ -87,7 +87,8 @@ router.post('/add', async (req, res) => {
             condition: body.condition,
             dateOfPurchase: new Date(body.dateOfPurchase)
         })
-        item.save();
+        // save updated item
+        await item.update();
 
         // Calculate pawn and sell offered value
         await item.calculateOfferedValues();
