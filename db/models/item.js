@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 
+// Custom imports
+const {getGoldPrice} = require('../../utils/priceScrapper');
+
 // Define Item Schema
 const ItemSchema = new mongoose.Schema({
     userId: {
@@ -11,7 +14,7 @@ const ItemSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: true,
+        required: false,
         minlength: 1
     },
     type: {
@@ -21,7 +24,7 @@ const ItemSchema = new mongoose.Schema({
     },
     material: {
         type: String,
-        required: true,
+        required: false,
         minlength: 1
     },
     condition:{
@@ -33,6 +36,10 @@ const ItemSchema = new mongoose.Schema({
         required: false
     },
     purity: {
+        type: String,
+        required: false
+    },
+    goldContentPercentage: {
         type: Number,
         required: false
     },
@@ -40,17 +47,21 @@ const ItemSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    otherComments: {
+        type: String,
+        required: false
+    },
     dateOfPurchase: {
         type: Date,
-        required: true
+        required: false
     },
     pawnOfferedValue: {
         type: Number,
-        required: true
+        required: false
     },
     sellOfferedValue: {
         type: Number,
-        required: true
+        required: false
     }
 });
 
@@ -73,29 +84,32 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values
-ItemSchema.methods.calculateOfferedValues = function() {
+ItemSchema.methods.calculateOfferedValues = async function(user) {
     try {
         const item = this;
 
-        // Setup request parameters
-        const requestBody = {
-            name: item.name,
-            type: item.type,
-        }
+        // Get various parameters for formula
+        const goldValuePerGram = getGoldPrice();
+        const ltvPercentage = user.currentLtvPercentage;
+        const meltingPrice = item.goldContentPercentage * goldValuePerGram;
+
+        // Calulate and save final values
+        let pawnOfferedValue = ltvPercentage * meltingPrice * item.weight;
+        item.set({
+            pawnOfferedValue,
+            sellOfferedValue: pawnOfferedValue + item.weight * 1.5
+        });
+
+        return item.save()
+    } catch (error) {
+        throw error
     }
-
-
-    // value of gold taken as 50 for now
-    const goldValue = 50;
-    const ltvPercentage = req.user.currentLtvPercentage;
-    const meltingPrice = item.purity * goldValue;
-
-    const pawnOfferedValue = ltvPercentage * meltingPrice * item.weight;
-    //arbitrary value of sellOfferedValue until logic is set
-    const sellOfferedValue = 100;
-
-    return Promise.resolve();
 };
+
+ItemSchema.methods.runImageRecognition = function(type) {
+    const item = this;
+    return Promise.resolve(item);
+}
 
 // Create model and export
 const Item = mongoose.model('Item', ItemSchema);

@@ -3,10 +3,6 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const {ObjectID} = require('mongodb');
-const aws = require('aws-sdk');
-const multer = require('multer');
-const multerS3 = require('multer-s3');
-// const bodyParser = require('body-parser');
 
 // Custom imports
 const {Item} = require('../db/models/item');
@@ -20,6 +16,7 @@ router.use(authenticate);
 
 // POST: upload an item image
 router.post('/uploadImage', async (req, res) => {
+    // Upload images to digital ocean
     uploadItem(req, res, function (e) {
         if (e) {
             console.log(e)
@@ -29,32 +26,32 @@ router.post('/uploadImage', async (req, res) => {
         }
     });
     try {
-    // create a new item
-    // upload item image to digitalOcean
-    // if gold bar, get details from image
-    // Create new Item
+        // Save the item
+        let type = req.get('type');
         let itemObject = {
             'userId': new Object (req.user._id),
-            'name': 'NA',
-            'type': req.get('type'),
-            'material': 'NA',
-            'brand': 'NA',
-            'purity': -1,
-            'weight': -1,
-            'condition': 'NA',
-            'dateOfPurchase': new Date(1111,01,01),
-            'pawnOfferedValue': -1,
-            'sellOfferedValue': -1,
+            type
         }
         let item = new Item(itemObject);
-        let savedItem = await item.save();
+        await item.save();
 
-        // Upload Item image to digital Ocean
-        // Send back item
-        res.send(savedItem);
+        // Run Image recognition if gold bar or coin
+        let responseBody = {
+            itemID: item._id
+        };
+        if (type === 'Gold Bar' || type === 'Gold Coin') {
+            let savedItem = await item.runImageRecognition(type);
+            responseBody.brand = savedItem.brand;
+            responseBody.material = savedItem.material;
+            responseBody.weight = savedItem.weight;
+            responseBody.purity = savedItem.purity;
+        }
+
+        // Send back relevant information
+        res.send(responseBody);
     } catch (e) {
         console.log(e);
-        res.status(500).send(e);
+        res.status(500).send(e.toString());
     }
 });
 
@@ -74,35 +71,62 @@ router.post('/add', async (req, res) => {
             'dateOfPurchase'
         ]);
 
-        // Update item of that object ID
-        const item = Item.findById(new ObjectID(body.itemID));
+        // Find item of that objectID
+        const item = Item.findOne({_id: new ObjectID(body.itemID)});
         if (!item) throw new Error('No item found');
+
+        // Get percentage of gold per gram for given purity
+        let goldContentPercentage = null;
+        if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
+            if (purity === '24k/999') {
+                goldContentPercentage = 0.985
+            }
+            if (purity === '22K/916') {
+                goldContentPercentage = 0.9
+            }
+            if (purity === '20K/835') {
+                goldContentPercentage = 0.835
+            }
+            if (purity === '18K/750 (Yellow gold)') {
+                goldContentPercentage = 0.7
+            }
+            if (purity === '18K/750 (White gold)') {
+                goldContentPercentage = 0.65
+            }
+            if (purity === '14K/585') {
+                goldContentPercentage = 0.5
+            }
+            if (purity === '9K/375') {
+                goldContentPercentage = 0.3
+            }
+        };
+
+        // Update item
         item.set({
             name: body.name,
             type: body.type,
             material: body.material,
             brand: body.brand,
             purity: body.purity,
+            goldContentPercentage,
             weight: body.weight,
             condition: body.condition,
             dateOfPurchase: new Date(body.dateOfPurchase)
         })
-        // save updated item
         await item.update();
 
         // Calculate pawn and sell offered value
-        await item.calculateOfferedValues();
+        await item.calculateOfferedValues(req.user);
 
         // Return objectID and offered values
-        const itemObject = item.toObject();
         res.send({
-            itemID: itemObject._id,
-            pawnOfferedValue: itemObject.pawnOfferedValue,
-            sellOfferedValue: itemObject.sellOfferedValue
+            itemID: item._id,
+            pawnOfferedValue: item.pawnOfferedValue,
+            sellOfferedValue: item.sellOfferedValue
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send(error);
+        res.status(500).send(error.toString());
     }
 })
 
@@ -111,13 +135,18 @@ router.post('/pawn', async (req, res) => {
     try {
         let body = _.pick(req.body, [
             'itemId',
-            'specifiedValue' //relation between this and offeredValue?
+            'specifiedValue'
         ]);
+
+        // Get Item
+
+        // Create Pawn ticket
+        let today = new Date ();
         let pawnTicketObject = {
             'userId': new ObjectID (req.user._id),
             'itemId': body.itemId,
             'ticketNumber': 'NA',
-            'dateCreated': new Date (1111-01-01),
+            'dateCreated': today,
             'expiryDate': 'NA',
             'interestPayable': -1,
             'offeredValue': -1,
@@ -132,34 +161,34 @@ router.post('/pawn', async (req, res) => {
         res.send(savedPawnTicket);
     } catch (e) {
         console.log(e);
-        res.status(500).send(e);
+        res.status(500).send(e.toString());
     }
 });
 
 // POST: sell new item (create sell ticket)
 router.post('/sell', async (req, res) => {
-  try {
-    let body = _.pick(req.body, [
-        'itemId'
-    ]);
-    let sellTicketObject = {
-        'userId': new Object (req.user._id),
-        'itemId': body.itemId,
-        'ticketNumber': 'NA',
-        'dateCreated': new Date (1111-01-01),
-        'offeredValue': -1,
-        'approvalStatus': false
+    try {
+        let body = _.pick(req.body, [
+            'itemId'
+        ]);
+        let sellTicketObject = {
+            'userId': new Object (req.user._id),
+            'itemId': body.itemId,
+            'ticketNumber': 'NA',
+            'dateCreated': new Date (1111-01-01),
+            'offeredValue': -1,
+            'approvalStatus': false
+        }
+
+        let sellTicket = new SellTicket (sellTicketObject);
+
+        // save sell ticket
+        let savedSellTicket = await sellTicket.save();
+
+        res.send(savedSellTicket);
+    } catch (e) {
+        res.status(500).send(e.toString());
     }
-
-    let sellTicket = new SellTicket (sellTicketObject);
-
-    // save sell ticket
-    let savedSellTicket = await sellTicket.save();
-
-    res.send(savedSellTicket);
-  } catch (e) {
-    res.status(500).send(e);
-  }
 });
 
 module.exports = router;

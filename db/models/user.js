@@ -7,6 +7,9 @@ const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const querystring = require('querystring');
 
+// Custom imports
+const {getAge} = require('../../utils/modelUtils');
+
 // Define User Schema
 const UserSchema = new mongoose.Schema({
     email: {
@@ -116,9 +119,9 @@ const UserSchema = new mongoose.Schema({
         default: 0
     },
     initialCreditRating: {
-      type: String,
-      required: true,
-      default: 'B'
+        type: String,
+        required: true,
+        default: 'B'
     },
     currentCreditRating: {
         type: String
@@ -358,17 +361,6 @@ UserSchema.statics.findByCredentials = function (email, password) {
             });
         }
     });
-};
-
-// Util: Get Age
-const getAge = (dateOfBirth) => {
-    const today = new Date();
-    let age = today.getFullYear() - dateOfBirth.getFullYear();
-    const m = today.getMonth() - dateOfBirth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
-        age--;
-    }
-    return age;
 };
 
 // Create model and export
