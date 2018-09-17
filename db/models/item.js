@@ -85,7 +85,7 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values
-ItemSchema.methods.calculateOfferedValues = async function(user) {
+ItemSchema.methods.calculateOfferedValues = function() {
     try {
         const item = this;
 

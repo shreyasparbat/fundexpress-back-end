@@ -72,7 +72,7 @@ router.post('/add', async (req, res) => {
     try {
         // Get request body
         const body = _.pick(req.body, [
-            'itemID',
+            'itemId',
             'name',
             'type',
             'material',

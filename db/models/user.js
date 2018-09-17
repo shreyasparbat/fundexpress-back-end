@@ -299,7 +299,7 @@ UserSchema.methods.updateCreditRating = async function (deal) {
 
     // Update credit rating
     if (ltvPercentage >= 0.95) {
-        const creditRating = 'A'; 
+        const creditRating = 'A';
     } else if (ltvPercentage >= 0.9) {
         const creditRating = 'B';
     } else if (ltvPercentage >= 0.85) {

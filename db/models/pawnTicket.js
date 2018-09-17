@@ -4,11 +4,11 @@ const _ = require('lodash');
 
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
-    userID: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    itemID: {
+    itemId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
@@ -39,6 +39,10 @@ const pawnTicketSchema = new mongoose.Schema({
     expiryStatus: {
         type: Boolean,
         default: false
+    },
+    gracePeriod: {
+        type: Boolean,
+        defualt: true
     }
 });
 
