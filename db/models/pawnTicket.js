@@ -35,6 +35,10 @@ const pawnTicketSchema = new mongoose.Schema({
     approvalStatus: {
         type: Boolean,
         required: true
+    },
+    expiryStatus: {
+        type: Boolean,
+        default: false
     }
 });
 
