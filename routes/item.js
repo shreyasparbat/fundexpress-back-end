@@ -72,32 +72,32 @@ router.post('/add', async (req, res) => {
         ]);
 
         // Find item of that objectID
-        const item = Item.findOne({_id: new ObjectID(body.itemID)});
-        if (!item) throw new Error('No item found');
+        const item = Item.findById(body.itemID);
+        if (!item) throw new Error('No item found');        
 
         // Get percentage of gold per gram for given purity
         let goldContentPercentage = null;
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
-            if (purity === '24k/999') {
-                goldContentPercentage = 0.985
+            if (body.purity === '24k/999') {
+                goldContentPercentage = 0.985;
             }
-            if (purity === '22K/916') {
-                goldContentPercentage = 0.9
+            if (body.purity === '22K/916') {
+                goldContentPercentage = 0.9;
             }
-            if (purity === '20K/835') {
-                goldContentPercentage = 0.835
+            if (body.purity === '20K/835') {
+                goldContentPercentage = 0.835;
             }
-            if (purity === '18K/750 (Yellow gold)') {
-                goldContentPercentage = 0.7
+            if (body.purity === '18K/750 (Yellow gold)') {
+                goldContentPercentage = 0.7;
             }
-            if (purity === '18K/750 (White gold)') {
-                goldContentPercentage = 0.65
+            if (body.purity === '18K/750 (White gold)') {
+                goldContentPercentage = 0.65;
             }
-            if (purity === '14K/585') {
-                goldContentPercentage = 0.5
+            if (body.purity === '14K/585') {
+                goldContentPercentage = 0.5;
             }
-            if (purity === '9K/375') {
-                goldContentPercentage = 0.3
+            if (body.purity === '9K/375') {
+                goldContentPercentage = 0.3;
             }
         };
 
@@ -175,7 +175,7 @@ router.post('/sell', async (req, res) => {
             'userId': new Object (req.user._id),
             'itemId': body.itemId,
             'ticketNumber': 'NA',
-            'dateCreated': new Date (1111-01-01),
+            'dateCreated': new Date ('1111-01-01'),
             'offeredValue': -1,
             'approvalStatus': false
         }

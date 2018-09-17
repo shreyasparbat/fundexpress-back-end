@@ -75,6 +75,7 @@ ItemSchema.methods.toJSON = function () {
         'material',
         'brand',
         'purity',
+        'goldContentPercentage',
         'weight',
         'condition',
         'dateOfPurchase',
