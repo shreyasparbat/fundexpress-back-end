@@ -137,6 +137,9 @@ const UserSchema = new mongoose.Schema({
     ethHash: {
         type: 'String',
         default: '0000000000'
+    },
+    expoPushToken: {
+        type: String
     }
 });
 
