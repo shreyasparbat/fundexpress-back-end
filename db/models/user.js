@@ -8,7 +8,7 @@ const axios = require('axios');
 const querystring = require('querystring');
 
 // Custom imports
-const {getAge} = require('../../utils/modelUtils');
+const {getAge} = require('../../utils/otherUtils');
 
 // Define User Schema
 const UserSchema = new mongoose.Schema({
