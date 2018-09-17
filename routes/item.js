@@ -2,26 +2,14 @@
 const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
-const {
-    ObjectID
-} = require('mongodb');
+const {ObjectID} = require('mongodb');
 
 // Custom imports
-const {
-    Item
-} = require('../db/models/item');
-const {
-    PawnTicket
-} = require('../db/models/pawnTicket');
-const {
-    SellTicket
-} = require('../db/models/sellTicket');
-const {
-    authenticate
-} = require('../middleware/authenticate');
-const {
-    uploadItem
-} = require('../utils/digitalOceanSpaces');
+const {Item} = require('../db/models/item');
+const {PawnTicket} = require('../db/models/pawnTicket');
+const {SellTicket} = require('../db/models/sellTicket');
+const {authenticate} = require('../middleware/authenticate');
+const {uploadItem} = require('../utils/digitalOceanSpaces');
 
 // Add middleware
 router.use(authenticate);
@@ -41,7 +29,7 @@ router.post('/uploadImage', async (req, res) => {
         // Save the item
         let type = req.get('type');
         let itemObject = {
-            'userId': new Object(req.user._id),
+            'userID': new Object(req.user._id),
             type
         }
         let item = new Item(itemObject);
@@ -72,7 +60,7 @@ router.post('/add', async (req, res) => {
     try {
         // Get request body
         const body = _.pick(req.body, [
-            'itemId',
+            'itemID',
             'name',
             'type',
             'material',
@@ -80,7 +68,8 @@ router.post('/add', async (req, res) => {
             'purity',
             'weight',
             'condition',
-            'dateOfPurchase'
+            'dateOfPurchase',
+            'otherComments'
         ]);
 
         // Get percentage of gold per gram for given purity
@@ -123,6 +112,7 @@ router.post('/add', async (req, res) => {
             goldContentPercentage,
             weight: body.weight,
             condition: body.condition,
+            otherComments: body.otherComments,
             dateOfPurchase: new Date(body.dateOfPurchase)
         })
         await item.save();
@@ -146,14 +136,14 @@ router.post('/add', async (req, res) => {
 router.post('/pawn', async (req, res) => {
     try {
         let body = _.pick(req.body, [
-            'itemId',
+            'itemID',
             'specifiedValue'
         ]);
 
         // Create Pawn ticket
         let today = new Date();
         let expiryDate = today;
-
+        
         let pawnTicketObject = {
             'userId': new ObjectID(req.user._id),
             'itemId': body.itemId,

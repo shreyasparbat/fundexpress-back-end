@@ -8,7 +8,7 @@ const {getGoldPrice} = require('../../utils/priceScrapper');
 
 // Define Item Schema
 const ItemSchema = new mongoose.Schema({
-    userId: {
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
@@ -85,7 +85,7 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values
-ItemSchema.methods.calculateOfferedValues = function() {
+ItemSchema.methods.calculateOfferedValues = function(user) {
     try {
         const item = this;
 
