@@ -24,6 +24,10 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    gracePeriodEndDate: {
+        type: Date,
+        required: true
+    },
     interestPayable: {
         type: Number,
         required: true

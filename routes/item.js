@@ -141,15 +141,13 @@ router.post('/pawn', async (req, res) => {
         ]);
 
         // Create Pawn ticket
-        let today = new Date();
-        let expiryDate = today;
-        
+        let today = new Date();        
         let pawnTicketObject = {
             'userId': new ObjectID(req.user._id),
             'itemId': body.itemId,
             'ticketNumber': 'NA',
             'dateCreated': today,
-            expiryDate,
+            'expiryDate': new Date(today.setMonth(today.getMonth() + 6)),
             'interestPayable': -1,
             'offeredValue': -1,
             'approvalStatus': false
