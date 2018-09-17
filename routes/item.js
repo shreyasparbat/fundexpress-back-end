@@ -60,7 +60,7 @@ router.post('/add', async (req, res) => {
     try {
         // Get request body
         const body = _.pick(req.body, [
-            'itemID',
+            'itemId',
             'name',
             'type',
             'material',
@@ -143,8 +143,8 @@ router.post('/pawn', async (req, res) => {
         // Create Pawn ticket
         let today = new Date ();
         let pawnTicketObject = {
-            'userId': new ObjectID (req.user._id),
-            'itemId': body.itemId,
+            'userId': new Object (req.user._id),
+            'itemId': new ObjectId (req.body.itemId),
             'ticketNumber': 'NA',
             'dateCreated': today,
             'expiryDate': 'NA',
