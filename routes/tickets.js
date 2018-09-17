@@ -3,16 +3,60 @@ const express = require('express');
 const router = express.Router();
 
 // Custom imports
-const PawnTicket = require('../db/models/pawnTicket');
-const SellTicket = require('../db/models/sellTicket');
+const {PawnTicket} = require('../db/models/pawnTicket');
+const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
 
 // Add middleware
 router.use(authenticate);
 
 // POST: get user's history
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
+    try {
+        // Get current pawn tickets
+        let currentPawnTickets = await PawnTicket.find({
+            userID: req.user._id,
+            approved: true,
+            closed: false
+        });
 
+        // Get pawn tickets pending approval
+        let pawnTicketsPendingApproval = await PawnTicket.find({
+            userID: req.user._id,
+            approved: false,
+            closed: false
+        });
+
+        // Get expired pawn tickets
+        let expiredPawnTickets = await PawnTicket.find({
+            userID: req.user._id,
+            approved: true,
+            gracePeriodEnded: true
+        });
+
+        // Get sell tickets pending approval
+        let sellTicketPendingApproval = await SellTicket.find({
+            userID: req.user._id,
+            approved: false
+        });
+
+        // get approved sell tickets
+        let approvedSellTickets = await SellTicket.find({
+            userID: req.user._id,
+            approved: true
+        });
+
+        // Send back result
+        res.send({
+            currentPawnTickets,
+            pawnTicketsPendingApproval,
+            expiredPawnTickets,
+            sellTicketPendingApproval,
+            approvedSellTickets
+        })
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }    
 });
 
 

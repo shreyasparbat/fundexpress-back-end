@@ -44,7 +44,7 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    gracePeriod: {
+    gracePeriodEnded: {
         type: Boolean,
         defualt: true
     }
