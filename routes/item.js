@@ -162,7 +162,7 @@ router.post('/pawn', async (req, res) => {
         // Create Pawn ticket
         let pawnTicketObject = {
             'userID': req.user._id,
-            'itemID': body.itemID,
+            'itemID': item._id,
             'dateCreated': new Date(),
             'expiryDate': addMonths(new Date(), 6),
             'gracePeriodEndDate': addMonths(new Date(), 7),
@@ -187,23 +187,34 @@ router.post('/pawn', async (req, res) => {
 router.post('/sell', async (req, res) => {
     try {
         let body = _.pick(req.body, [
-            'itemId'
+            'itemID'
         ]);
-        let sellTicketObject = {
-            'userId': new Object(req.user._id),
-            'itemId': body.itemId,
-            'ticketNumber': 'NA',
-            'dateCreated': new Date('1111-01-01'),
-            'offeredValue': -1,
-            'approvalStatus': false
+
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) {
+            throw new Error('No item found');
         }
 
+        // Check whether different user is trying to pawn the item
+        if (item.userID.toString() !== req.user._id.toString()) {
+            throw new Error('Item was added by a different user');
+        }
+
+        // Create sell ticket
+        let sellTicketObject = {
+            'userID': req.user._id,
+            'itemID': item._id,
+            'dateCreated': new Date(),
+            'value': item.sellOfferedValue,
+            'approved': false
+        }
         let sellTicket = new SellTicket(sellTicketObject);
 
-        // save sell ticket
-        let savedSellTicket = await sellTicket.save();
+        // Save sell ticket
+        await sellTicket.save();
 
-        res.send(savedSellTicket);
+        res.send(sellTicket);
     } catch (e) {
         res.status(500).send(e.toString());
     }
