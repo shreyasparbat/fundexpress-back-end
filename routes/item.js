@@ -10,6 +10,7 @@ const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
+const {addMonths} = require('../utils/otherUtils');
 
 // Add middleware
 router.use(authenticate);
@@ -100,7 +101,9 @@ router.post('/add', async (req, res) => {
 
         // Find item of that objectID
         const item = await Item.findById(new ObjectID(body.itemID));
-        if (!item) throw new Error('No item found');
+        if (!item) {
+            throw new Error('No item found');
+        }
 
         // Update item
         item.set({
@@ -140,25 +143,40 @@ router.post('/pawn', async (req, res) => {
             'specifiedValue'
         ]);
 
-        // Create Pawn ticket
-        let today = new Date();        
-        let pawnTicketObject = {
-            'userId': new ObjectID(req.user._id),
-            'itemId': body.itemId,
-            'ticketNumber': 'NA',
-            'dateCreated': today,
-            'expiryDate': new Date(today.setMonth(today.getMonth() + 6)),
-            'interestPayable': -1,
-            'offeredValue': -1,
-            'approvalStatus': false
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) {
+            throw new Error('No item found');
         }
 
+        // Check whether specified value is greater than pawn value
+        if (body.specifiedValue >= item.pawnOfferedValue) {
+            throw new Error('Specified value is greater than offered value');
+        }
+
+        // Check whether different user is trying to pawn the item
+        if (item.userID.toString() !== req.user._id.toString()) {
+            throw new Error('Item was added by a different user');
+        } 
+
+        // Create Pawn ticket
+        let pawnTicketObject = {
+            'userID': req.user._id,
+            'itemID': body.itemID,
+            'dateCreated': new Date(),
+            'expiryDate': addMonths(new Date(), 6),
+            'gracePeriodEndDate': addMonths(new Date(), 7),
+            'interestPayable': body.specifiedValue * 0.5,
+            'value': body.specifiedValue,
+            'approved': false,
+            'closed': false
+        }
         let pawnTicket = new PawnTicket(pawnTicketObject);
 
-        //save pawn ticket
-        let savedPawnTicket = await pawnTicket.save();
+        // Save pawn ticket
+        await pawnTicket.save();
 
-        res.send(savedPawnTicket);
+        res.send(pawnTicket);
     } catch (e) {
         console.log(e);
         res.status(500).send(e.toString());

@@ -8,6 +8,11 @@ const getAge = (dateOfBirth) => {
     return age;
 };
 
+const addMonths = (date, numberOfMonths) => {
+    return new Date(date.setMonth(date.getMonth() + numberOfMonths));
+};
+
 module.exports = {
-    getAge
+    getAge,
+    addMonths
 };

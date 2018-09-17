@@ -12,19 +12,15 @@ const sellTicketSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    ticketNumber: {
-        type: String,
-        required: true
-    },
     dateCreated: {
         type: Date,
         required: true
     },
-    offeredValue: {
+    value: {
         type: Number,
         required: true
     },
-    approvalStatus: {
+    approved: {
         type: Boolean,
         required: true
     }
@@ -34,14 +30,15 @@ const sellTicketSchema = new mongoose.Schema({
 sellTicketSchema.methods.toJSON = function () {
     const sellTicket = this;
     const sellTicketObject = sellTicket.toObject();
-    return _.pick(sellTicketObject, [
-        'userId',
-        'itemId',
-        'ticketNumber',
+    let toReturn = _.pick(sellTicketObject, [
+        'userID',
+        'itemID',
         'dateCreated',
         'offeredValue',
-        'approvalStatus'
+        'approved'
     ])
+    toReturn.ticketID = sellTicketObject._id;
+    return toReturn;
 };
 
 // Create model and export
