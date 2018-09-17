@@ -4,16 +4,12 @@ const _ = require('lodash');
 
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
-    userId: {
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    itemId: {
+    itemID: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
-    ticketNumber: {
-        type: String,
         required: true
     },
     dateCreated: {
@@ -24,35 +20,51 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    gracePeriodEndDate: {
+        type: Date,
+        required: true
+    },
     interestPayable: {
         type: Number,
         required: true
     },
-    offeredValue: {
+    value: {
         type: Number,
         required: true
     },
-    specifiedValue: {
-        type: Number,
-        required: true
-    },
-    approvalStatus: {
+    approved: {
         type: Boolean,
         required: true
+    },
+    closed: {
+        type: Boolean,
+        required: true
+    },
+    expired: {
+        type: Boolean,
+        default: false
+    },
+    gracePeriod: {
+        type: Boolean,
+        defualt: true
     }
 });
 
-// Override toJson (for returning pawnTicket profile)
+// Override toJson (for returning pawnTicket)
 pawnTicketSchema.methods.toJSON = function () {
     const pawnTicket = this;
     const pawnTicketObject = pawnTicket.toObject();
-    return _.pick(pawnTicketObject, [
-        'userId',
-        'itemId',
-        'ticketNumber',
+    let toReturn = _.pick(pawnTicketObject, [
+        'userID',
+        'itemID',
         'dateCreated',
-        'offeredValue'
+        'expiryDate',
+        'interestPayable',
+        'value',
+        'approved'
     ])
+    toReturn.ticketID = pawnTicketObject._id;
+    return toReturn;
 };
 
 // Create model and export

@@ -7,6 +7,9 @@ const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const querystring = require('querystring');
 
+// Custom imports
+const {getAge} = require('../../utils/otherUtils');
+
 // Define User Schema
 const UserSchema = new mongoose.Schema({
     email: {
@@ -116,9 +119,9 @@ const UserSchema = new mongoose.Schema({
         default: 0
     },
     initialCreditRating: {
-      type: String,
-      required: true,
-      default: 'B'
+        type: String,
+        required: true,
+        default: 'B'
     },
     currentCreditRating: {
         type: String
@@ -134,6 +137,9 @@ const UserSchema = new mongoose.Schema({
     ethHash: {
         type: 'String',
         default: '0000000000'
+    },
+    expoPushToken: {
+        type: String
     }
 });
 
@@ -296,7 +302,7 @@ UserSchema.methods.updateCreditRating = async function (deal) {
 
     // Update credit rating
     if (ltvPercentage >= 0.95) {
-        const creditRating = 'A'; 
+        const creditRating = 'A';
     } else if (ltvPercentage >= 0.9) {
         const creditRating = 'B';
     } else if (ltvPercentage >= 0.85) {
@@ -358,17 +364,6 @@ UserSchema.statics.findByCredentials = function (email, password) {
             });
         }
     });
-};
-
-// Util: Get Age
-const getAge = (dateOfBirth) => {
-    const today = new Date();
-    let age = today.getFullYear() - dateOfBirth.getFullYear();
-    const m = today.getMonth() - dateOfBirth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
-        age--;
-    }
-    return age;
 };
 
 // Create model and export

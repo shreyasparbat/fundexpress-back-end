@@ -7,6 +7,7 @@ const router = express.Router();
 const {User} = require('../db/models/user');
 const {authenticate} = require('../middleware/authenticate');
 const {retrieveIcImage} = require('../utils/digitalOceanSpaces');
+const {uploadIC} = require('../utils/digitalOceanSpaces');
 
 // Add middleware
 router.use(authenticate);
@@ -23,7 +24,7 @@ router.delete('/logout', (req, res) => {
             msg: 'Log out successful'
         })
     }).catch((e) => {
-        res.status(400).send(e);
+        res.status(400).send(e.toString());
     })
 });
 
@@ -33,7 +34,7 @@ router.post('/icImage', (req, res) => {
     retrieveIcImage(icNumber).then((image) => {
         res.send({image});
     }).catch((error) => {
-        res.status(500).send(error)
+        res.status(500).send(error.toString())
     })
 });
 
@@ -59,15 +60,26 @@ router.post('/edit', (req, res) => {
     User.findByIdAndUpdate(_id, {
         $set: body
     }, (error) => {
-        if (error) res.status(500).send(error);
+        if (error) res.status(500).send(error.toString());
 
         // Send back updated user (the user provided to this callback is the old one)
         User.findById(_id).then((user) => {
         res.send(user);
         }).catch((error) => {
-            res.status(500).send(error);
+            res.status(500).send(error.toString());
         });
     });
 });
+
+router.post('/uploadIc', (req, res) => {
+    uploadIC(req, res, function (e) {
+        if (e) {
+            console.log(e);
+            return
+        } else {
+            console.log('successfully uploaded');
+        }
+    });
+})
 
 module.exports = router;
