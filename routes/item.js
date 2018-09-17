@@ -83,10 +83,6 @@ router.post('/add', async (req, res) => {
             'dateOfPurchase'
         ]);
 
-        // Find item of that objectID
-        const item = await Item.findById(new ObjectID(body.itemID));
-        if (!item) throw new Error('No item found');
-
         // Get percentage of gold per gram for given purity
         let goldContentPercentage = undefined;
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
@@ -112,6 +108,10 @@ router.post('/add', async (req, res) => {
                 goldContentPercentage = 0.3;
             }
         };
+
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) throw new Error('No item found');
 
         // Update item
         item.set({
@@ -150,16 +150,16 @@ router.post('/pawn', async (req, res) => {
             'specifiedValue'
         ]);
 
-        // Get Item
-
         // Create Pawn ticket
         let today = new Date();
+        let expiryDate = today;
+
         let pawnTicketObject = {
             'userId': new ObjectID(req.user._id),
             'itemId': body.itemId,
             'ticketNumber': 'NA',
             'dateCreated': today,
-            'expiryDate': 'NA',
+            expiryDate,
             'interestPayable': -1,
             'offeredValue': -1,
             'approvalStatus': false
