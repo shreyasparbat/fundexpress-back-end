@@ -45,12 +45,12 @@ sellTicketSchema.methods.toJSON = async function () {
         ])
         toReturn.ticketID = sellTicketObject._id;
     
-        // Get Item information
-        const item = await Item.findById(sellTicketObject._id);
-        if (!item) {
-            throw new Error('No item found');
-        }
-        toReturn.item = item;
+        // // Get Item information
+        // const item = await Item.findById(sellTicketObject._id);
+        // if (!item) {
+        //     throw new Error('No item found');
+        // }
+        // toReturn.item = item;
     
         // Return
         return toReturn;
