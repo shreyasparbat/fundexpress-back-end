@@ -21,7 +21,7 @@ router.post('/uploadImage', async (req, res) => {
     uploadItem(req, res, function (e) {
         if (e) {
             console.log(e)
-            return
+            throw(e);
         } else {
             console.log('successfully uploaded');
         }

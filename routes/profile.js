@@ -75,7 +75,7 @@ router.post('/uploadIc', (req, res) => {
     uploadIC(req, res, function (e) {
         if (e) {
             console.log(e);
-            return
+            throw(e);
         } else {
             console.log('successfully uploaded');
         }
