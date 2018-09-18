@@ -2,6 +2,9 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
+// Custom import
+const {Item} = require('./item');
+
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
     userID: {
@@ -47,20 +50,35 @@ const pawnTicketSchema = new mongoose.Schema({
 });
 
 // Override toJson (for returning pawnTicket)
-pawnTicketSchema.methods.toJSON = function () {
-    const pawnTicket = this;
-    const pawnTicketObject = pawnTicket.toObject();
-    let toReturn = _.pick(pawnTicketObject, [
-        'userID',
-        'itemID',
-        'dateCreated',
-        'expiryDate',
-        'interestPayable',
-        'value',
-        'approved'
-    ])
-    toReturn.ticketID = pawnTicketObject._id;
-    return toReturn;
+pawnTicketSchema.methods.toJSON = async function () {
+    try {
+        const pawnTicket = this;
+
+        // Get Pawn ticket information
+        const pawnTicketObject = pawnTicket.toObject();
+        let toReturn = _.pick(pawnTicketObject, [
+            'userID',
+            'itemID',
+            'dateCreated',
+            'expiryDate',
+            'interestPayable',
+            'value',
+            'approved'
+        ])
+        toReturn.ticketID = pawnTicketObject._id;
+
+        // // Get Item information
+        // const item = await Item.findById(pawnTicketObject._id);
+        // if (!item) {
+        //     throw new Error('No item found');
+        // }
+        // toReturn.item = item;
+
+        // Return
+        return toReturn;
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 pawnTicketSchema.methods.findExpiringTicket = function () {
