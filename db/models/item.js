@@ -19,13 +19,11 @@ const ItemSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        required: true,
-        minlength: 6
+        required: true
     },
     material: {
         type: String,
-        required: false,
-        minlength: 1
+        required: false
     },
     condition:{
         type: String,
