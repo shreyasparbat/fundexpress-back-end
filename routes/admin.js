@@ -119,3 +119,5 @@ router.post('/login', async (req, res) => {
         res.status(400).send(error.toString());
     }
 });
+
+module.exports = router;
