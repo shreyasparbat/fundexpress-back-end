@@ -164,9 +164,9 @@ router.post('/pawn', async (req, res) => {
         let pawnTicketObject = {
             'userID': req.user._id,
             'itemID': item._id,
-            'dateCreated': new Date(),
-            'expiryDate': addMonths(new Date(), 6),
-            'gracePeriodEndDate': addMonths(new Date(), 7),
+            'dateCreated': new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()),
+            'expiryDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 6),
+            'gracePeriodEndDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 7),
             'interestPayable': body.specifiedValue * 0.5,
             'value': body.specifiedValue,
             'approved': false,

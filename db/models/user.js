@@ -183,7 +183,8 @@ UserSchema.methods.toJSON = function () {
         'noOfC',
         'noOfL',
         'noOfD',
-        'ethHash'
+        'ethHash',
+        'expoPushToken'
     ])
 };
 

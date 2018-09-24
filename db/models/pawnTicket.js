@@ -46,10 +46,6 @@ const pawnTicketSchema = new mongoose.Schema({
     expired: {
         type: Boolean,
         default: false
-    },
-    gracePeriodEnded: {
-        type: Boolean,
-        defualt: true
     }
 });
 
@@ -83,6 +79,54 @@ pawnTicketSchema.methods.toJSON = async function () {
     } catch (error) {
         console.log(error);
     }
+};
+
+pawnTicketSchema.methods.findExpiringTicket = function () {
+    const pawnTicket = this;
+    const pawnTicketObject = pawnTicket.toObject();
+    var daysPrior = 7;
+    var oneWeekBefore = new Date().setDate(pawnTicketObject.expiryDate - daysPrior);
+    var today = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
+
+    if (today.getTime() === oneWeekBefore.getTime()) {
+        return true;
+    }
+    return false;
+};
+
+pawnTicketSchema.methods.findExpiredTicket = function() {
+    const pawnTicket = this;
+    const pawnTicketObject = pawnTicket.toObject();
+    var today = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
+
+    if (today.getTime() === pawnTicketObject.expiryDate.getTime()) {
+        pawnTicketObject.expired = true;
+    }
+    return pawnTicketObject.expired;
+};
+
+pawnTicketSchema.methods.findExpiringGracePeriod = function () {
+    const pawnTicket = this;
+    const pawnTicketObject = pawnTicket.toObject();
+    var daysPrior = 7;
+    var oneWeekBefore = new Date().setDate(pawnTicketObject.gracePeriodEndDate - daysPrior);
+    var today = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
+
+    if (today.getTime() === oneWeekBefore.getTime()) {
+        return true;
+    }
+    return false;
+};
+
+pawnTicketSchema.methods.findClosedTicket = function() {
+    const pawnTicket = this;
+    const pawnTicketObject = pawnTicket.toObject();
+    var today = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
+
+    if (today.getTime() === pawnTicketObject.gracePeriodEndDate.getTime()) {
+        pawnTicketObject.closed = true;
+    }
+    return pawnTicketObject.closed;
 };
 
 // Create model and export
