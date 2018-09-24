@@ -101,3 +101,21 @@ router.post('/rejectSellTicket', async (req, res) => {
         res.status(500).send(error.toString());
     }
 });
+
+// POST: Admin login
+router.post('/login', async (req, res) => {
+    try {
+        let body = _.pick(req.body, ['email', 'password']);
+
+        // Find that admin
+        const admin = await Admin.findByCredentials(body.email, body.password);
+
+        // Generate and return token
+        const token = await admin.generateAuthToken();
+        res.header('x-auth', token).send({
+            msg: 'success'
+        })
+    } catch (error) {
+        res.status(400).send(error.toString());
+    }
+});
