@@ -26,7 +26,8 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minlength: 6,
+        maxlength: 100
     },
     tokens: [{
         access: {
@@ -188,13 +189,33 @@ UserSchema.methods.toJSON = function () {
     ])
 };
 
+// Find user by credentials
+UserSchema.statics.findByCredentials = async function (email, password) {
+    // Get user with that email
+    const user = await User.findOne({email});
+
+    // Check if user exists
+    if (!user) {
+        // Return reject promise
+        throw new Error('User does not exist');
+    } else {
+        // Compare passwords
+        const result = await bcrypt.compare(password, user.password);
+        if (result) {
+            return user;
+        } else {
+            throw new Error('Passwords do not match');
+        }
+    }
+};
+
 // Generate Authentication tokens
 UserSchema.methods.generateAuthToken = function () {
     // Create token
     const user = this;
 
     // Check if token already exists
-    if (user.tokens) {
+    if (user.tokens.lenght === 0) {
         throw new Error('User already logged in');
     }
     const access = 'auth'; // to specify the type of token
@@ -347,29 +368,6 @@ UserSchema.statics.findByToken = function (token) {
         'tokens.token': token,
         'tokens.access': 'auth'
     })
-};
-
-// Find user by credentials
-UserSchema.statics.findByCredentials = function (email, password) {
-    // Get user with that email
-    return User.findOne({email}).then((user) => {
-        // Check if user exists
-        if (!user) {
-            // Return reject promise
-            return Promise.reject('User does not exist');
-        } else {
-            return new Promise((resolve, reject) => {
-                // Check if password is correct
-                bcrypt.compare(password, user.password, (err, result) => {
-                    if (result) {
-                        resolve(user);
-                    } else {
-                        reject('Passwords do not match');
-                    }
-                });
-            });
-        }
-    });
 };
 
 // Create model and export

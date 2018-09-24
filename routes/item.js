@@ -75,30 +75,45 @@ router.post('/add', async (req, res) => {
         ]);
 
         // Get percentage of gold per gram for given purity
-        let goldContentPercentage = undefined;
+        let meltingPercentage = undefined;
+        let sellPercentage = undefined;
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
+            // Calculate goldContentPerc
             if (body.purity === '24k/999') {
-                goldContentPercentage = 0.985;
+                meltingPercentage = 0.985;
+                sellPercentage = 0.97;
             }
             if (body.purity === '22K/916') {
-                goldContentPercentage = 0.9;
+                meltingPercentage = 0.9;
+                sellPercentage = 0.88;
             }
             if (body.purity === '20K/835') {
-                goldContentPercentage = 0.835;
+                meltingPercentage = 0.835;
+                sellPercentage = 0.81;
             }
             if (body.purity === '18K/750 (Yellow gold)') {
-                goldContentPercentage = 0.7;
+                meltingPercentage = 0.7;
+                sellPercentage = 0.7;
             }
             if (body.purity === '18K/750 (White gold)') {
-                goldContentPercentage = 0.65;
+                meltingPercentage = 0.65;
+                sellPercentage = 0.7;
             }
             if (body.purity === '14K/585') {
-                goldContentPercentage = 0.5;
+                meltingPercentage = 0.5;
+                sellPercentage = 0.5;
             }
             if (body.purity === '9K/375') {
-                goldContentPercentage = 0.3;
+                meltingPercentage = 0.3;
+                sellPercentage = 0.27;
             }
-        };
+
+            // Calculate pawn and sell offered value (Gold products only)
+            await item.calculateGoldOfferedValues(req.user);
+        } else {
+            // Calculate pawn and sell offered value (other products)
+            await item.calculateOtherOfferedValues(req.user);
+        }
 
         // Find item of that objectID
         const item = await Item.findById(new ObjectID(body.itemID));
@@ -113,16 +128,14 @@ router.post('/add', async (req, res) => {
             material: body.material,
             brand: body.brand,
             purity: body.purity,
-            goldContentPercentage,
+            meltingPercentage,
+            sellPercentage,
             weight: body.weight,
             condition: body.condition,
             otherComments: body.otherComments,
             dateOfPurchase: new Date(body.dateOfPurchase)
         })
         await item.save();
-
-        // Calculate pawn and sell offered value
-        await item.calculateOfferedValues(req.user);
 
         // Return objectID and offered values
         res.send({

@@ -37,7 +37,11 @@ const ItemSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    goldContentPercentage: {
+    meltingPercentage: {
+        type: Number,
+        required: false
+    },
+    sellPercentage: {
         type: Number,
         required: false
     },
@@ -82,28 +86,38 @@ ItemSchema.methods.toJSON = function () {
     ])
 };
 
-// Calculate pawn and sell offered values
-ItemSchema.methods.calculateOfferedValues = function(user) {
+// Calculate pawn and sell offered values (Gold products only)
+ItemSchema.methods.calculateGoldOfferedValues = function(user) {
     try {
         const item = this;
 
         // Get various parameters for formula
         const goldValuePerGram = getGoldPrice();
         const ltvPercentage = user.currentLtvPercentage;
-        const meltingPrice = item.goldContentPercentage * goldValuePerGram;
 
         // Calulate and save final values
-        let pawnOfferedValue = ltvPercentage * meltingPrice * item.weight;
+        let pawnOfferedValue = ltvPercentage * user.meltingPercentage * goldValuePerGram * item.weight;
+        let sellOfferedValue = user.sellPercentage * goldValuePerGram * item.weight;
         item.set({
             pawnOfferedValue,
-            sellOfferedValue: pawnOfferedValue + item.weight * 1.5
+            sellOfferedValue
         });
 
         return item.save()
     } catch (error) {
-        throw error
+        throw error;
     }
 };
+
+// Calculate pawn and sell offered values (other products)
+ItemSchema.methods.calculateOtherOfferedValues = function(user) {
+    // Formula not implemented as of now
+    const item = this;
+    item.set({
+        pawnOfferedValue: -1,
+        sellOfferedValue: -1
+    });
+}
 
 ItemSchema.methods.runImageRecognition = function(type) {
     const item = this;
