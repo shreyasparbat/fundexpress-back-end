@@ -215,10 +215,12 @@ UserSchema.methods.generateAuthToken = function () {
     const user = this;
 
     // Check if token already exists
-    if (user.tokens.lenght === 0) {
+    if (user.tokens['0'] !== undefined) {
         throw new Error('User already logged in');
     }
-    const access = 'auth'; // to specify the type of token
+
+    // Create token
+    const access = 'auth';
     const token = jwt.sign({
         _id: user._id,
         access
