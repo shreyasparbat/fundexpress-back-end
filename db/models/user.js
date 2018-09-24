@@ -191,6 +191,11 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
     // Create token
     const user = this;
+
+    // Check if token already exists
+    if (user.tokens) {
+        throw new Error('User already logged in');
+    }
     const access = 'auth'; // to specify the type of token
     const token = jwt.sign({
         _id: user._id,
