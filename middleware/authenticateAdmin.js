@@ -1,7 +1,7 @@
 const {Admin} = require('../db/models/admin');
 
 
-const authenticate = (req, res, next) => {
+const authenticateAdmin = (req, res, next) => {
     const token = req.header('x-auth');
 
     // Find admin with that token
@@ -23,5 +23,5 @@ const authenticate = (req, res, next) => {
 };
 
 module.exports = {
-    authenticate
+    authenticateAdmin
 };
