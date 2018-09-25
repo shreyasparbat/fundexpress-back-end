@@ -132,4 +132,24 @@ router.post('/rejectSellTicket', async (req, res) => {
     }
 });
 
+// POST: Get all information about a user
+router.post('/getUser', async (req, res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.toString());
+    }
+});
+
+// POST: Update all information of the user
+router.post('/updateUser', async (req, res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.toString());
+    }
+});
+
 module.exports = router;
