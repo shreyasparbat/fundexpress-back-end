@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 
 // Custom imports
 const {User} = require('../db/models/user');
+const {Admin} = require('../db/models/admin');
 
 // POST: add user (On boarding)
 router.post('/onboard', async (req, res) => {
