@@ -156,19 +156,28 @@ router.post('/updateUser', async (req, res) => {
 
         // Update the user
         const _id = new ObjectID(userID);
-        User.findByIdAndUpdate(_id, {
+        await User.findByIdAndUpdate(_id, {
             $set: body
-        }, (error) => {
-            if (error) throw error;
-
-            // Send back updated user (the user provided to this callback is the old one)
-            const updatedUser = await User.findById(_id);
-            res.send(updatedUser);
         });
+
+        // Send back updated user (the user provided to this callback is the old one)
+        const updatedUser = await User.findById(_id);
+        res.send(updatedUser);
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
     }
+});
+
+// DELETE: log admin out
+router.delete('/logout', (req, res) => {
+    req.admin.removeToken(req.token).then(() => {
+        res.send({
+            msg: 'Log out successful'
+        })
+    }).catch((e) => {
+        res.status(400).send(e.toString());
+    })
 });
 
 module.exports = router;

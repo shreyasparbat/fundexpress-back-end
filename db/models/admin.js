@@ -38,25 +38,6 @@ const AdminSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     }
-})
-
-// Add password hashing middleware
-AdminSchema.pre('save', function (next) {
-    const admin = this;
-
-    // Check if password has already been hashed
-    if (!admin.isModified('password')) {
-        // Generate salt and hash password
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(admin.password, salt, (err, hash) => {
-                // Update document
-                admin.password = hash;
-                next();
-            });
-        });
-    } else {
-        next();
-    }
 });
 
 // Override toJson (for returning admin profile)
@@ -73,7 +54,14 @@ AdminSchema.methods.toJSON = function () {
 AdminSchema.methods.generateAuthToken = function () {
     // Create token
     const admin = this;
-    const access = 'auth'; // to specify the type of token
+
+    // Check if token already exists
+    if (admin.tokens['0'] !== undefined) {
+        throw new Error('User already logged in');
+    }
+
+    // Create token
+    const access = 'auth';
     const token = jwt.sign({
         _id: admin._id,
         access
@@ -84,7 +72,6 @@ AdminSchema.methods.generateAuthToken = function () {
     return admin.save().then(() => {
         return token;
     })
-};
 
 // Delete token (log out admin)
 AdminSchema.methods.removeToken = function (token) {
