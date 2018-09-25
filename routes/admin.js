@@ -1,15 +1,36 @@
 // Library imports
 const express = require('express');
 const router = express.Router();
+const _ = require('lodash');
 
 // Custom imports
+const {Admin} = require('../db/models/admin');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
-const {authenticate} = require('../middleware/authenticate');
+const {authenticateAdmin} = require('../middleware/authenticateAdmin');
 
 // Add middleware
-router.use(authenticate);
+router.use(authenticateAdmin);
 
+// POST: Admin login
+router.post('/login', async (req, res) => {
+    try {
+        let body = _.pick(req.body, ['email', 'password']);
+
+        // Find that admin
+        const admin = await Admin.findByCredentials(body.email, body.password);
+
+        // Generate and return token
+        const token = await admin.generateAuthToken();
+        res.header('x-auth', token).send({
+            msg: 'success'
+        })
+    } catch (error) {
+        res.status(400).send(error.toString());
+    }
+});
+
+// POST: Approve a pawn ticket
 router.post('/approvePawnTicket', async (req, res) => {
     try {
         let body = _.pick(req.body, ['pawnTicketID']);
@@ -35,6 +56,7 @@ router.post('/approvePawnTicket', async (req, res) => {
     }
 });
 
+// POST: Reject a pawn ticket
 router.post('/rejectPawnTicket', async (req, res) => {
     try {
         let body = _.pick(req.body, ['pawnTicketID']);
@@ -56,6 +78,7 @@ router.post('/rejectPawnTicket', async (req, res) => {
     }
 });
 
+// POST: Approve a sell ticket
 router.post('/approveSellTicket', async (req,res) => {
     try {
         let body = _.pick(req.body, ['sellTicketID']);
@@ -81,6 +104,7 @@ router.post('/approveSellTicket', async (req,res) => {
     }
 });
 
+// POST: Reject a sell ticket
 router.post('/rejectSellTicket', async (req, res) => {
     try {
         let body = _.pick(req.body, ['sellTicketID']);
