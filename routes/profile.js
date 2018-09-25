@@ -23,8 +23,11 @@ router.delete('/logout', (req, res) => {
         res.send({
             msg: 'Log out successful'
         })
-    }).catch((e) => {
-        res.status(400).send(e.toString());
+    }).catch((error) => {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     })
 });
 
@@ -34,7 +37,10 @@ router.post('/icImage', (req, res) => {
     retrieveIcImage(icNumber).then((image) => {
         res.send({image});
     }).catch((error) => {
-        res.status(500).send(error.toString())
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     })
 });
 
@@ -60,22 +66,31 @@ router.post('/edit', (req, res) => {
     User.findByIdAndUpdate(_id, {
         $set: body
     }, (error) => {
-        if (error) res.status(500).send(error.toString());
+        if (error) {
+            res.status(500).send({
+                error: error.toString()
+            });
+        }
 
         // Send back updated user (the user provided to this callback is the old one)
         User.findById(_id).then((user) => {
         res.send(user);
         }).catch((error) => {
-            res.status(500).send(error.toString());
+            console.log(error);
+            res.status(500).send({
+                error: error.toString()
+            });
         });
     });
 });
 
 router.post('/uploadIc', (req, res) => {
     uploadIC(req, res, function (e) {
-        if (e) {
-            console.log(e);
-            res.status(500).send(e.toString());
+        if (error) {
+            console.log(error);
+            res.status(500).send({
+                error: error.toString()
+            });
         } else {
             console.log('successfully uploaded');
         }

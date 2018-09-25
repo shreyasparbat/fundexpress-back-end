@@ -51,9 +51,11 @@ router.post('/uploadImage', async (req, res) => {
 
         // Send back relevant information
         res.send(responseBody);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e.toString());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -145,7 +147,9 @@ router.post('/add', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 })
 
@@ -191,9 +195,11 @@ router.post('/pawn', async (req, res) => {
         await pawnTicket.save();
 
         res.send(pawnTicket);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e.toString());
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -230,7 +236,10 @@ router.post('/sell', async (req, res) => {
 
         res.send(sellTicket);
     } catch (e) {
-        res.status(500).send(e.toString());
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 

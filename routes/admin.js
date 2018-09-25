@@ -35,7 +35,9 @@ router.post('/approvePawnTicket', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -59,7 +61,9 @@ router.post('/rejectPawnTicket', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -86,7 +90,9 @@ router.post('/approveSellTicket', async (req,res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -110,7 +116,9 @@ router.post('/rejectSellTicket', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -126,7 +134,9 @@ router.post('/getUser', async (req, res) => {
         res.send(user);
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -165,7 +175,9 @@ router.post('/updateUser', async (req, res) => {
         res.send(updatedUser);
     } catch (error) {
         console.log(error);
-        res.status(500).send(error.toString());
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 
@@ -175,8 +187,11 @@ router.delete('/logout', (req, res) => {
         res.send({
             msg: 'Log out successful'
         })
-    }).catch((e) => {
-        res.status(400).send(e.toString());
+    }).catch((error) => {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     })
 });
 
