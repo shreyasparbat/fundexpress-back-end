@@ -71,7 +71,8 @@ AdminSchema.methods.generateAuthToken = function () {
     admin.tokens = admin.tokens.concat([{access, token}]);
     return admin.save().then(() => {
         return token;
-    })
+    });
+};
 
 // Delete token (log out admin)
 AdminSchema.methods.removeToken = function (token) {
@@ -100,30 +101,29 @@ AdminSchema.statics.findByToken = function (token) {
         _id: decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
-    })
+    });
 };
 
 // Find admin by credentials
-AdminSchema.statics.findByCredentials = function (email, password) {
+AdminSchema.statics.findByCredentials = async function (email, password) {
+    const Admin = this;
+    
     // Get admin with that email
-    return Admin.findOne({email}).then((admin) => {
-        // Check if admin exists
-        if (!admin) {
-            // Return reject promise
-            return Promise.reject('Admin does not exist');
+    const admin = await Admin.findOne({email});
+
+    // Check if admin exists
+    if (!admin) {
+        // Return reject promise
+        throw new Error('Admin does not exist');
+    } else {
+        // Compare passwords
+        const result = await bcrypt.compare(password, admin.password);
+        if (result) {
+            return admin;
         } else {
-            return new Promise((resolve, reject) => {
-                // Check if password is correct
-                bcrypt.compare(password, admin.password, (err, result) => {
-                    if (result) {
-                        resolve(admin);
-                    } else {
-                        reject('Passwords do not match');
-                    }
-                });
-            });
+            throw new Error('Passwords do not match');
         }
-    });
+    }
 };
 
 // Create model and export

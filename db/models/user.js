@@ -144,25 +144,6 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-// // Add password hashing middleware
-// UserSchema.pre('save', function (next) {
-//     const user = this;
-
-//     // Check if password has already been hashed
-//     if (!user.isModified('password')) {
-//         // Generate salt and hash password
-//         bcrypt.genSalt(10, (err, salt) => {
-//             bcrypt.hash(user.password, salt, (err, hash) => {
-//                 // Update document
-//                 user.password = hash;
-//                 next();
-//             });
-//         });
-//     } else {
-//         next();
-//     }
-// });
-
 // Override toJson (for returning user profile)
 UserSchema.methods.toJSON = function () {
     const user = this;
@@ -191,6 +172,8 @@ UserSchema.methods.toJSON = function () {
 
 // Find user by credentials
 UserSchema.statics.findByCredentials = async function (email, password) {
+    const User = this;
+    
     // Get user with that email
     const user = await User.findOne({email});
 
