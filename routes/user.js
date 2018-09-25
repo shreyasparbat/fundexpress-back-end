@@ -79,7 +79,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// POST: add admin (On boarding)
+// POST: add admin (On boarding) **Backend use only**
 router.post('/adminOnboard', async (req, res) => {
     try {
         // Get info and save
@@ -95,7 +95,7 @@ router.post('/adminOnboard', async (req, res) => {
         body.password = hash;
 
         // Save admin
-        let admin = new admin(body);
+        let admin = new Admin(body);
         await admin.save();
 
         // Generate user's authentication token
