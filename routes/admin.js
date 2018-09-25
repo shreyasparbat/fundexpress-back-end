@@ -4,7 +4,6 @@ const router = express.Router();
 const _ = require('lodash');
 
 // Custom imports
-const {Admin} = require('../db/models/admin');
 const {User} = require('../db/models/user');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
