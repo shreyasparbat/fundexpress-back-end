@@ -83,8 +83,8 @@ router.post('/add', async (req, res) => {
         }
 
         // Get percentage of gold per gram for given purity
-        let meltingPercentage = undefined;
-        let sellPercentage = undefined;
+        let meltingPercentage = 0.2; // only for now while other formulae have not been defined
+        let sellPercentage = 0.2;
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
             // Calculate goldContentPerc
             if (body.purity === '24k/999') {
