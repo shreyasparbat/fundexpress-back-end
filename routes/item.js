@@ -82,6 +82,20 @@ router.post('/add', async (req, res) => {
             throw new Error('No item found');
         }
 
+        // Update item information
+        item.set({
+            name: body.name,
+            type: body.type,
+            material: body.material,
+            brand: body.brand,
+            purity: body.purity,
+            weight: body.weight,
+            condition: body.condition,
+            otherComments: body.otherComments,
+            dateOfPurchase: new Date(body.dateOfPurchase)
+        })
+        await item.save();
+
         // Get percentage of gold per gram for given purity
         let meltingPercentage = 0.2; // only for now while other formulae have not been defined
         let sellPercentage = 0.2;
@@ -123,19 +137,10 @@ router.post('/add', async (req, res) => {
             await item.calculateOtherOfferedValues(req.user);
         }
 
-        // Update item
+        // Update item's melting and sell percentages
         item.set({
-            name: body.name,
-            type: body.type,
-            material: body.material,
-            brand: body.brand,
-            purity: body.purity,
             meltingPercentage,
-            sellPercentage,
-            weight: body.weight,
-            condition: body.condition,
-            otherComments: body.otherComments,
-            dateOfPurchase: new Date(body.dateOfPurchase)
+            sellPercentage
         })
         await item.save();
 
