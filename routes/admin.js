@@ -5,6 +5,7 @@ const _ = require('lodash');
 
 // Custom imports
 const {Admin} = require('../db/models/admin');
+const {User} = require('../db/models/user');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticateAdmin} = require('../middleware/authenticateAdmin');
@@ -135,7 +136,13 @@ router.post('/rejectSellTicket', async (req, res) => {
 // POST: Get all information about a user
 router.post('/getUser', async (req, res) => {
     try {
-        
+        let body = _.pick(req.body, ['userID']);
+
+        // Get that user
+        const user = await User.findById(new ObjectID(body.userID));
+
+        // Send back user
+        res.send(user);
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
@@ -145,7 +152,38 @@ router.post('/getUser', async (req, res) => {
 // POST: Update all information of the user
 router.post('/updateUser', async (req, res) => {
     try {
-        
+        const userID = req.body.userID;
+        const body = _.pick(req.body, [
+            'email',
+            'fullName',
+            'gender',
+            'dateOfBirth',
+            'age',
+            'ic',
+            'mobileNumber',
+            'landlineNumber',
+            'address',
+            'addressType',
+            'citizenship',
+            'race',
+            'noOfC',
+            'noOfL',
+            'noOfD',
+            'ethHash',
+            'expoPushToken'
+        ]);
+
+        // Update the user
+        const _id = new ObjectID(userID);
+        User.findByIdAndUpdate(_id, {
+            $set: body
+        }, (error) => {
+            if (error) throw error;
+
+            // Send back updated user (the user provided to this callback is the old one)
+            const updatedUser = await User.findById(_id);
+            res.send(updatedUser);
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
