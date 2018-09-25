@@ -79,6 +79,41 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// POST: add admin (On boarding)
+router.post('/adminOnboard', async (req, res) => {
+    try {
+        // Get info and save
+        let body = _.pick(req.body, [
+            'email',
+            'password',
+            'fullName',
+        ]);
+
+        // Get password hash
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(body.password, salt);
+        body.password = hash;
+
+        // Save admin
+        let admin = new admin(body);
+        await admin.save();
+
+        // Generate user's authentication token
+        const token = await admin.generateAuthToken();
+
+        // Send back token
+        res.header('x-auth', token).send({
+            msg: 'success'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+
+});
+
 // POST: Admin login
 router.post('/adminLogin', async (req, res) => {
     try {
