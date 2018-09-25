@@ -35,21 +35,22 @@ router.post('/approvePawnTicket', async (req, res) => {
     try {
         let body = _.pick(req.body, ['pawnTicketID']);
 
+        // Find Pawn ticket
         const pawnTicket = await PawnTicket.findById(new ObjectID(body.pawnTicketID));
         if (!pawnTicket) {
             throw new Error('No pawn ticket found');
         }
         
+        // Approve it
         pawnTicket.set({
             approved: true
         })
-
         await pawnTicket.save();
 
+        // Send back success message
         res.send({
             msg: 'Pawn Ticket successfully approved'
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
@@ -61,17 +62,19 @@ router.post('/rejectPawnTicket', async (req, res) => {
     try {
         let body = _.pick(req.body, ['pawnTicketID']);
 
+        // Find Pawn ticket
         const pawnTicket = await PawnTicket.findById(new ObjectID(body.pawnTicketID));
         if (!pawnTicket) {
             throw new Error('No pawn ticket found');
         }
         
+        // Delete (reject) it
         pawnTicket.remove();
 
+        // Send back success message
         res.send({
             msg: 'Pawn Ticket successfully deleted'
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
@@ -83,21 +86,22 @@ router.post('/approveSellTicket', async (req,res) => {
     try {
         let body = _.pick(req.body, ['sellTicketID']);
 
+        // Find Sell ticket
         const sellTicket = await SellTicket.findById(new ObjectID(body.sellTicketID));
         if (!sellTicket) {
             throw new Error('No sell ticket found');
         }
         
+        // Approve it
         sellTicket.set({
             approved: true
         })
-
         await sellTicket.save();
 
+        // Send back success message
         res.send({
             msg: 'Sell Ticket successfully approved'
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
@@ -109,38 +113,22 @@ router.post('/rejectSellTicket', async (req, res) => {
     try {
         let body = _.pick(req.body, ['sellTicketID']);
 
+        // Find Sell ticket
         const sellTicket = await SellTicket.findById(new ObjectID(body.sellTicketID));
         if (!sellTicket) {
             throw new Error('No sell ticket found');
         }
         
+        // Delete (reject) it
         sellTicket.remove();
 
+        // Send back success message
         res.send({
             msg: 'Sell Ticket successfully deleted'
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).send(error.toString());
-    }
-});
-
-// POST: Admin login
-router.post('/login', async (req, res) => {
-    try {
-        let body = _.pick(req.body, ['email', 'password']);
-
-        // Find that admin
-        const admin = await Admin.findByCredentials(body.email, body.password);
-
-        // Generate and return token
-        const token = await admin.generateAuthToken();
-        res.header('x-auth', token).send({
-            msg: 'success'
-        })
-    } catch (error) {
-        res.status(400).send(error.toString());
     }
 });
 
