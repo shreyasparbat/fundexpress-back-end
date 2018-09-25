@@ -76,6 +76,12 @@ router.post('/add', async (req, res) => {
             'otherComments'
         ]);
 
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) {
+            throw new Error('No item found');
+        }
+
         // Get percentage of gold per gram for given purity
         let meltingPercentage = undefined;
         let sellPercentage = undefined;
@@ -115,12 +121,6 @@ router.post('/add', async (req, res) => {
         } else {
             // Calculate pawn and sell offered value (other products)
             await item.calculateOtherOfferedValues(req.user);
-        }
-
-        // Find item of that objectID
-        const item = await Item.findById(new ObjectID(body.itemID));
-        if (!item) {
-            throw new Error('No item found');
         }
 
         // Update item
