@@ -144,24 +144,24 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-// Add password hashing middleware
-UserSchema.pre('save', function (next) {
-    const user = this;
+// // Add password hashing middleware
+// UserSchema.pre('save', function (next) {
+//     const user = this;
 
-    // Check if password has already been hashed
-    if (!user.isModified('password')) {
-        // Generate salt and hash password
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
-                // Update document
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        next();
-    }
-});
+//     // Check if password has already been hashed
+//     if (!user.isModified('password')) {
+//         // Generate salt and hash password
+//         bcrypt.genSalt(10, (err, salt) => {
+//             bcrypt.hash(user.password, salt, (err, hash) => {
+//                 // Update document
+//                 user.password = hash;
+//                 next();
+//             });
+//         });
+//     } else {
+//         next();
+//     }
+// });
 
 // Override toJson (for returning user profile)
 UserSchema.methods.toJSON = function () {
@@ -215,10 +215,12 @@ UserSchema.methods.generateAuthToken = function () {
     const user = this;
 
     // Check if token already exists
-    if (user.tokens.lenght === 0) {
+    if (user.tokens['0'] !== undefined) {
         throw new Error('User already logged in');
     }
-    const access = 'auth'; // to specify the type of token
+
+    // Create token
+    const access = 'auth';
     const token = jwt.sign({
         _id: user._id,
         access

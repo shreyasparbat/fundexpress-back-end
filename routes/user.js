@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 
 // Custom imports
 const {User} = require('../db/models/user');
@@ -24,9 +25,14 @@ router.post('/onboard', async (req, res) => {
             'citizenship',
             'race'
         ]);
-        let user = new User(body);
+
+        // Get password hash
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(body.password, salt);
+        body.password = hash;
 
         // Save user
+        let user = new User(body);
         await user.save();
 
         // Generate user's credit rating
