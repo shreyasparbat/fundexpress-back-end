@@ -181,6 +181,25 @@ router.post('/updateUser', async (req, res) => {
     }
 });
 
+// POST: get all users
+router.post('/allUsers', async (req, res) => {
+    try {
+        // Get all users
+        let allUsers = await User.find();
+
+
+        // Send back result
+        res.send({
+            allUsers
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }    
+});
+
 // DELETE: log admin out
 router.delete('/logout', (req, res) => {
     req.admin.removeToken(req.token).then(() => {
