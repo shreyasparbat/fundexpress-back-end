@@ -96,53 +96,12 @@ router.post('/add', async (req, res) => {
         })
         await item.save();
 
-        // Get percentage of gold per gram for given purity
-        let meltingPercentage = 0.2; // only for now while other formulae have not been defined
-        let sellPercentage = 0.2;
+        // Calculate pawn and sell offered values
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
-            // Calculate goldContentPerc
-            if (body.purity === '24k/999') {
-                meltingPercentage = 0.985;
-                sellPercentage = 0.97;
-            }
-            if (body.purity === '22K/916') {
-                meltingPercentage = 0.9;
-                sellPercentage = 0.88;
-            }
-            if (body.purity === '20K/835') {
-                meltingPercentage = 0.835;
-                sellPercentage = 0.81;
-            }
-            if (body.purity === '18K/750 (Yellow gold)') {
-                meltingPercentage = 0.7;
-                sellPercentage = 0.7;
-            }
-            if (body.purity === '18K/750 (White gold)') {
-                meltingPercentage = 0.65;
-                sellPercentage = 0.7;
-            }
-            if (body.purity === '14K/585') {
-                meltingPercentage = 0.5;
-                sellPercentage = 0.5;
-            }
-            if (body.purity === '9K/375') {
-                meltingPercentage = 0.3;
-                sellPercentage = 0.27;
-            }
-
-            // Calculate pawn and sell offered value (Gold products only)
-            await item.calculateGoldOfferedValues(req.user);
+            await item.calculateGoldOfferedValues(req.user, body.purity);
         } else {
-            // Calculate pawn and sell offered value (other products)
             await item.calculateOtherOfferedValues(req.user);
         }
-
-        // Update item's melting and sell percentages
-        item.set({
-            meltingPercentage,
-            sellPercentage
-        })
-        await item.save();
 
         // Return objectID and offered values
         res.send({

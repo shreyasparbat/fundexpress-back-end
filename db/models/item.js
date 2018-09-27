@@ -86,26 +86,54 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values (Gold products only)
-ItemSchema.methods.calculateGoldOfferedValues = function(user) {
-    try {
-        const item = this;
+ItemSchema.methods.calculateGoldOfferedValues = function(user, purity) {
+    const item = this;
 
-        // Get various parameters for formula
-        const goldValuePerGram = getGoldPrice();
-        const ltvPercentage = user.currentLtvPercentage;
-
-        // Calulate and save final values
-        let pawnOfferedValue = ltvPercentage * user.meltingPercentage * goldValuePerGram * item.weight;
-        let sellOfferedValue = user.sellPercentage * goldValuePerGram * item.weight;
-        item.set({
-            pawnOfferedValue,
-            sellOfferedValue
-        });
-
-        return item.save()
-    } catch (error) {
-        throw error;
+    // Calculate meltingPercentage and sellPercentage
+    if (purity === '24k/999') {
+        meltingPercentage = 0.985;
+        sellPercentage = 0.97;
     }
+    if (purity === '22K/916') {
+        meltingPercentage = 0.9;
+        sellPercentage = 0.88;
+    }
+    if (purity === '20K/835') {
+        meltingPercentage = 0.835;
+        sellPercentage = 0.81;
+    }
+    if (purity === '18K/750 (Yellow gold)') {
+        meltingPercentage = 0.7;
+        sellPercentage = 0.7;
+    }
+    if (purity === '18K/750 (White gold)') {
+        meltingPercentage = 0.65;
+        sellPercentage = 0.7;
+    }
+    if (purity === '14K/585') {
+        meltingPercentage = 0.5;
+        sellPercentage = 0.5;
+    }
+    if (purity === '9K/375') {
+        meltingPercentage = 0.3;
+        sellPercentage = 0.27;
+    }
+
+    // Get various parameters for formula
+    const goldValuePerGram = getGoldPrice();
+    const ltvPercentage = user.currentLtvPercentage;
+
+    // Calulate and save final values
+    let pawnOfferedValue = ltvPercentage * meltingPercentage * goldValuePerGram * item.weight;
+    let sellOfferedValue = sellPercentage * goldValuePerGram * item.weight;
+    item.set({
+        pawnOfferedValue,
+        sellOfferedValue,
+        meltingPercentage,
+        sellPercentage
+    });
+
+    return item.save()
 };
 
 // Calculate pawn and sell offered values (other products)
@@ -116,6 +144,7 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
         pawnOfferedValue: -1,
         sellOfferedValue: -1
     });
+    return item.save();
 }
 
 ItemSchema.methods.runImageRecognition = function(type) {
