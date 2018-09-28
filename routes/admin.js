@@ -181,12 +181,11 @@ router.post('/updateUser', async (req, res) => {
     }
 });
 
-// POST: get all users
-router.post('/allUsers', async (req, res) => {
+// GET all users
+router.get('/allUsers', async (req, res) => {
     try {
-        // Get all users
-        let allUsers = await User.find();
-
+        // Get email and fullName of all users
+        let allUsers = await User.find({}).select('email fullName');
 
         // Send back result
         res.send({
@@ -198,6 +197,11 @@ router.post('/allUsers', async (req, res) => {
             error: error.toString()
         });
     }    
+});
+
+// POST: get tickets of a user
+router.post('/tickets', (req, res) => {
+
 });
 
 // DELETE: log admin out
