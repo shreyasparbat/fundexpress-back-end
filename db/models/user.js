@@ -167,7 +167,7 @@ UserSchema.methods.toJSON = function () {
         'noOfD',
         'ethHash',
         'expoPushToken'
-    ])
+    ]);
 };
 
 // Find user by credentials
@@ -213,7 +213,7 @@ UserSchema.methods.generateAuthToken = function () {
     user.tokens = user.tokens.concat([{access, token}]);
     return user.save().then(() => {
         return token;
-    })
+    });
 };
 
 // Delete token (log out user)
@@ -225,49 +225,44 @@ UserSchema.methods.removeToken = function (token) {
         $pull: {
             tokens: {token}
         }
-    })
+    });
 };
 
 // Generate credit rating when signing up
 UserSchema.methods.generateCreditRating = async function () {
-    try {
-        const user = this;
+    const user = this;
 
-        // Setup request parameters
-        const requestBody = {
-            age: getAge(user.dateOfBirth),
-            nric: user.ic[0],
-            race: user.race[0],
-            sex: user.gender,
-            nation: user.citizenship[0],
-            address: user.addressType,
-            tel: user.landlineNumber === null ? 'L' : 'H'
-        };
-        const config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
+    // Setup request parameters
+    const requestBody = {
+        age: getAge(user.dateOfBirth),
+        nric: user.ic[0],
+        race: user.race[0],
+        sex: user.gender,
+        nation: user.citizenship[0],
+        address: user.addressType,
+        tel: user.landlineNumber === null ? 'L' : 'H'
+    };
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
 
-        // Get predicted default probabilities and credit rating
-        const response = await axios.post('http://0.0.0.0:5000/predict', querystring.stringify(requestBody), config);
-        console.log(response.data)
+    // Get predicted default probabilities and credit rating
+    const response = await axios.post('http://0.0.0.0:5000/predict', querystring.stringify(requestBody), config);
+    console.log(response.data);
 
-        // Update user
-        user.set({
-            cPercent: response.data.cPercent,
-            dPercent: response.data.dPercent,
-            lPercent: response.data.lPercent,
-            initialCreditRating: response.data.creditRating,
-            currentCreditRating: response.data.creditRating,
-            initialLtvPercentage: response.data.ltvPercentage,
-            currentLtvPercentage: response.data.ltvPercentage
-        });
-        return await user.save();
-    } catch (error) {
-        console.log(error)
-        throw error
-    }
+    // Update user
+    user.set({
+        cPercent: response.data.cPercent,
+        dPercent: response.data.dPercent,
+        lPercent: response.data.lPercent,
+        initialCreditRating: response.data.creditRating,
+        currentCreditRating: response.data.creditRating,
+        initialLtvPercentage: response.data.ltvPercentage,
+        currentLtvPercentage: response.data.ltvPercentage
+    });
+    return await user.save();
 };
 
 // TODO: Generate User's block
@@ -293,7 +288,7 @@ UserSchema.methods.updateCreditRating = async function (deal) {
     } else if (deal === 'L') {
         let noOfL = userObject.noOfL;
         noOfL += 1;
-        user.set({noOfL})
+        user.set({noOfL});
         ltvPercentage -= 0.001;
     } else if (deal === 'D') {
         let noOfD = userObject.noOfD;
@@ -313,29 +308,30 @@ UserSchema.methods.updateCreditRating = async function (deal) {
     }
 
     // Update credit rating
+    let creditRating = undefined;
     if (ltvPercentage >= 0.95) {
-        const creditRating = 'A';
+        creditRating = 'A';
     } else if (ltvPercentage >= 0.9) {
-        const creditRating = 'B';
+        creditRating = 'B';
     } else if (ltvPercentage >= 0.85) {
-        const creditRating = 'C';
+        creditRating = 'C';
     } else if (ltvPercentage >= 0.8) {
-        const creditRating = 'D';
+        creditRating = 'D';
     } else if (ltvPercentage >= 0.75) {
-        const creditRating = 'E';
+        creditRating = 'E';
     } else if (ltvPercentage >= 0.7) {
-        const creditRating = 'F';
+        creditRating = 'F';
     } else {
         throw new Error('Credit rating has fallen too low');
     }
     user.set({
         currentCreditRating: creditRating,
         currentLtvPercentage: ltvPercentage
-    })
+    });
 
     // Save user
     return await user.save();
-}
+};
 
 // Find user by token
 UserSchema.statics.findByToken = function (token) {
@@ -352,7 +348,7 @@ UserSchema.statics.findByToken = function (token) {
         _id: decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
-    })
+    });
 };
 
 // Create model and export

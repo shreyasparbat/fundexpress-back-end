@@ -2,9 +2,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-// Custom import
-const {Item} = require('./item');
-
 // Define sellTicket Schema
 const sellTicketSchema = new mongoose.Schema({
     userID: {
