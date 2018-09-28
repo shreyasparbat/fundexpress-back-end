@@ -157,7 +157,7 @@ router.post('/pawn', async (req, res) => {
 
         // Save pawn ticket
         await pawnTicket.save();
-        res.send(pawnTicket);
+        res.send(pawnTicketObject);
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -197,7 +197,7 @@ router.post('/sell', async (req, res) => {
         // Save sell ticket
         await sellTicket.save();
 
-        res.send(sellTicket);
+        res.send(sellTicketObject);
     } catch (error) {
         console.log(error);
         res.status(500).send({
