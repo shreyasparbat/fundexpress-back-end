@@ -144,7 +144,7 @@ router.post('/pawn', async (req, res) => {
         // Create Pawn ticket
         let pawnTicketObject = {
             'userID': req.user._id,
-            'item': item,
+            'item': item.toObject(),
             'dateCreated': new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()),
             'expiryDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 6),
             'gracePeriodEndDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 7),
@@ -157,8 +157,7 @@ router.post('/pawn', async (req, res) => {
 
         // Save pawn ticket
         await pawnTicket.save();
-        console.log(pawnTicket);
-        res.send(pawnTicket);
+        res.send({pawnTicket});
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -188,7 +187,7 @@ router.post('/sell', async (req, res) => {
         // Create sell ticket
         let sellTicketObject = {
             'userID': req.user._id,
-            'itemID': item._id,
+            'item': item.toObject(),
             'dateCreated': new Date(),
             'value': item.sellOfferedValue,
             'approved': false

@@ -11,8 +11,8 @@ const sellTicketSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    itemID: {
-        type: mongoose.Schema.Types.ObjectId,
+    item: {
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
     dateCreated: {
@@ -36,24 +36,13 @@ sellTicketSchema.methods.toJSON = async function () {
 
         // Get Sell ticket information
         const sellTicketObject = sellTicket.toObject();
-        let toReturn = _.pick(sellTicketObject, [
+        return _.pick(sellTicketObject, [
             'userID',
-            'itemID',
+            'item',
             'dateCreated',
             'offeredValue',
             'approved'
-        ])
-        toReturn.ticketID = sellTicketObject._id;
-    
-        // // Get Item information
-        // const item = await Item.findById(sellTicketObject._id);
-        // if (!item) {
-        //     throw new Error('No item found');
-        // }
-        // toReturn.item = item;
-    
-        // Return
-        return toReturn;
+        ]);
     } catch (error) {
         console.log(error);
     }

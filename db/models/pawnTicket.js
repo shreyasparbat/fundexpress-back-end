@@ -11,8 +11,8 @@ const pawnTicketSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    itemID: {
-        type: mongoose.Schema.Types.ObjectId,
+    item: {
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
     dateCreated: {
@@ -56,16 +56,14 @@ pawnTicketSchema.methods.toJSON = async function () {
 
         // Get Pawn ticket information
         const pawnTicketObject = pawnTicket.toObject();
-        let toReturn = _.pick(pawnTicketObject, [
+        return _.pick(pawnTicketObject, [
             'userID',
-            'itemID',
             'dateCreated',
             'expiryDate',
             'interestPayable',
             'value',
             'approved'
         ]);
-        return toReturn;
     } catch (error) {
         console.log(error);
     }
