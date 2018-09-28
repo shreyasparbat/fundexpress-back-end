@@ -82,7 +82,7 @@ ItemSchema.methods.toJSON = function () {
         'dateOfPurchase',
         'pawnOfferedValue',
         'sellOfferedValue'
-    ])
+    ]);
 };
 
 // Calculate pawn and sell offered values (Gold products only)
@@ -90,6 +90,8 @@ ItemSchema.methods.calculateGoldOfferedValues = function(user, purity) {
     const item = this;
 
     // Calculate meltingPercentage and sellPercentage
+    let meltingPercentage = undefined;
+    let sellPercentage = undefined;
     if (purity === '24k/999') {
         meltingPercentage = 0.985;
         sellPercentage = 0.97;
@@ -133,7 +135,7 @@ ItemSchema.methods.calculateGoldOfferedValues = function(user, purity) {
         sellPercentage
     });
 
-    return item.save()
+    return item.save();
 };
 
 // Calculate pawn and sell offered values (other products)
@@ -145,12 +147,12 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
         sellOfferedValue: -1
     });
     return item.save();
-}
+};
 
 ItemSchema.methods.runImageRecognition = function(type) {
     const item = this;
     return Promise.resolve(item);
-}
+};
 
 // Create model and export
 const Item = mongoose.model('Item', ItemSchema);

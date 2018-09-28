@@ -64,17 +64,7 @@ pawnTicketSchema.methods.toJSON = async function () {
             'interestPayable',
             'value',
             'approved'
-        ])
-        toReturn.ticketID = pawnTicketObject._id;
-
-        // // Get Item information
-        // const item = await Item.findById(pawnTicketObject._id);
-        // if (!item) {
-        //     throw new Error('No item found');
-        // }
-        // toReturn.item = item;
-
-        // Return
+        ]);
         return toReturn;
     } catch (error) {
         console.log(error);
