@@ -3,10 +3,13 @@ const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 
+// Custom imports
+const keys = require('../keys');
+
 // Specify aws keys
 aws.config.update({
-    accessKeyId: 'MYGXL6K2SUTP4JYKXUOG',
-    secretAccessKey: '08Ie+rca1DsgxoiHpVGeEQF9smEnkVx2Nu391xec96M',
+    accessKeyId: keys.awsAccessKeyId,
+    secretAccessKey: keys.awsSecretAccessKey,
     region: 'sgp1'
 });
 
@@ -24,8 +27,8 @@ const uploadIC = multer({
         acl: 'public-read',
         key: function (req, file, cb) {
             const date = new Date();
-            cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
-                req.user.ic + "_" + file.fieldname + '.jpg');
+            cb(null, date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + '_' +
+                req.user.ic + '_' + file.fieldname + '.jpg');
         },
     }),
 }).fields([{ name: 'ic-front', maxCount: 1}, {name: 'ic-back', maxCount: 1}]);
@@ -38,7 +41,7 @@ const uploadItem = multer({
         acl: 'public-read',
         key: function (req, file, cb) {
             const date = new Date();
-            cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
+            cb(null, date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + '_' +
                 req.user._id + '_' + file.fieldname + '.jpg');
         },
     }),
@@ -48,4 +51,4 @@ const uploadItem = multer({
 module.exports = {
     uploadIC,
     uploadItem
-}
+};

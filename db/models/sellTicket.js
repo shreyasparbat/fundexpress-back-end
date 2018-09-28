@@ -2,17 +2,14 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-// Custom import
-const {Item} = require('./item');
-
 // Define sellTicket Schema
 const sellTicketSchema = new mongoose.Schema({
     userID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    itemID: {
-        type: mongoose.Schema.Types.ObjectId,
+    item: {
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
     dateCreated: {
@@ -31,32 +28,15 @@ const sellTicketSchema = new mongoose.Schema({
 
 // Override toJson (for returning sellTicket profile)
 sellTicketSchema.methods.toJSON = async function () {
-    try {
-        const sellTicket = this;
-
-        // Get Sell ticket information
-        const sellTicketObject = sellTicket.toObject();
-        let toReturn = _.pick(sellTicketObject, [
-            'userID',
-            'itemID',
-            'dateCreated',
-            'offeredValue',
-            'approved'
-        ])
-        toReturn.ticketID = sellTicketObject._id;
-    
-        // // Get Item information
-        // const item = await Item.findById(sellTicketObject._id);
-        // if (!item) {
-        //     throw new Error('No item found');
-        // }
-        // toReturn.item = item;
-    
-        // Return
-        return toReturn;
-    } catch (error) {
-        console.log(error);
-    }
+    const sellTicket = this;
+    const sellTicketObject = sellTicket.toObject();
+    return _.pick(sellTicketObject, [
+        'userID',
+        'item',
+        'dateCreated',
+        'offeredValue',
+        'approved'
+    ]);
 };
 
 // Create model and export

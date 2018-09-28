@@ -21,7 +21,7 @@ router.post('/uploadImage', async (req, res) => {
         // Upload images to digital ocean
         uploadItem(req, res, function (e) {
             if (e) {
-                console.log(e)
+                console.log(e);
                 throw(e);
             } else {
                 console.log('successfully uploaded');
@@ -33,7 +33,7 @@ router.post('/uploadImage', async (req, res) => {
         let itemObject = {
             'userID': new Object(req.user._id),
             type
-        }
+        };
         let item = new Item(itemObject);
         await item.save();
 
@@ -93,56 +93,15 @@ router.post('/add', async (req, res) => {
             condition: body.condition,
             otherComments: body.otherComments,
             dateOfPurchase: new Date(body.dateOfPurchase)
-        })
+        });
         await item.save();
 
-        // Get percentage of gold per gram for given purity
-        let meltingPercentage = 0.2; // only for now while other formulae have not been defined
-        let sellPercentage = 0.2;
+        // Calculate pawn and sell offered values
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
-            // Calculate goldContentPerc
-            if (body.purity === '24k/999') {
-                meltingPercentage = 0.985;
-                sellPercentage = 0.97;
-            }
-            if (body.purity === '22K/916') {
-                meltingPercentage = 0.9;
-                sellPercentage = 0.88;
-            }
-            if (body.purity === '20K/835') {
-                meltingPercentage = 0.835;
-                sellPercentage = 0.81;
-            }
-            if (body.purity === '18K/750 (Yellow gold)') {
-                meltingPercentage = 0.7;
-                sellPercentage = 0.7;
-            }
-            if (body.purity === '18K/750 (White gold)') {
-                meltingPercentage = 0.65;
-                sellPercentage = 0.7;
-            }
-            if (body.purity === '14K/585') {
-                meltingPercentage = 0.5;
-                sellPercentage = 0.5;
-            }
-            if (body.purity === '9K/375') {
-                meltingPercentage = 0.3;
-                sellPercentage = 0.27;
-            }
-
-            // Calculate pawn and sell offered value (Gold products only)
-            await item.calculateGoldOfferedValues(req.user);
+            await item.calculateGoldOfferedValues(req.user, body.purity);
         } else {
-            // Calculate pawn and sell offered value (other products)
             await item.calculateOtherOfferedValues(req.user);
         }
-
-        // Update item's melting and sell percentages
-        item.set({
-            meltingPercentage,
-            sellPercentage
-        })
-        await item.save();
 
         // Return objectID and offered values
         res.send({
@@ -156,7 +115,7 @@ router.post('/add', async (req, res) => {
             error: error.toString()
         });
     }
-})
+});
 
 // POST: pawn new item (create pawn ticket)
 router.post('/pawn', async (req, res) => {
@@ -173,7 +132,7 @@ router.post('/pawn', async (req, res) => {
         }
 
         // Check whether specified value is greater than pawn value
-        if (body.specifiedValue >= item.pawnOfferedValue) {
+        if (body.specifiedValue > item.pawnOfferedValue) {
             throw new Error('Specified value is greater than offered value');
         }
 
@@ -185,7 +144,7 @@ router.post('/pawn', async (req, res) => {
         // Create Pawn ticket
         let pawnTicketObject = {
             'userID': req.user._id,
-            'itemID': item._id,
+            'item': item.toObject(),
             'dateCreated': new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()),
             'expiryDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 6),
             'gracePeriodEndDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 7),
@@ -193,13 +152,12 @@ router.post('/pawn', async (req, res) => {
             'value': body.specifiedValue,
             'approved': false,
             'closed': false
-        }
+        };
         let pawnTicket = new PawnTicket(pawnTicketObject);
 
         // Save pawn ticket
         await pawnTicket.save();
-
-        res.send(pawnTicket);
+        res.send(pawnTicketObject);
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -229,18 +187,18 @@ router.post('/sell', async (req, res) => {
         // Create sell ticket
         let sellTicketObject = {
             'userID': req.user._id,
-            'itemID': item._id,
+            'item': item.toObject(),
             'dateCreated': new Date(),
             'value': item.sellOfferedValue,
             'approved': false
-        }
+        };
         let sellTicket = new SellTicket(sellTicketObject);
 
         // Save sell ticket
         await sellTicket.save();
 
-        res.send(sellTicket);
-    } catch (e) {
+        res.send(sellTicketObject);
+    } catch (error) {
         console.log(error);
         res.status(500).send({
             error: error.toString()

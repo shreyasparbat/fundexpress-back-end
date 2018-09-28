@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
+const {ObjectID} = require('mongodb');
 // const fcm = require('fcm-node');
 // const fcm = new FCM(serverKey);
 const gcm = require('node-gcm');
@@ -31,7 +32,7 @@ router.post('/approvePawnTicket', async (req, res) => {
         // Approve it
         pawnTicket.set({
             approved: true
-        })
+        });
         await pawnTicket.save();
 
         var user = User.findById(pawnTicket.userID);
@@ -124,7 +125,7 @@ router.post('/approveSellTicket', async (req,res) => {
         // Approve it
         sellTicket.set({
             approved: true
-        })
+        });
         await sellTicket.save();
 
         var user = User.findById(sellTicket.userID);
@@ -262,18 +263,41 @@ router.post('/updateUser', async (req, res) => {
     }
 });
 
+// GET all users
+router.get('/allUsers', async (req, res) => {
+    try {
+        // Get email and fullName of all users
+        let allUsers = await User.find({}).select('email fullName');
+
+        // Send back result
+        res.send({
+            allUsers
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }    
+});
+
+// POST: get tickets of a user
+router.post('/tickets', (req, res) => {
+
+});
+
 // DELETE: log admin out
 router.delete('/logout', (req, res) => {
     req.admin.removeToken(req.token).then(() => {
         res.send({
             msg: 'Log out successful'
-        })
+        });
     }).catch((error) => {
         console.log(error);
         res.status(500).send({
             error: error.toString()
         });
-    })
+    });
 });
 
 module.exports = router;
