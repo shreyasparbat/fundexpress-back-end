@@ -4,7 +4,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 
 // Custom imports
-const keys = require('../node_modules/keys');
+const keys = require('../keys');
 
 // Specify aws keys
 aws.config.update({

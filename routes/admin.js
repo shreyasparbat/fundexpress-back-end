@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
+const {ObjectID} = require('mongodb');
 
 // Custom imports
 const {User} = require('../db/models/user');
@@ -26,7 +27,7 @@ router.post('/approvePawnTicket', async (req, res) => {
         // Approve it
         pawnTicket.set({
             approved: true
-        })
+        });
         await pawnTicket.save();
 
         // Send back success message
@@ -81,7 +82,7 @@ router.post('/approveSellTicket', async (req,res) => {
         // Approve it
         sellTicket.set({
             approved: true
-        })
+        });
         await sellTicket.save();
 
         // Send back success message
@@ -190,7 +191,7 @@ router.get('/allUsers', async (req, res) => {
         // Send back result
         res.send({
             allUsers
-        })
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -209,13 +210,13 @@ router.delete('/logout', (req, res) => {
     req.admin.removeToken(req.token).then(() => {
         res.send({
             msg: 'Log out successful'
-        })
+        });
     }).catch((error) => {
         console.log(error);
         res.status(500).send({
             error: error.toString()
         });
-    })
+    });
 });
 
 module.exports = router;

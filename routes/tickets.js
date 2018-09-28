@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
             expiredPawnTickets,
             sellTicketPendingApproval,
             approvedSellTickets
-        })
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({

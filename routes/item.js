@@ -21,7 +21,7 @@ router.post('/uploadImage', async (req, res) => {
         // Upload images to digital ocean
         uploadItem(req, res, function (e) {
             if (e) {
-                console.log(e)
+                console.log(e);
                 throw(e);
             } else {
                 console.log('successfully uploaded');
@@ -33,7 +33,7 @@ router.post('/uploadImage', async (req, res) => {
         let itemObject = {
             'userID': new Object(req.user._id),
             type
-        }
+        };
         let item = new Item(itemObject);
         await item.save();
 
@@ -93,7 +93,7 @@ router.post('/add', async (req, res) => {
             condition: body.condition,
             otherComments: body.otherComments,
             dateOfPurchase: new Date(body.dateOfPurchase)
-        })
+        });
         await item.save();
 
         // Calculate pawn and sell offered values
@@ -115,7 +115,7 @@ router.post('/add', async (req, res) => {
             error: error.toString()
         });
     }
-})
+});
 
 // POST: pawn new item (create pawn ticket)
 router.post('/pawn', async (req, res) => {
@@ -132,7 +132,7 @@ router.post('/pawn', async (req, res) => {
         }
 
         // Check whether specified value is greater than pawn value
-        if (body.specifiedValue >= item.pawnOfferedValue) {
+        if (body.specifiedValue > item.pawnOfferedValue) {
             throw new Error('Specified value is greater than offered value');
         }
 
@@ -152,12 +152,12 @@ router.post('/pawn', async (req, res) => {
             'value': body.specifiedValue,
             'approved': false,
             'closed': false
-        }
+        };
         let pawnTicket = new PawnTicket(pawnTicketObject);
 
         // Save pawn ticket
         await pawnTicket.save();
-
+        console.log(pawnTicket);
         res.send(pawnTicket);
     } catch (error) {
         console.log(error);
@@ -192,14 +192,14 @@ router.post('/sell', async (req, res) => {
             'dateCreated': new Date(),
             'value': item.sellOfferedValue,
             'approved': false
-        }
+        };
         let sellTicket = new SellTicket(sellTicketObject);
 
         // Save sell ticket
         await sellTicket.save();
 
         res.send(sellTicket);
-    } catch (e) {
+    } catch (error) {
         console.log(error);
         res.status(500).send({
             error: error.toString()
