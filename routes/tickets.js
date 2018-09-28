@@ -18,33 +18,33 @@ router.post('/', async (req, res) => {
             userID: req.user._id,
             approved: true,
             closed: false
-        });
+        }).lean();
 
         // Get pawn tickets pending approval
         let pawnTicketsPendingApproval = await PawnTicket.find({
             userID: req.user._id,
             approved: false,
             closed: false
-        });
+        }).lean();
 
         // Get expired pawn tickets
         let expiredPawnTickets = await PawnTicket.find({
             userID: req.user._id,
             approved: true,
             gracePeriodEnded: true
-        });
+        }).lean();
 
         // Get sell tickets pending approval
         let sellTicketPendingApproval = await SellTicket.find({
             userID: req.user._id,
             approved: false
-        });
+        }).lean();
 
         // get approved sell tickets
         let approvedSellTickets = await SellTicket.find({
             userID: req.user._id,
             approved: true
-        });
+        }).lean();
 
         // Send back result
         res.send({

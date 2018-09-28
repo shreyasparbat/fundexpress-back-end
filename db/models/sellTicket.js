@@ -29,14 +29,7 @@ const sellTicketSchema = new mongoose.Schema({
 // Override toJson (for returning sellTicket profile)
 sellTicketSchema.methods.toJSON = async function () {
     const sellTicket = this;
-    const sellTicketObject = sellTicket.toObject();
-    return _.pick(sellTicketObject, [
-        'userID',
-        'item',
-        'dateCreated',
-        'offeredValue',
-        'approved'
-    ]);
+    return sellTicket.toObject();
 };
 
 // Create model and export

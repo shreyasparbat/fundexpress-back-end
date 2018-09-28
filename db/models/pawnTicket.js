@@ -49,16 +49,7 @@ const pawnTicketSchema = new mongoose.Schema({
 // Override toJson (for returning pawnTicket)
 pawnTicketSchema.methods.toJSON = async function () {
     const pawnTicket = this;
-    const pawnTicketObject = pawnTicket.toObject();
-    return _.pick(pawnTicketObject, [
-        'userID',
-        'item',
-        'dateCreated',
-        'expiryDate',
-        'interestPayable',
-        'value',
-        'approved'
-    ]);
+    return pawnTicket.toObject();
 };
 
 pawnTicketSchema.methods.findExpiringTicket = function () {
