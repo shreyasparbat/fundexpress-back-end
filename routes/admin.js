@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
+const mongoose = require('mongoose');
 // const fcm = require('fcm-node');
 // const fcm = new FCM(serverKey);
 const gcm = require('node-gcm');
@@ -281,9 +282,57 @@ router.get('/allUsers', async (req, res) => {
     }    
 });
 
-// POST: get tickets of a user
-router.post('/tickets', (req, res) => {
+// POST: get one user's tickets
+router.post('/tickets', async (req, res) => {
+    try {
+         let body = _.pick(req.body, ['userID']);
+        
+        // Get current pawn tickets
+        let currentPawnTickets = await PawnTicket.find({
+            userID: body.userID,
+            approved: true,
+            closed: false
+        }).lean();
 
+        // Get pawn tickets pending approval
+        let pawnTicketsPendingApproval = await PawnTicket.find({
+            userID: body.userID,
+            approved: false,
+            closed: false
+        }).lean();
+
+        // Get expired pawn tickets
+        let expiredPawnTickets = await PawnTicket.find({
+            userID: body.userID,
+            approved: true,
+            gracePeriodEnded: true
+        }).lean();
+
+        // Get sell tickets pending approval
+        let sellTicketPendingApproval = await SellTicket.find({
+            userID: body.userID,
+            approved: false
+        }).lean();
+
+        // Get approved sell tickets
+        let approvedSellTickets = await SellTicket.find({
+            userID: body.userID,
+            approved: true
+        }).lean();
+        
+        res.send({
+            currentPawnTickets,
+            pawnTicketsPendingApproval,
+            expiredPawnTickets,
+            sellTicketPendingApproval,
+            approvedSellTickets
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
 });
 
 // DELETE: log admin out
