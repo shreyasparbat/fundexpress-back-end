@@ -27,8 +27,8 @@ const uploadIC = multer({
         acl: 'public-read',
         key: function (req, file, cb) {
             const date = new Date();
-            cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
-                req.user.ic + "_" + file.fieldname + '.jpg');
+            cb(null, date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + '_' +
+                req.user.ic + '_' + file.fieldname + '.jpg');
         },
     }),
 }).fields([{ name: 'ic-front', maxCount: 1}, {name: 'ic-back', maxCount: 1}]);
@@ -41,7 +41,7 @@ const uploadItem = multer({
         acl: 'public-read',
         key: function (req, file, cb) {
             const date = new Date();
-            cb(null, date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + '_' +
+            cb(null, date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + '_' +
                 req.user._id + '_' + file.fieldname + '.jpg');
         },
     }),
@@ -51,4 +51,4 @@ const uploadItem = multer({
 module.exports = {
     uploadIC,
     uploadItem
-}
+};
