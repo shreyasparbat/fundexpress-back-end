@@ -86,7 +86,7 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values (Gold products only)
-ItemSchema.methods.calculateGoldOfferedValues = function(user, purity) {
+ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
     const item = this;
 
     // Calculate meltingPercentage and sellPercentage
@@ -122,12 +122,12 @@ ItemSchema.methods.calculateGoldOfferedValues = function(user, purity) {
     }
 
     // Get various parameters for formula
-    const goldValuePerGram = getGoldSilverPrice().gold;
+    const valuesPerGram = await getGoldSilverPrice();
     const ltvPercentage = user.currentLtvPercentage;
 
     // Calulate and save final values
-    let pawnOfferedValue = ltvPercentage * meltingPercentage * goldValuePerGram * item.weight;
-    let sellOfferedValue = sellPercentage * goldValuePerGram * item.weight;
+    let pawnOfferedValue = ltvPercentage * meltingPercentage * valuesPerGram.gold * item.weight;
+    let sellOfferedValue = sellPercentage * valuesPerGram.gold * item.weight;
     item.set({
         pawnOfferedValue,
         sellOfferedValue,
