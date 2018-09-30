@@ -7,4 +7,4 @@ const getGoldPrice = () => {
 
 module.exports = {
     getGoldPrice
-};]
+};
