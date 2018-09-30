@@ -8,6 +8,8 @@ target 'fundExpressApp' do
   use_frameworks!
 
   # Pods for fundExpressApp
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
 
   target 'fundExpressAppTests' do
     inherit! :search_paths
@@ -18,7 +20,5 @@ target 'fundExpressApp' do
     inherit! :search_paths
     # Pods for testing
   end
-
-  pod 'Firebase/Core'
 
 end
