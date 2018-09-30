@@ -65,3 +65,4 @@ typings/
 
 # Keys and passwords
 keys.js
+\.DS_Store
