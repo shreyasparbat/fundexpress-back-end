@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 
 // Custom imports
-const {getGoldPrice} = require('../../utils/priceScrapper');
+const {getGoldSilverPrice} = require('../../utils/priceScrapper');
 
 // Define Item Schema
 const ItemSchema = new mongoose.Schema({
@@ -122,7 +122,7 @@ ItemSchema.methods.calculateGoldOfferedValues = function(user, purity) {
     }
 
     // Get various parameters for formula
-    const goldValuePerGram = getGoldPrice();
+    const goldValuePerGram = getGoldSilverPrice().gold;
     const ltvPercentage = user.currentLtvPercentage;
 
     // Calulate and save final values
