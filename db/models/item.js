@@ -96,27 +96,27 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
         meltingPercentage = 0.985;
         sellPercentage = 0.97;
     }
-    if (purity === '22K/916') {
+    if (purity === '22k/916') {
         meltingPercentage = 0.9;
         sellPercentage = 0.88;
     }
-    if (purity === '20K/835') {
+    if (purity === '20k/835') {
         meltingPercentage = 0.835;
         sellPercentage = 0.81;
     }
-    if (purity === '18K/750 (Yellow gold)') {
+    if (purity === '18k/750 (Yellow gold)') {
         meltingPercentage = 0.7;
         sellPercentage = 0.7;
     }
-    if (purity === '18K/750 (White gold)') {
+    if (purity === '18k/750 (White gold)') {
         meltingPercentage = 0.65;
         sellPercentage = 0.7;
     }
-    if (purity === '14K/585') {
+    if (purity === '14k/585') {
         meltingPercentage = 0.5;
         sellPercentage = 0.5;
     }
-    if (purity === '9K/375') {
+    if (purity === '9k/375') {
         meltingPercentage = 0.3;
         sellPercentage = 0.27;
     }
