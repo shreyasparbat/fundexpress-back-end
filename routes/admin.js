@@ -15,6 +15,10 @@ const {User} = require('../db/models/user');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticateAdmin} = require('../middleware/authenticateAdmin');
+const {pawnTicketApprovedMessage} = require('../utils/notifications');
+const {pawnTicketRejectedMessage} = require('../utils/notifications');
+const {sellTicketApprovedMessage} = require('../utils/notifications');
+const {sellTicketRejectedMessage} = require('../utils/notifications');
 
 // Add middleware
 router.use(authenticateAdmin);
