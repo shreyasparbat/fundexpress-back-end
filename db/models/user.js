@@ -70,6 +70,7 @@ const UserSchema = new mongoose.Schema({
     },
     landlineNumber: {
         type: Number,
+        required: false,
         minlength: 8,
         maxlength: 8
     },
