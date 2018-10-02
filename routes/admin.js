@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
-const mongoose = require('mongoose');
 const {keys} = require('../keys');
 const gcm = require('node-gcm');
 const serverKey = keys.serverKey;
@@ -288,7 +287,7 @@ router.get('/allUsers', async (req, res) => {
 // POST: get one user's tickets
 router.post('/tickets', async (req, res) => {
     try {
-         let body = _.pick(req.body, ['userID']);
+        let body = _.pick(req.body, ['userID']);
         
         // Get current pawn tickets
         let currentPawnTickets = await PawnTicket.find({
@@ -329,7 +328,7 @@ router.post('/tickets', async (req, res) => {
             expiredPawnTickets,
             sellTicketPendingApproval,
             approvedSellTickets
-        })
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
