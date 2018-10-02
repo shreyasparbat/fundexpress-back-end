@@ -24,7 +24,8 @@ router.post('/onboard', async (req, res) => {
             'address',
             'addressType',
             'citizenship',
-            'race'
+            'race',
+            'expoPushToken'
         ]);
 
         // Get password hash
