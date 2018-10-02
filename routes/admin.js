@@ -39,6 +39,25 @@ router.post('/approvePawnTicket', async (req, res) => {
         });
         await pawnTicket.save();
 
+        var user = User.findById(pawnTicket.userID);
+        var registrationToken = [user.expoPushToken];
+        
+        sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
+            if (err) {
+                console.log('Message not sent', err.toString());
+            } else {
+                console.log('Successfully sent pawn ticket approval message', response);
+            }
+        });
+
+        // fcm.send(pawnTicketApprovedMessage, function(err, response){
+        //     if (err) {
+        //         console.log("Something has gone wrong!");
+        //     } else {
+        //         console.log("Successfully sent pawn ticket approval message", response);
+        //     }
+        // });
+
         // Send back success message
         res.send({
             msg: 'Pawn Ticket successfully approved'
@@ -61,6 +80,28 @@ router.post('/rejectPawnTicket', async (req, res) => {
         if (!pawnTicket) {
             throw new Error('No pawn ticket found');
         }
+
+        var user = User.findById(pawnTicket.userID);
+        var registrationToken = [user.expoPushToken];
+        
+        sender.send(pawnTicketRejectedMessage, {registrationTokens: registrationToken}, function (err, response){
+            if (err) {
+                console.log('Message not sent', err.toString());
+            } else {
+                console.log('Successfully sent pawn ticket rejection message', response);
+            }
+        });
+    
+        // fcm.send(pawnTicketRejectedMessage, function(err, response){
+        //     if (err) {
+        //         console.log("Something has gone wrong!");
+        //     } else {
+        //         console.log("Successfully sent pawn ticket rejection message", response);
+        //     }
+        // });
+        
+        // Delete (reject) it
+        pawnTicket.remove();
 
         // Send back success message
         res.send({
@@ -91,6 +132,25 @@ router.post('/approveSellTicket', async (req,res) => {
         });
         await sellTicket.save();
 
+        var user = User.findById(sellTicket.userID);
+        var registrationToken = [user.expoPushToken];
+        
+        sender.send(sellTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
+            if (err) {
+                console.log('Message not sent', err.toString());
+            } else {
+                console.log('Successfully sent sell ticket approval message', response);
+            }
+        });
+           
+        // fcm.send(sellTicketApprovedMessage, function(err, response){
+        //     if (err) {
+        //         console.log("Something has gone wrong!");
+        //     } else {
+        //         console.log("Successfully sent sell ticket approval message", response);
+        //     }
+        // });
+
         // Send back success message
         res.send({
             msg: 'Sell Ticket successfully approved'
@@ -113,6 +173,25 @@ router.post('/rejectSellTicket', async (req, res) => {
         if (!sellTicket) {
             throw new Error('No sell ticket found');
         }
+
+        var user = User.findById(sellTicket.userID);
+        var registrationToken = [user.expoPushToken];
+        
+        sender.send(sellTicketRejectedMessage, {registrationTokens: registrationToken}, function (err, response){
+            if (err) {
+                console.log('Message not sent', err.toString());
+            } else {
+                console.log('Successfully sent sell ticket rejection message', response);
+            }
+        });
+        
+        // fcm.send(sellTicketRejectedMessage, function(err, response){
+        //     if (err) {
+        //         console.log("Something has gone wrong!");
+        //     } else {
+        //         console.log("Successfully sent sell ticket rejection message", response);
+        //     }
+        // });
         
         // Delete (reject) it
         sellTicket.remove();
@@ -209,7 +288,7 @@ router.get('/allUsers', async (req, res) => {
 // POST: get one user's tickets
 router.post('/tickets', async (req, res) => {
     try {
-        let body = _.pick(req.body, ['userID']);
+         let body = _.pick(req.body, ['userID']);
         
         // Get current pawn tickets
         let currentPawnTickets = await PawnTicket.find({
@@ -250,7 +329,7 @@ router.post('/tickets', async (req, res) => {
             expiredPawnTickets,
             sellTicketPendingApproval,
             approvedSellTickets
-        });
+        })
     } catch (error) {
         console.log(error);
         res.status(500).send({
