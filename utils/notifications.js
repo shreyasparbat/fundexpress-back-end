@@ -147,8 +147,6 @@ const sellTicketApprovedMessage = new gcm.Message ({
 });
 
 const sellTicketRejectedMessage = new gcm.Message ({
-    to: user.expoPushToken,
-
     notification: {
         title: 'Sell Ticket Rejected!',
         body: 'Hello! Your sell ticket request has been rejected.'
