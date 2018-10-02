@@ -3,12 +3,6 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
-const mongoose = require('mongoose');
-// const fcm = require('fcm-node');
-// const fcm = new FCM(serverKey);
-const gcm = require('node-gcm');
-const serverKey = 'AAAAZL70Bas:APA91bHRU55TnhMawT0ZO9BwSyELQQbuGsQ_RugsG7VqO0Nax9OlomfC0NILPy3JXcV9l2waxXFZP1OrmZD-pDgur8B4DFDZXgZmrW723Pge0gn8ZWARFGPJLJdoLN3Vsf1vkYq6W2S4'
-const sender = new gcm.Sender(serverKey);
 
 // Custom imports
 const {User} = require('../db/models/user');
@@ -35,25 +29,6 @@ router.post('/approvePawnTicket', async (req, res) => {
             approved: true
         });
         await pawnTicket.save();
-
-        var user = User.findById(pawnTicket.userID);
-        var registrationToken = [user.expoPushToken];
-        
-        sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
-            if (err) {
-                console.log('Message not sent', err.toString());
-            } else {
-                console.log('Successfully sent pawn ticket approval message', response);
-            }
-        });
-
-        // fcm.send(pawnTicketApprovedMessage, function(err, response){
-        //     if (err) {
-        //         console.log("Something has gone wrong!");
-        //     } else {
-        //         console.log("Successfully sent pawn ticket approval message", response);
-        //     }
-        // });
 
         // Send back success message
         res.send({
