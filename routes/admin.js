@@ -3,9 +3,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
-const {keys} = require('../keys');
 const gcm = require('node-gcm');
-const serverKey = keys.serverKey;
 const sender = new gcm.Sender(serverKey);
 
 // Custom imports
@@ -17,6 +15,7 @@ const {pawnTicketApprovedMessage} = require('../utils/notifications');
 const {pawnTicketRejectedMessage} = require('../utils/notifications');
 const {sellTicketApprovedMessage} = require('../utils/notifications');
 const {sellTicketRejectedMessage} = require('../utils/notifications');
+const serverKey = require('../keys').serverKey;
 
 // Add middleware
 router.use(authenticateAdmin);
