@@ -3,12 +3,21 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
+const mongoose = require('mongoose');
+const {keys} = require('../keys');
+const gcm = require('node-gcm');
+const serverKey = keys.serverKey;
+const sender = new gcm.Sender(serverKey);
 
 // Custom imports
 const {User} = require('../db/models/user');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticateAdmin} = require('../middleware/authenticateAdmin');
+const {pawnTicketApprovedMessage} = require('../utils/notifications');
+const {pawnTicketRejectedMessage} = require('../utils/notifications');
+const {sellTicketApprovedMessage} = require('../utils/notifications');
+const {sellTicketRejectedMessage} = require('../utils/notifications');
 
 // Add middleware
 router.use(authenticateAdmin);
