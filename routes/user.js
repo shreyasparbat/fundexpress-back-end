@@ -127,7 +127,7 @@ router.post('/adminLogin', async (req, res) => {
         const token = await admin.generateAuthToken();
         res.header('x-auth', token).send({
             msg: 'success'
-        })
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({

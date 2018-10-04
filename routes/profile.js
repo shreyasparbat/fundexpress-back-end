@@ -22,13 +22,13 @@ router.delete('/logout', (req, res) => {
     req.user.removeToken(req.token).then(() => {
         res.send({
             msg: 'Log out successful'
-        })
+        });
     }).catch((error) => {
         console.log(error);
         res.status(500).send({
             error: error.toString()
         });
-    })
+    });
 });
 
 // POST: get ic image from digitalOcean
@@ -41,7 +41,7 @@ router.post('/icImage', (req, res) => {
         res.status(500).send({
             error: error.toString()
         });
-    })
+    });
 });
 
 // POST: update user
@@ -74,7 +74,7 @@ router.post('/edit', (req, res) => {
 
         // Send back updated user (the user provided to this callback is the old one)
         User.findById(_id).then((user) => {
-        res.send(user);
+            res.send(user);
         }).catch((error) => {
             console.log(error);
             res.status(500).send({
@@ -85,7 +85,7 @@ router.post('/edit', (req, res) => {
 });
 
 router.post('/uploadIc', (req, res) => {
-    uploadIC(req, res, function (e) {
+    uploadIC(req, res, function (error) {
         if (error) {
             console.log(error);
             res.status(500).send({
@@ -95,6 +95,6 @@ router.post('/uploadIc', (req, res) => {
             console.log('successfully uploaded');
         }
     });
-})
+});
 
 module.exports = router;

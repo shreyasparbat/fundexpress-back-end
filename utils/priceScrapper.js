@@ -14,11 +14,11 @@ const pool = mysql.createPool({
 const getGoldSilverPrice = async () => {
     // Get gold bid value
     const [rowsGold] = await retrieveMarketValue('PGOLDbid');
-    const PGOLDbid = parseFloat(rowsGold.value);
+    const PGOLDbid = parseFloat(rowsGold.value) / 28.3495;
 
     // Get silver bid value
     const [rowsSilver] = await retrieveMarketValue('PSILVERbid');
-    const PSILVERbid = parseFloat(rowsSilver.value);
+    const PSILVERbid = parseFloat(rowsSilver.value) / 28.3495;
 
     // Get USD to SGD exchange rate (bid)
     const [rowsExchangeRate] = await retrieveMarketValue('USSGDbid');

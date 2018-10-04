@@ -89,7 +89,7 @@ router.post('/add', async (req, res) => {
             material: body.material,
             brand: body.brand,
             purity: body.purity,
-            weight: body.weight,
+            weight: parseFloat(body.weight),
             condition: body.condition,
             otherComments: body.otherComments,
             dateOfPurchase: new Date(body.dateOfPurchase)
