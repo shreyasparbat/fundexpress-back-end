@@ -4,6 +4,9 @@ const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 const gcm = require('node-gcm');
+const serverKey = require('../keys').serverKey;
+// const FCM = require('fcm-node');
+// const fcm = new FCM (serverKey)
 
 // Custom imports
 const {User} = require('../db/models/user');
@@ -14,7 +17,7 @@ const {pawnTicketApprovedMessage} = require('../utils/notifications');
 const {pawnTicketRejectedMessage} = require('../utils/notifications');
 const {sellTicketApprovedMessage} = require('../utils/notifications');
 const {sellTicketRejectedMessage} = require('../utils/notifications');
-const serverKey = require('../keys').serverKey;
+
 
 // Define notification sender
 const sender = new gcm.Sender(serverKey);
@@ -46,23 +49,46 @@ router.post('/approvePawnTicket', async (req, res) => {
         sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
             if (err) {
                 console.log('Message not sent', err.toString());
+                res.write({
+                    msg: 'Message not sent via gcm'
+                })
             } else {
+                res.write({
+                    msg: 'Message sent via gcm'
+                })
                 console.log('Successfully sent pawn ticket approval message', response);
             }
         });
 
-        // fcm.send(pawnTicketApprovedMessage, function(err, response){
-        //     if (err) {
-        //         console.log("Something has gone wrong!");
-        //     } else {
-        //         console.log("Successfully sent pawn ticket approval message", response);
-        //     }
-        // });
+        const pawnTicketApprovedMessage = {
+            to: user.expoPushToken, 
+            
+            notification: {
+                title: 'Pawn Ticket Successfully Approved', 
+                body: 'Hello! This is to inform you that your pawn ticket request has been approved!'
+            }
+        };
+
+        fcm.send(pawnTicketApprovedMessage, function(err, response){
+            if (err) {
+                res.write({
+                    msg: 'Not sent via fcm'
+                })
+                console.log("Something has gone wrong!");
+            } else {
+                res.write({
+                    msg: 'Sent via fcm'
+                })
+                console.log("Successfully sent pawn ticket approval message", response);
+            }
+        });
 
         // Send back success message
-        res.send({
+        res.write({
             msg: 'Pawn Ticket successfully approved'
         });
+
+        res.end();
     } catch (error) {
         console.log(error);
         res.status(500).send({
