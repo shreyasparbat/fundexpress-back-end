@@ -39,7 +39,8 @@ router.post('/approvePawnTicket', async (req, res) => {
         });
         await pawnTicket.save();
 
-        var user = User.findById(pawnTicket.userID);
+        var user = await User.findById(new ObjectID (pawnTicket.userID));
+
         var registrationToken = [user.expoPushToken];
         
         sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){

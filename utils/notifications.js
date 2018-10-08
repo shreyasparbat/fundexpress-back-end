@@ -2,7 +2,7 @@
 const cron = require('node-cron');
 const FCM = require('fcm-node');
 const gcm = require('node-gcm');
-const serverKey = 'AAAAZL70Bas:APA91bHRU55TnhMawT0ZO9BwSyELQQbuGsQ_RugsG7VqO0Nax9OlomfC0NILPy3JXcV9l2waxXFZP1OrmZD-pDgur8B4DFDZXgZmrW723Pge0gn8ZWARFGPJLJdoLN3Vsf1vkYq6W2S4'
+const serverKey = require('../keys').serverKey;
 const fcm = new FCM(serverKey);
 
 
