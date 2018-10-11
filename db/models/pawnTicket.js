@@ -43,6 +43,14 @@ const pawnTicketSchema = new mongoose.Schema({
     expired: {
         type: Boolean,
         default: false
+    },
+    outstandingPrincipal: {
+        type: Number,
+        required: true
+    }, 
+    outstandingInterest: {
+        type: Number,
+        required: true
     }
 });
 
