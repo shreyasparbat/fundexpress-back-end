@@ -139,7 +139,7 @@ router.post('/pawn', async (req, res) => {
         // Check whether different user is trying to pawn the item
         if (item.userID.toString() !== req.user._id.toString()) {
             throw new Error('Item was added by a different user');
-        } 
+        }
 
         // Create Pawn ticket
         let pawnTicketObject = {
@@ -148,7 +148,7 @@ router.post('/pawn', async (req, res) => {
             'dateCreated': new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()),
             'expiryDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 6),
             'gracePeriodEndDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 7),
-            'interestPayable': body.specifiedValue * (1 + (0.015 * 5) + 0.01),
+            'interestPayable': body.specifiedValue * ((0.015 * 5) + 0.01),
             'value': body.specifiedValue,
             'approved': false,
             'closed': false,
