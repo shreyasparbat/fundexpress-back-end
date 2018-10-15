@@ -148,7 +148,7 @@ router.post('/pawn', async (req, res) => {
             'dateCreated': new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()),
             'expiryDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 6),
             'gracePeriodEndDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 7),
-            'interestPayable': body.specifiedValue * (1 + (0.015 * 5) + 0.01),
+            'indicativeTotalInterestPayable': body.specifiedValue * ((0.015 * 5) + 0.01),
             'value': body.specifiedValue,
             'approved': false,
             'closed': false,

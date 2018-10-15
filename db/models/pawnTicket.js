@@ -24,7 +24,7 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    interestPayable: {
+    indicativeTotalInterestPayable: {
         type: Number,
         required: true
     },
