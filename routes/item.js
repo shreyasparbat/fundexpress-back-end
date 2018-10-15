@@ -139,7 +139,7 @@ router.post('/pawn', async (req, res) => {
         // Check whether different user is trying to pawn the item
         if (item.userID.toString() !== req.user._id.toString()) {
             throw new Error('Item was added by a different user');
-        } 
+        }
 
         // Create Pawn ticket
         let pawnTicketObject = {
