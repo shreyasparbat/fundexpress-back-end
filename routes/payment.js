@@ -32,14 +32,21 @@ router.post('/', async (req, res) => {
             
             const pawnTicket = await pawnTicket.findById(new ObjectID(body.ticketID));
             if (!pawnTicket) {
-                throw new Error('No pawnTicket found');
+                throw new Error('No Pawn Ticket found');
             } else {
                 // Update pawnTicket information
+                const balanceInterest = pawnTicket.outstandingInterest
+                const balancePrincipal = pawnTicket.outstandingPrincipal
+                if (paymentAmount >= pawnTicket.outstandingInterest) {
+                    balanceInterest = 0
+                    balancePrincipal -= (paymentAmount - outstandingInterest)
+                } else {
+                    balanceInterest -= paymentAmount
+                }
+
                 pawnTicket.set({
-                    name: body.name,
-                    type: body.type,
-                    material: body.material,
-                    brand: body.brand
+                    outstandingInterest: balanceInterest,
+                    outstandingPrincipal: balancePrincipal
                 });
                 await pawnTicket.save();
             }
