@@ -38,7 +38,17 @@ router.post('/approvePawnTicket', async (req, res) => {
         
         // Approve it
         pawnTicket.set({
-            approved: true
+            item: body.item,
+            dateCreated: body.dateCreated,
+            expiryDate: body.expiryDate,
+            gracePeriodEndDate: body.gracePeriodEndDate,
+            interestPayable: body.interestPayable,
+            value: body.value,
+            approved: body.approved,
+            closed: body.closed,
+            expired: body.expired,
+            outstandingPrincipal: body.outstandingPrincipal, 
+            outstandingInterest: body.outstandingInterest,
         });
         await pawnTicket.save();
 
