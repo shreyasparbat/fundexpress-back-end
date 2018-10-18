@@ -20,29 +20,29 @@ cron.schedule('0 0 0 * * *', () => {
     
     // retrieve all Pawn Tickets
     PawnTicket.find().then((pawnTickets) => {
-        pawnTickets.forEach(ticket => {
+        pawnTickets.forEach(async (ticket) => {
             //check if pawn ticket is expiring in a week
             if(ticket.findExpiringTicket()) {
 
-                var user = User.findById(ticket.userID);
+                var user = await User.findById(ticket.userID);
                 expiringTokens.push(user.expoPushToken);
 
             //check if pawn ticket has expired
             } else if (ticket.findExpiredTicket()) {
 
-                var user = User.findById(ticket.userID);
+                var user = await User.findById(ticket.userID);
                 expiredTokens.push(user.expoPushToken);
             
             //check if pawn ticket grace period is expiring in a week
             } else if (ticket.findExpiringGracePeriod()) {
 
-                var user = User.findById(ticket.userID);
+                var user = await User.findById(ticket.userID);
                 expiringGracePeriodTokens.push(user.expoPushToken);
 
             //check if grace period has ended
             } else if (ticket.findClosedTicket()) {
 
-                var user = User.findById(ticket.userID);
+                var user = await User.findById(ticket.userID);
                 closedTokens.push(user.expoPushToken);
 
             }
@@ -152,6 +152,33 @@ const sellTicketRejectedMessage = new gcm.Message ({
         body: 'Hello! Your sell ticket request has been rejected.'
     }
 });
+
+cron.schedule('0 1 0 * * *', async function () {
+    // runs every day at 00:01
+
+    // finds all the current pawn tickets
+    let pawnTickets = await PawnTicket.find({
+        approved: true,
+        closed: false
+    }).lean();
+    
+    pawnTickets.forEach(ticket => {
+        if (new Date().getDate() - ticket.dateCreated.getDate() === 1 && ticket.dateCreated.getMonth() === new Date()          .getMonth()) {
+            // adds interest for the first month
+            ticket.indicativeTotalInterestPayable += ticket.value * 1 * 1 / 100;
+
+        } else if (ticket.dateCreated.getDate() === lastday(new Date().getFullYear(), new Date().getMonth()-1) &&               new Date().getMonth() - ticket.dateCreated.getMonth() === 1 && new Date().getDate() === 1) {
+            // adds interest for the first month
+            ticket.indicativeTotalInterestPayable += ticket.value * 1 * 1 / 100;
+
+        } else if (ticket.dateCreated.getDate() === new Date().getDate()) {
+                // adds interest for every subsequent month
+                ticket.indicativeTotalInterestPayable += ticket.value * 1.5 * 1 / 100;
+
+        }
+    })
+});
+
 
 module.exports = {
     pawnTicketApprovedMessage,

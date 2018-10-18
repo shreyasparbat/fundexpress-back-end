@@ -1,5 +1,6 @@
 // Library imports
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 // Define pawnTicket Schema
 const pawnTicketSchema = new mongoose.Schema({
@@ -23,7 +24,7 @@ const pawnTicketSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    interestPayable: {
+    indicativeTotalInterestPayable: {
         type: Number,
         required: true
     },
