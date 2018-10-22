@@ -48,7 +48,7 @@ cron.schedule('0 0 0 * * *', () => {
             }
         });
     });
-    //expiry reminder notification
+    //expiry reminder notification template
     const expiryReminderMessage = {
         to: expiringTokens, 
         
@@ -57,7 +57,7 @@ cron.schedule('0 0 0 * * *', () => {
             body: 'Hello! This is a reminder that you have only 1 week left to complete the repayment for your pawned item.'
         }
     };
-    //grace period started notification
+    //grace period started notification template
     const gracePeriodStartedMessage = {
         to: expiredTokens,
     
@@ -66,7 +66,7 @@ cron.schedule('0 0 0 * * *', () => {
             body: 'Hello! Your payment deadline for your pawned item has been passed. Your one month grace period for payment has started now.'
         }
     };
-    //grace period expiry reminder notification
+    //grace period expiry reminder notification template
     const gracePeriodReminderMessage = {
         to: expiringGracePeriodTokens,
     
@@ -75,7 +75,7 @@ cron.schedule('0 0 0 * * *', () => {
             body: 'Hello! Your one month grace period for payment will end in 1 week. Please complete your payment within that timeline.'
         }
     };
-    //ticket closed notification
+    //ticket closed notification template
     const closedMessage = {
         to: closedTokens,
     
@@ -85,6 +85,7 @@ cron.schedule('0 0 0 * * *', () => {
         }
     };
     
+    // send message functions below
     fcm.send(expiryReminderMessage, function(err, response){
         if (err) {
             console.log("Something has gone wrong!");
@@ -122,6 +123,7 @@ cron.schedule('0 0 0 * * *', () => {
     timezone: 'Asia/Singapore'
 });
 
+// setting message templates for gcm notifications
 const pawnTicketApprovedMessage = new gcm.Message ({
 
     notification: {
@@ -153,6 +155,7 @@ const sellTicketRejectedMessage = new gcm.Message ({
     }
 });
 
+// scheduling task to add interest payments for existing pawn tickets
 cron.schedule('0 1 0 * * *', async function () {
     // runs every day at 00:01
 
@@ -173,7 +176,10 @@ cron.schedule('0 1 0 * * *', async function () {
 
         } else if (ticket.dateCreated.getDate() === new Date().getDate()) {
                 // adds interest for every subsequent month
-                ticket.indicativeTotalInterestPayable += ticket.value * 1.5 * 1 / 100;
+                const numMonths = new Date().getMonth() - ticket.dateCreated.getMonth();
+
+                ticket.indicativeTotalInterestPayable = 0;
+                ticket.indicativeTotalInterestPayable += ticket.value * 1.5 * numMonths / 100;
 
         }
     })
