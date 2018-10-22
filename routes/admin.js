@@ -384,11 +384,6 @@ router.post('/tickets', async (req, res) => {
     }
 });
 
-// Page for uploading new CSV for retraining
-router.get('/retrainCreditRatingModel', function(req, res) {
-    res.render('retrainCreditRatingModel', { title: 'Upload New CSV' });
-});
-
 // DELETE: log admin out
 router.delete('/logout', (req, res) => {
     req.admin.removeToken(req.token).then(() => {
