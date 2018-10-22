@@ -5,8 +5,8 @@ const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 const gcm = require('node-gcm');
 const serverKey = require('../keys').serverKey;
-// const FCM = require('fcm-node');
-// const fcm = new FCM (serverKey)
+// const FCM = require('fcm-node'); ignore for now, don't delete
+// const fcm = new FCM (serverKey); ignore for now, don't delete
 
 // Custom imports
 const {User} = require('../db/models/user');
@@ -28,7 +28,20 @@ router.use(authenticateAdmin);
 // POST: Approve a pawn ticket
 router.post('/approvePawnTicket', async (req, res) => {
     try {
-        let body = _.pick(req.body, ['pawnTicketID']);
+        let body = _.pick(req.body, [
+            'pawnTicketID',
+            'item',
+            'dateCreated',
+            'expiryDate',
+            'gracePeriodEndDate',
+            'indicativeTotalInterestPayable',
+            'value',
+            'approved',
+            'closed',
+            'expired',
+            'outstandingPrincipal',
+            'outstandingInterest'
+        ]);
 
         // Find Pawn ticket
         const pawnTicket = await PawnTicket.findById(new ObjectID(body.pawnTicketID));
@@ -42,7 +55,7 @@ router.post('/approvePawnTicket', async (req, res) => {
             dateCreated: body.dateCreated,
             expiryDate: body.expiryDate,
             gracePeriodEndDate: body.gracePeriodEndDate,
-            interestPayable: body.interestPayable,
+            indicativeTotalInterestPayable: body.indicativeTotalInterestPayable,
             value: body.value,
             approved: body.approved,
             closed: body.closed,
@@ -56,6 +69,7 @@ router.post('/approvePawnTicket', async (req, res) => {
 
         var registrationToken = [user.expoPushToken];
         
+        // calling gcm to send approval notification to user
         sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
             if (err) {
                 console.log('Message not sent', err.toString());
@@ -70,28 +84,30 @@ router.post('/approvePawnTicket', async (req, res) => {
             }
         });
 
-        const pawnTicketApprovedMessage = {
-            to: user.expoPushToken, 
-            
-            notification: {
-                title: 'Pawn Ticket Successfully Approved', 
-                body: 'Hello! This is to inform you that your pawn ticket request has been approved!'
-            }
-        };
+        // ignore code for now, don't delete
 
-        fcm.send(pawnTicketApprovedMessage, function(err, response){
-            if (err) {
-                res.write({
-                    msg: 'Not sent via fcm'
-                })
-                console.log("Something has gone wrong!");
-            } else {
-                res.write({
-                    msg: 'Sent via fcm'
-                })
-                console.log("Successfully sent pawn ticket approval message", response);
-            }
-        });
+        // const pawnTicketApprovedMessage = {
+        //     to: user.expoPushToken, 
+            
+        //     notification: {
+        //         title: 'Pawn Ticket Successfully Approved', 
+        //         body: 'Hello! This is to inform you that your pawn ticket request has been approved!'
+        //     }
+        // };
+
+        // fcm.send(pawnTicketApprovedMessage, function(err, response){
+        //     if (err) {
+        //         res.write({
+        //             msg: 'Not sent via fcm'
+        //         })
+        //         console.log("Something has gone wrong!");
+        //     } else {
+        //         res.write({
+        //             msg: 'Sent via fcm'
+        //         })
+        //         console.log("Successfully sent pawn ticket approval message", response);
+        //     }
+        // });
 
         // Send back success message
         res.write({
@@ -121,6 +137,7 @@ router.post('/rejectPawnTicket', async (req, res) => {
         var user = User.findById(pawnTicket.userID);
         var registrationToken = [user.expoPushToken];
         
+        // calling gcm to send rejection notification to user
         sender.send(pawnTicketRejectedMessage, {registrationTokens: registrationToken}, function (err, response){
             if (err) {
                 console.log('Message not sent', err.toString());
@@ -128,14 +145,6 @@ router.post('/rejectPawnTicket', async (req, res) => {
                 console.log('Successfully sent pawn ticket rejection message', response);
             }
         });
-    
-        // fcm.send(pawnTicketRejectedMessage, function(err, response){
-        //     if (err) {
-        //         console.log("Something has gone wrong!");
-        //     } else {
-        //         console.log("Successfully sent pawn ticket rejection message", response);
-        //     }
-        // });
         
         // Delete (reject) it
         pawnTicket.remove();
