@@ -35,13 +35,13 @@ router.post('/', async (req, res) => {
                 throw new Error('No Pawn Ticket found');
             } else {
                 // Update pawnTicket information
-                const balanceInterest = pawnTicket.outstandingInterest
-                const balancePrincipal = pawnTicket.outstandingPrincipal
+                const balanceInterest = pawnTicket.outstandingInterest;
+                const balancePrincipal = pawnTicket.outstandingPrincipal;
                 if (paymentAmount >= pawnTicket.outstandingInterest) {
-                    balanceInterest = 0
-                    balancePrincipal -= (paymentAmount - outstandingInterest)
+                    balanceInterest = 0;
+                    balancePrincipal -= (paymentAmount - outstandingInterest);
                 } else {
-                    balanceInterest -= paymentAmount
+                    balanceInterest -= paymentAmount;
                 }
 
                 pawnTicket.set({

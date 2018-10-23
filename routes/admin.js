@@ -12,6 +12,7 @@ const serverKey = require('../keys').serverKey;
 const {User} = require('../db/models/user');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
+const {Item} = require('../db/models/item');
 const {authenticateAdmin} = require('../middleware/authenticateAdmin');
 const {pawnTicketApprovedMessage} = require('../utils/notifications');
 const {pawnTicketRejectedMessage} = require('../utils/notifications');
@@ -43,13 +44,23 @@ router.post('/approvePawnTicket', async (req, res) => {
             'outstandingInterest'
         ]);
 
+        // Find Item
+        const item = await Item.findById(new ObjectID(body.item._id));
+        if (!item) {
+            throw new Error('No pawn ticket found');
+        }
+
+        // Update it
+        item.set(body.item);
+        await item.save();
+
         // Find Pawn ticket
         const pawnTicket = await PawnTicket.findById(new ObjectID(body.pawnTicketID));
         if (!pawnTicket) {
             throw new Error('No pawn ticket found');
         }
         
-        // Approve it
+        // Approve and update it
         pawnTicket.set({
             item: body.item,
             dateCreated: body.dateCreated,
@@ -65,25 +76,7 @@ router.post('/approvePawnTicket', async (req, res) => {
         });
         await pawnTicket.save();
 
-        var user = await User.findById(new ObjectID (pawnTicket.userID));
-
-        var registrationToken = [user.expoPushToken];
         
-        // calling gcm to send approval notification to user
-        sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
-            if (err) {
-                console.log('Message not sent', err.toString());
-                res.write({
-                    msg: 'Message not sent via gcm'
-                })
-            } else {
-                res.write({
-                    msg: 'Message sent via gcm'
-                })
-                console.log('Successfully sent pawn ticket approval message', response);
-            }
-        });
-
         // ignore code for now, don't delete
 
         // const pawnTicketApprovedMessage = {
@@ -110,13 +103,25 @@ router.post('/approvePawnTicket', async (req, res) => {
         // });
 
         // Send back success message
-        res.write({
-            msg: 'Pawn Ticket successfully approved'
-        });
+        res.write('Pawn Ticket successfully approved\n');
 
-        res.end();
+        var user = await User.findById(new ObjectID (pawnTicket.userID));
+
+        var registrationToken = [user.expoPushToken];
+        
+        // calling gcm to send approval notification to user
+        sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
+            if (err) {
+                console.log('Message not sent', err.toString());
+                res.write('Message not sent via gcm');
+            } else {
+                res.write('Message sent via gcm');
+                console.log('Successfully sent pawn ticket approval message', response);
+            }
+            res.end();
+        });
     } catch (error) {
-        console.log(error);
+        console.log(error.stack);
         res.status(500).send({
             error: error.toString()
         });
