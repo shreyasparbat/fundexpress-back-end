@@ -9,7 +9,10 @@ const getAge = (dateOfBirth) => {
 };
 
 const addMonths = (date, numberOfMonths) => {
-    return new Date(date.setMonth(date.getMonth() + numberOfMonths));
+    let calculatedDate = new Date();
+    calculatedDate.setMonth(date.getMonth() + numberOfMonths);
+    calculatedDate.setDate(date.getDate() - 1);
+    return calculatedDate;
 };
 
 module.exports = {
