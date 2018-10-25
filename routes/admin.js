@@ -68,7 +68,7 @@ router.post('/approvePawnTicket', async (req, res) => {
             gracePeriodEndDate: body.gracePeriodEndDate,
             indicativeTotalInterestPayable: body.indicativeTotalInterestPayable,
             value: body.value,
-            approved: body.approved,
+            approved: true,
             closed: body.closed,
             expired: body.expired,
             outstandingPrincipal: body.outstandingPrincipal, 
