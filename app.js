@@ -16,7 +16,7 @@ const retrainCreditRatingModelRouter = require('./routes/retrainCreditRatingMode
 const paymentRouter = require('./routes/payment');
 
 // Custom imports
-const {mongoose} = require('./db/mongoose'); // don't remove
+require('./db/mongoose');
 
 // Init express app
 const app = express();
@@ -39,7 +39,7 @@ app.use('/profile', profileRouter);
 app.use('/item', itemRouter);
 app.use('/tickets', ticketsRouter);
 app.use('/admin', adminRouter);
-app.use('/retrainCreditRatingModel', retrainCreditRatingModelRouter);
+app.use('/adminViews', retrainCreditRatingModelRouter);
 app.use('/payment', paymentRouter);
 
 // Catch 404 and forward to error handler

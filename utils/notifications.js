@@ -9,6 +9,7 @@ const fcm = new FCM(serverKey);
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {User} = require('../db/models/user');
+const config = require('../config');
 
 cron.schedule('0 0 0 * * *', () => {
     // run every day at midnight.
@@ -179,7 +180,7 @@ cron.schedule('0 1 0 * * *', async function () {
                 const numMonths = new Date().getMonth() - ticket.dateCreated.getMonth();
 
                 ticket.indicativeTotalInterestPayable = 0;
-                ticket.indicativeTotalInterestPayable += ticket.value * 1.5 * numMonths / 100;
+                ticket.indicativeTotalInterestPayable += ticket.value * 1.5 * numMonths / 100; // use config.normalRate instead!!!
 
         }
     })
@@ -191,4 +192,4 @@ module.exports = {
     pawnTicketRejectedMessage,
     sellTicketApprovedMessage,
     sellTicketRejectedMessage
-}
+};
