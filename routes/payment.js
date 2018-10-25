@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
             'success'
         ]);
 
-        // Create Pawn ticket
+        // Create payment object
         let paymentObject = {
             'ticketID': body.ticketID,
             'paymentAmount': body.paymentAmount,
@@ -28,20 +28,20 @@ router.post('/', async (req, res) => {
         let payment = new Payment(paymentObject);
 
         //update payment into db
-        if (success == true) {
+        if (payment.success == true) {
             
-            const pawnTicket = await pawnTicket.findById(new ObjectID(body.ticketID));
+            const pawnTicket = await PawnTicket.findById(new ObjectID(body.ticketID));
             if (!pawnTicket) {
                 throw new Error('No Pawn Ticket found');
             } else {
                 // Update pawnTicket information
-                const balanceInterest = pawnTicket.outstandingInterest;
-                const balancePrincipal = pawnTicket.outstandingPrincipal;
-                if (paymentAmount >= pawnTicket.outstandingInterest) {
+                var balanceInterest = pawnTicket.outstandingInterest;
+                var balancePrincipal = pawnTicket.outstandingPrincipal;
+                if (payment.paymentAmount >= pawnTicket.outstandingInterest) {
                     balanceInterest = 0;
-                    balancePrincipal -= (paymentAmount - outstandingInterest);
+                    balancePrincipal -= (payment.paymentAmount - pawnTicket.outstandingInterest);
                 } else {
-                    balanceInterest -= paymentAmount;
+                    balanceInterest -= payment.paymentAmount;
                 }
 
                 pawnTicket.set({
