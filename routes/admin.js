@@ -389,6 +389,27 @@ router.post('/tickets', async (req, res) => {
     }
 });
 
+// POST: get all tickets pending approval regardless of user
+router.post('/getTicketsPendingApproval', async (req, res) => {
+    try {
+        // Get pawn tickets pending approval
+        let pawnTicketsPendingApproval = await PawnTicket.find({
+            approved: false,
+            closed: false
+        }).lean();
+        
+        res.send({
+            pawnTicketsPendingApproval
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+});
+
+
 // DELETE: log admin out
 router.delete('/logout', (req, res) => {
     req.admin.removeToken(req.token).then(() => {
