@@ -141,7 +141,8 @@ const UserSchema = new mongoose.Schema({
     },
     expoPushToken: {
         type: String
-    }
+    },
+    registrationCompleted: Boolean
 });
 
 // Override toJson (for returning user profile)
@@ -166,7 +167,8 @@ UserSchema.methods.toJSON = function () {
         'noOfL',
         'noOfD',
         'ethHash',
-        'expoPushToken'
+        'expoPushToken',
+        'registrationCompleted'
     ]);
 };
 

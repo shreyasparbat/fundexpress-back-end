@@ -8,6 +8,39 @@ const bcrypt = require('bcryptjs');
 const {User} = require('../db/models/user');
 const {Admin} = require('../db/models/admin');
 
+// POST: add a trial user
+router.post('/registerTrial', (req, res) => {
+    try {
+        // Generate password hash
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(body.password, salt);
+        password = hash;
+
+        // Create and save user
+        let user = new User({
+            email: req.body.email,
+            fullName: req.body.fullName,
+            registrationCompleted: false,
+            password
+        });
+        user.save();
+
+        // Generate user's authentication token
+        const token = await user.generateAuthToken();
+
+        // Send back token
+        res.header('x-auth', token).send({
+            msg: 'success'
+        });
+    } catch (error) {
+        console.log(error.stack);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+    
+});
+
 // POST: add user (On boarding)
 router.post('/onboard', async (req, res) => {
     try {
