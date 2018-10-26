@@ -44,26 +44,18 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     },
-    gender: {
-        type: String,
-        required: true,
-    },
-    dateOfBirth: {
-        type: Date
-    },
-    age: {
-        type: Number,
-        required: false
-    },
+    gender: String,
+    dateOfBirth: Date,
+    age: Number,
     ic: {
         type: String,
-        required: true,
+        required: false,
         minlength: 9,
         maxlength: 9
     },
     mobileNumber: {
         type: Number,
-        required: true,
+        required: false,
         minlength: 8,
         maxlength: 8
     },
@@ -73,55 +65,36 @@ const UserSchema = new mongoose.Schema({
         minlength: 8,
         maxlength: 8
     },
-    address: {
-        type: String,
-        required: true,
-    },
-    addressType: {
-        type: String,
-        required: true
-    },
-    citizenship: {
-        type: String,
-        required: true
-    },
-    race: {
-        type: String,
-        required: true
-    },
+    address: String,
+    addressType: String,
+    citizenship: String,
+    race: String,
     noOfC: {
         type: Number,
-        required: true,
         default: 0
     },
     noOfL: {
         type: Number,
-        required: true,
         default: 0
     },
     noOfD: {
         type: Number,
-        required: true,
         default: 0
     },
     cPercent: {
         type: Number,
-        required: true,
         default: 0
     },
     lPercent: {
         type: Number,
-        required: true,
         default: 0
     },
     dPercent: {
         type: Number,
-        required: true,
         default: 0
     },
     initialCreditRating: {
         type: String,
-        required: true,
         default: 'B'
     },
     currentCreditRating: {
@@ -129,7 +102,6 @@ const UserSchema = new mongoose.Schema({
     },
     initialLtvPercentage: {
         type: Number,
-        required: true,
         default: 0.9
     },
     currentLtvPercentage: {

@@ -18,16 +18,6 @@ router.use(authenticate);
 // POST: upload an item image
 router.post('/uploadImage', async (req, res) => {
     try {
-        // Upload images to digital ocean
-        uploadItem(req, res, function (e) {
-            if (e) {
-                console.log(e);
-                throw(e);
-            } else {
-                console.log('successfully uploaded');
-            }
-        });
-
         // Save the item
         let type = req.get('type');
         let itemObject = {
@@ -36,6 +26,17 @@ router.post('/uploadImage', async (req, res) => {
         };
         let item = new Item(itemObject);
         await item.save();
+
+        // Upload images to digital ocean
+        req.itemID = item._id;
+        uploadItem(req, res, function (e) {
+            if (e) {
+                console.log(e);
+                throw(e);
+            } else {
+                console.log('successfully uploaded');
+            }
+        });
 
         // Run Image recognition if gold bar or coin
         let responseBody = {

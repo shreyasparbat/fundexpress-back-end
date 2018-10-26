@@ -12,7 +12,7 @@ const profileRouter = require('./routes/profile');
 const itemRouter = require('./routes/item');
 const ticketsRouter = require('./routes/tickets');
 const adminRouter = require('./routes/admin');
-const retrainCreditRatingModelRouter = require('./routes/retrainCreditRatingModel');
+const adminViewsRouter = require('./routes/adminViews');
 const paymentRouter = require('./routes/payment');
 
 // Custom imports
@@ -39,7 +39,7 @@ app.use('/profile', profileRouter);
 app.use('/item', itemRouter);
 app.use('/tickets', ticketsRouter);
 app.use('/admin', adminRouter);
-app.use('/adminViews', retrainCreditRatingModelRouter);
+app.use('/adminViews', adminViewsRouter);
 app.use('/payment', paymentRouter);
 
 // Catch 404 and forward to error handler

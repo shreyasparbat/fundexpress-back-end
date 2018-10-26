@@ -9,12 +9,12 @@ const {User} = require('../db/models/user');
 const {Admin} = require('../db/models/admin');
 
 // POST: add a trial user
-router.post('/registerTrial', (req, res) => {
+router.post('/registerTrial', async (req, res) => {
     try {
         // Generate password hash
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(body.password, salt);
-        password = hash;
+        const hash = await bcrypt.hash(req.body.password, salt);
+        const password = hash;
 
         // Create and save user
         let user = new User({
@@ -23,7 +23,7 @@ router.post('/registerTrial', (req, res) => {
             registrationCompleted: false,
             password
         });
-        user.save();
+        await user.save();
 
         // Generate user's authentication token
         const token = await user.generateAuthToken();
@@ -41,56 +41,59 @@ router.post('/registerTrial', (req, res) => {
     
 });
 
-// POST: add user (On boarding)
-router.post('/onboard', async (req, res) => {
-    try {
-        // Get info and save
-        let body = _.pick(req.body, [
-            'email',
-            'password',
-            'fullName',
-            'gender',
-            'dateOfBirth',
-            'ic',
-            'mobileNumber',
-            'landlineNumber',
-            'address',
-            'addressType',
-            'citizenship',
-            'race',
-            'expoPushToken'
-        ]);
+// // POST: add user (On boarding)
+// router.post('/onboard', async (req, res) => {
+//     try {
+//         // Get info and save
+//         let body = _.pick(req.body, [
+//             'email',
+//             'password',
+//             'fullName',
+//             'gender',
+//             'dateOfBirth',
+//             'ic',
+//             'mobileNumber',
+//             'landlineNumber',
+//             'address',
+//             'addressType',
+//             'citizenship',
+//             'race',
+//             'expoPushToken'
+//         ]);
 
-        // Get password hash
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(body.password, salt);
-        body.password = hash;
+//         // Get password hash
+//         const salt = await bcrypt.genSalt(10);
+//         const hash = await bcrypt.hash(body.password, salt);
+//         body.password = hash;
 
-        // Save user
-        let user = new User(body);
-        await user.save();
+//         // Mark registration as completed
+//         body.registrationCompleted = true;
 
-        // Generate user's credit rating
-        await user.generateCreditRating();
+//         // Save user
+//         let user = new User(body);
+//         await user.save();
 
-        // Generate user's block
-        await user.generateBlock();
+//         // Generate user's credit rating
+//         await user.generateCreditRating();
 
-        // Generate user's authentication token
-        const token = await user.generateAuthToken();
+//         // Generate user's block
+//         await user.generateBlock();
 
-        // Send back token
-        res.header('x-auth', token).send({
-            msg: 'success'
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            error: error.toString()
-        });
-    }
+//         // Generate user's authentication token
+//         const token = await user.generateAuthToken();
 
-});
+//         // Send back token
+//         res.header('x-auth', token).send({
+//             msg: 'success'
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send({
+//             error: error.toString()
+//         });
+//     }
+
+// });
 
 // POST: User login
 router.post('/login', async (req, res) => {

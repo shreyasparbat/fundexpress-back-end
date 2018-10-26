@@ -26,9 +26,7 @@ const uploadIC = multer({
         bucket: 'fundexpress-api-storage/ic-images',
         acl: 'public-read',
         key: function (req, file, cb) {
-            const date = new Date();
-            cb(null, date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + '_' +
-                req.user.ic + '_' + file.fieldname + '.jpg');
+            cb(null, req.user.ic + '_' + file.fieldname + '.jpg');
         },
     }),
 }).fields([{ name: 'ic-front', maxCount: 1}, {name: 'ic-back', maxCount: 1}]);
@@ -40,9 +38,7 @@ const uploadItem = multer({
         bucket: 'fundexpress-api-storage/item-images',
         acl: 'public-read',
         key: function (req, file, cb) {
-            const date = new Date();
-            cb(null, date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + '_' +
-                req.user._id + '_' + file.fieldname + '.jpg');
+            cb(null, req.itemID + '_' + file.fieldname + '.jpg');
         },
     }),
 }).fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
