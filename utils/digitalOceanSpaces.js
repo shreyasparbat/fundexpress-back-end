@@ -26,7 +26,7 @@ const uploadIC = multer({
         bucket: 'fundexpress-api-storage/ic-images',
         acl: 'public-read',
         key: function (req, file, cb) {
-            cb(null, req.user.ic + '_' + file.fieldname + '.jpg');
+            cb(null, req.user.ic + '_' + file.fieldname + '.png');
         },
     }),
 }).fields([{ name: 'ic-front', maxCount: 1}, {name: 'ic-back', maxCount: 1}]);
@@ -38,7 +38,7 @@ const uploadItem = multer({
         bucket: 'fundexpress-api-storage/item-images',
         acl: 'public-read',
         key: function (req, file, cb) {
-            cb(null, req.itemID + '_' + file.fieldname + '.jpg');
+            cb(null, req.itemID + '_' + file.fieldname + '.png');
         },
     }),
 }).fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
