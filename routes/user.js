@@ -41,7 +41,7 @@ router.post('/registerTrial', async (req, res) => {
     
 });
 
-// // POST: add user (On boarding)
+// POST: add user (On boarding)
 // router.post('/onboard', async (req, res) => {
 //     try {
 //         // Get info and save
