@@ -397,9 +397,15 @@ router.post('/getTicketsPendingApproval', async (req, res) => {
             approved: false,
             closed: false
         }).lean();
-        
+
+        // Get sell tickets pending approval
+        let sellTicketsPendingApproval = await SellTicket.find({
+            approved: false
+        }).lean();
+
         res.send({
-            pawnTicketsPendingApproval
+            pawnTicketsPendingApproval,
+            sellTicketsPendingApproval
         });
     } catch (error) {
         console.log(error);
