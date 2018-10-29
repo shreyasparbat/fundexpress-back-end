@@ -76,7 +76,7 @@ router.post('/edit', (req, res) => {
         // Send back updated user (the user provided to this callback is the old one)
         User.findById(_id).then(async (user) => {
             // Generate user's credit rating
-            // await user.generateCreditRating();
+            await user.generateCreditRating();
             res.send(user);
         }).catch((error) => {
             console.log(error);
