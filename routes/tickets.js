@@ -1,6 +1,7 @@
 // Library imports
 const express = require('express');
 const router = express.Router();
+const {ObjectID} = require('mongodb');
 
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
@@ -55,11 +56,49 @@ router.post('/', async (req, res) => {
             approvedSellTickets
         });
     } catch (error) {
-        console.log(error);
+        console.log(error.stack);
         res.status(500).send({
             error: error.toString()
         });
     }    
+});
+
+// POST: retrieve individual pawn ticket
+router.post('/getPawnTicket', async (req, res) => {
+    try {
+        // Get ticket
+        const pawnTicket = await PawnTicket.findById(req.body.ticketID);
+        if (!pawnTicket) {
+            throw new Error('No pawn ticket found');
+        }
+
+        // Send back
+        res.send(pawnTicket.toObject());
+    } catch (error) {
+        console.log(error.stack);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+});
+
+// POST: retrieve individual sell ticket
+router.post('/getSellTicket', async (req, res) => {
+    try {
+        // Get ticket
+        const sellTicket = await SellTicket.findById(req.body.ticketID);
+        if (!sellTicket) {
+            throw new Error('No sell ticket found');
+        }
+
+        // Send back
+        res.send(sellTicket.toObject());
+    } catch (error) {
+        console.log(error.stack);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
 });
 
 
