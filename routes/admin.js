@@ -3,10 +3,6 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
-const gcm = require('node-gcm');
-const serverKey = require('../keys').serverKey;
-const FCM = require('fcm-node'); // ignore for now, don't delete
-const fcm = new FCM (serverKey); // ignore for now, don't delete
 
 // Custom imports
 const {User} = require('../db/models/user');
@@ -14,7 +10,7 @@ const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {Item} = require('../db/models/item');
 const {authenticateAdmin} = require('../middleware/authenticateAdmin');
-//const {pawnTicketApprovedMessage} = require('../utils/notifications');
+const {pawnTicketApprovedMessage} = require('../utils/notifications');
 const {pawnTicketRejectedMessage} = require('../utils/notifications');
 const {sellTicketApprovedMessage} = require('../utils/notifications');
 const {sellTicketRejectedMessage} = require('../utils/notifications');
@@ -77,44 +73,15 @@ router.post('/approvePawnTicket', async (req, res) => {
         await pawnTicket.save();
 
         var user = await User.findById(new ObjectID (pawnTicket.userID));
-        // ignore code for now, don't delete
+        
         console.log(user.expoPushToken);
 
-        const pawnTicketApprovedMessage = {
-            to: user.expoPushToken, 
-            
-            notification: {
-                title: 'Pawn Ticket Successfully Approved', 
-                body: 'Hello! This is to inform you that your pawn ticket request has been approved!'
-            }
-        };
-
-        fcm.send(pawnTicketApprovedMessage, function(err, response){
-            if (err) {
-                res.write('Not sent via fcm');
-                console.log(err.toString());
-                console.log("Something has gone wrong!");
-            } else {
-                res.write('Sent via fcm');
-                console.log("Successfully sent pawn ticket approval message", response);
-            }
-        });
+        // calling firebase to send the approval message
+        pawnTicketApprovedMessage(user.expoPushToken);
 
         // Send back success message
         res.write('Pawn Ticket successfully approved\n');
 
-        //var registrationToken = [user.expoPushToken];
-        // calling gcm to send approval notification to user
-        // sender.send(pawnTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
-        //     if (err) {
-        //         console.log('Message not sent', err.toString());
-        //         res.write('Message not sent via gcm');
-        //     } else {
-        //         res.write('Message sent via gcm');
-        //         console.log('Successfully sent pawn ticket approval message', response);
-        //     }
-        //     res.end();
-        // });
     } catch (error) {
         console.log(error.stack);
         res.status(500).send({
@@ -135,16 +102,9 @@ router.post('/rejectPawnTicket', async (req, res) => {
         }
 
         var user = User.findById(pawnTicket.userID);
-        var registrationToken = [user.expoPushToken];
         
-        // calling gcm to send rejection notification to user
-        sender.send(pawnTicketRejectedMessage, {registrationTokens: registrationToken}, function (err, response){
-            if (err) {
-                console.log('Message not sent', err.toString());
-            } else {
-                console.log('Successfully sent pawn ticket rejection message', response);
-            }
-        });
+        // calling firebase to send rejection notification to user
+        pawnTicketRejectedMessage(user.expoPushToken);
         
         // Delete (reject) it
         pawnTicket.remove();
@@ -179,23 +139,9 @@ router.post('/approveSellTicket', async (req,res) => {
         await sellTicket.save();
 
         var user = User.findById(sellTicket.userID);
-        var registrationToken = [user.expoPushToken];
         
-        sender.send(sellTicketApprovedMessage, {registrationTokens: registrationToken}, function (err, response){
-            if (err) {
-                console.log('Message not sent', err.toString());
-            } else {
-                console.log('Successfully sent sell ticket approval message', response);
-            }
-        });
-           
-        // fcm.send(sellTicketApprovedMessage, function(err, response){
-        //     if (err) {
-        //         console.log("Something has gone wrong!");
-        //     } else {
-        //         console.log("Successfully sent sell ticket approval message", response);
-        //     }
-        // });
+        //calling firebase to send sell ticket success notification
+        sellTicketApprovedMessage(user.expoPushToken);
 
         // Send back success message
         res.send({
@@ -221,23 +167,9 @@ router.post('/rejectSellTicket', async (req, res) => {
         }
 
         var user = User.findById(sellTicket.userID);
-        var registrationToken = [user.expoPushToken];
         
-        sender.send(sellTicketRejectedMessage, {registrationTokens: registrationToken}, function (err, response){
-            if (err) {
-                console.log('Message not sent', err.toString());
-            } else {
-                console.log('Successfully sent sell ticket rejection message', response);
-            }
-        });
-        
-        // fcm.send(sellTicketRejectedMessage, function(err, response){
-        //     if (err) {
-        //         console.log("Something has gone wrong!");
-        //     } else {
-        //         console.log("Successfully sent sell ticket rejection message", response);
-        //     }
-        // });
+        //calling firebase to send sell ticket rejection notification
+        sellTicketRejectedMessage(user.expoPushToken);
         
         // Delete (reject) it
         sellTicket.remove();

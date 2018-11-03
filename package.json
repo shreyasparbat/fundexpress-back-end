@@ -31,8 +31,12 @@
     "mysql2": "^1.6.1",
     "node-cron": "^2.0.1",
     "node-gcm": "^1.0.2",
-    "react-native": "^0.57.1",
+    "pubnub": "^4.21.6",
+    "pubnub-react": "^1.2.0",
+    "react-native": "^0.57.4",
+    "react-native-cli": "^2.0.1",
     "react-native-fcm": "^16.2.3",
+    "react-native-push-notification": "^3.1.2",
     "validator": "^10.4.0"
   }
 }
