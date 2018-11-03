@@ -9,6 +9,7 @@ const querystring = require('querystring');
 
 // Custom imports
 const {getAge} = require('../../utils/otherUtils');
+const PawnTicket = require('./pawnTicket');
 
 // Define User Schema
 const UserSchema = new mongoose.Schema({
@@ -245,7 +246,7 @@ UserSchema.methods.generateBlock = function () {
 };
 
 // Update credit rating
-UserSchema.methods.updateCreditRating = async function (deal) {
+UserSchema.methods.updateCreditRating = async function (deal, ticketID) {
     const user = this;
     const userObject = user.toObject();
     let ltvPercentage = userObject.initialLtvPercentage;
@@ -301,6 +302,12 @@ UserSchema.methods.updateCreditRating = async function (deal) {
     user.set({
         currentCreditRating: creditRating,
         currentLtvPercentage: ltvPercentage
+    });
+
+    // Close deal in database
+    const pawnticket = await PawnTicket.findById(ticketID);
+    pawnticket.set({
+        closed: true
     });
 
     // Save user
