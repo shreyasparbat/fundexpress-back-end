@@ -10,6 +10,7 @@ const {InterestRate} = require('../db/models/interestRate');
 // Page for uploading new CSV for retraining
 router.get('/retrainCreditRatingModel', function(req, res) {
     res.render('retrainCreditRatingModel', { title: 'Upload New CSV' });
+    console.log(req);
 });
 
 // Page for uploading new CSV for watch brands
