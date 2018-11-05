@@ -4,45 +4,32 @@ const _ = require('lodash');
 
 // Define sellTicket Schema
 const sellTicketSchema = new mongoose.Schema({
-    userId: {
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    itemId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
-    ticketNumber: {
-        type: String,
+    item: {
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
     dateCreated: {
         type: Date,
         required: true
     },
-    offeredValue: {
+    value: {
         type: Number,
         required: true
     },
-    approvalStatus: {
+    approved: {
         type: Boolean,
         required: true
     }
 });
 
 // Override toJson (for returning sellTicket profile)
-sellTicketSchema.methods.toJSON = function () {
+sellTicketSchema.methods.toJSON = async function () {
     const sellTicket = this;
-    const sellTicketObject = sellTicket.toObject();
-    return _.pick(sellTicketObject, [
-        'userId',
-        'itemId',
-        'ticketNumber',
-        'dateCreated',
-        'expiryDate',
-        'interestPayable',
-        'offeredValue'
-    ])
+    return sellTicket.toObject();
 };
 
 // Create model and export

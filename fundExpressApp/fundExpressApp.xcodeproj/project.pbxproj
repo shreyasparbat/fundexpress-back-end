@@ -1,0 +1,888 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2D9EC5CF9CDA2A487F56E3E6 /* Pods_fundExpressApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E4BE0574B195707B6DBDAF /* Pods_fundExpressApp.framework */; };
+		3004A90A91E0BCA5FD7ED051 /* Pods_fundExpressAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC84BC58514546059FAD6C8 /* Pods_fundExpressAppUITests.framework */; };
+		789D8588017EE89D56392FAD /* Pods_fundExpressAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AF94294657828D28FB73E27 /* Pods_fundExpressAppTests.framework */; };
+		CF6FD9B32160C84800CE83CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6FD9B22160C84800CE83CD /* AppDelegate.swift */; };
+		CF6FD9B52160C84800CE83CD /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6FD9B42160C84800CE83CD /* RootViewController.swift */; };
+		CF6FD9B72160C84800CE83CD /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6FD9B62160C84800CE83CD /* DataViewController.swift */; };
+		CF6FD9B92160C84800CE83CD /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6FD9B82160C84800CE83CD /* ModelController.swift */; };
+		CF6FD9BC2160C84800CE83CD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF6FD9BA2160C84800CE83CD /* Main.storyboard */; };
+		CF6FD9BE2160C84900CE83CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF6FD9BD2160C84900CE83CD /* Assets.xcassets */; };
+		CF6FD9C12160C84900CE83CD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF6FD9BF2160C84900CE83CD /* LaunchScreen.storyboard */; };
+		CF6FD9CC2160C84A00CE83CD /* fundExpressAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6FD9CB2160C84A00CE83CD /* fundExpressAppTests.swift */; };
+		CF6FD9D72160C84A00CE83CD /* fundExpressAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6FD9D62160C84A00CE83CD /* fundExpressAppUITests.swift */; };
+		CF6FD9E52160C88900CE83CD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF6FD9E42160C88900CE83CD /* GoogleService-Info.plist */; };
+		CF6FD9EF2160CD7000CE83CD /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9E72160CD6E00CE83CD /* FirebaseCore.framework */; };
+		CF6FD9F02160CD7000CE83CD /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9E82160CD6E00CE83CD /* FirebaseAnalytics.framework */; };
+		CF6FD9F12160CD7000CE83CD /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9E92160CD6E00CE83CD /* FirebaseInstanceID.framework */; };
+		CF6FD9F22160CD7000CE83CD /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9EA2160CD6F00CE83CD /* FIRAnalyticsConnector.framework */; };
+		CF6FD9F32160CD7000CE83CD /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9EB2160CD6F00CE83CD /* FirebaseCoreDiagnostics.framework */; };
+		CF6FD9F42160CD7000CE83CD /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9EC2160CD6F00CE83CD /* GoogleUtilities.framework */; };
+		CF6FD9F52160CD7000CE83CD /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9ED2160CD6F00CE83CD /* nanopb.framework */; };
+		CF6FD9F62160CD7000CE83CD /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9EE2160CD7000CE83CD /* GoogleAppMeasurement.framework */; };
+		CF6FD9FA2160D08600CE83CD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9F92160D08600CE83CD /* FirebaseCore */; };
+		CF6FD9FC2160D09700CE83CD /* GoogleUtilities in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9FB2160D09600CE83CD /* GoogleUtilities */; };
+		CF6FD9FE2160D0A000CE83CD /* nanopb in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9FD2160D0A000CE83CD /* nanopb */; };
+		CF6FD9FF2160D0BD00CE83CD /* GoogleUtilities in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9FB2160D09600CE83CD /* GoogleUtilities */; };
+		CF6FDA002160D0BE00CE83CD /* GoogleUtilities in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9FB2160D09600CE83CD /* GoogleUtilities */; };
+		CF6FDA012160D0C100CE83CD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9F92160D08600CE83CD /* FirebaseCore */; };
+		CF6FDA022160D0C100CE83CD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9F92160D08600CE83CD /* FirebaseCore */; };
+		CF6FDA032160D0C400CE83CD /* nanopb in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9FD2160D0A000CE83CD /* nanopb */; };
+		CF6FDA042160D0C500CE83CD /* nanopb in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6FD9FD2160D0A000CE83CD /* nanopb */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CF6FD9C82160C84A00CE83CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF6FD9A72160C84800CE83CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF6FD9AE2160C84800CE83CD;
+			remoteInfo = fundExpressApp;
+		};
+		CF6FD9D32160C84A00CE83CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF6FD9A72160C84800CE83CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF6FD9AE2160C84800CE83CD;
+			remoteInfo = fundExpressApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		11F535853A82E03929E2C4CB /* Pods-fundExpressApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fundExpressApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-fundExpressApp/Pods-fundExpressApp.release.xcconfig"; sourceTree = "<group>"; };
+		1AF94294657828D28FB73E27 /* Pods_fundExpressAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_fundExpressAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		287FFB9FED8FA9D5038DF378 /* Pods-fundExpressApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fundExpressApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fundExpressApp/Pods-fundExpressApp.debug.xcconfig"; sourceTree = "<group>"; };
+		9294C2FA874728A26E05B782 /* Pods-fundExpressAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fundExpressAppUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fundExpressAppUITests/Pods-fundExpressAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		C56E33518A8F00CB08A3F613 /* Pods-fundExpressAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fundExpressAppTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-fundExpressAppTests/Pods-fundExpressAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		CF6FD9AF2160C84800CE83CD /* fundExpressApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fundExpressApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF6FD9B22160C84800CE83CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CF6FD9B42160C84800CE83CD /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		CF6FD9B62160C84800CE83CD /* DataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewController.swift; sourceTree = "<group>"; };
+		CF6FD9B82160C84800CE83CD /* ModelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
+		CF6FD9BB2160C84800CE83CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CF6FD9BD2160C84900CE83CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CF6FD9C02160C84900CE83CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CF6FD9C22160C84900CE83CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF6FD9C72160C84A00CE83CD /* fundExpressAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fundExpressAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF6FD9CB2160C84A00CE83CD /* fundExpressAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fundExpressAppTests.swift; sourceTree = "<group>"; };
+		CF6FD9CD2160C84A00CE83CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF6FD9D22160C84A00CE83CD /* fundExpressAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fundExpressAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF6FD9D62160C84A00CE83CD /* fundExpressAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fundExpressAppUITests.swift; sourceTree = "<group>"; };
+		CF6FD9D82160C84A00CE83CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF6FD9E42160C88900CE83CD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CF6FD9E72160CD6E00CE83CD /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = "<group>"; };
+		CF6FD9E82160CD6E00CE83CD /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseAnalytics.framework; sourceTree = "<group>"; };
+		CF6FD9E92160CD6E00CE83CD /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseInstanceID.framework; sourceTree = "<group>"; };
+		CF6FD9EA2160CD6F00CE83CD /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
+		CF6FD9EB2160CD6F00CE83CD /* FirebaseCoreDiagnostics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseCoreDiagnostics.framework; sourceTree = "<group>"; };
+		CF6FD9EC2160CD6F00CE83CD /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleUtilities.framework; sourceTree = "<group>"; };
+		CF6FD9ED2160CD6F00CE83CD /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = nanopb.framework; sourceTree = "<group>"; };
+		CF6FD9EE2160CD7000CE83CD /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleAppMeasurement.framework; sourceTree = "<group>"; };
+		CF6FD9F92160D08600CE83CD /* FirebaseCore */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = FirebaseCore; sourceTree = "<group>"; };
+		CF6FD9FB2160D09600CE83CD /* GoogleUtilities */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = GoogleUtilities; sourceTree = "<group>"; };
+		CF6FD9FD2160D0A000CE83CD /* nanopb */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = nanopb; sourceTree = "<group>"; };
+		CF6FDA0B2160D31300CE83CD /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		CF6FDA0C2160D61800CE83CD /* Firebase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Firebase.h; sourceTree = "<group>"; };
+		CFDE03CD2160DBC100CC3468 /* FirebaseCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirebaseCore.h; sourceTree = "<group>"; };
+		DAC84BC58514546059FAD6C8 /* Pods_fundExpressAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_fundExpressAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E45F3EC295EC8C135F71F288 /* Pods-fundExpressAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fundExpressAppTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fundExpressAppTests/Pods-fundExpressAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F6E4BE0574B195707B6DBDAF /* Pods_fundExpressApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_fundExpressApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E06DD2677DF84E0DEBC399 /* Pods-fundExpressAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fundExpressAppUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-fundExpressAppUITests/Pods-fundExpressAppUITests.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CF6FD9AC2160C84800CE83CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FD9EF2160CD7000CE83CD /* FirebaseCore.framework in Frameworks */,
+				2D9EC5CF9CDA2A487F56E3E6 /* Pods_fundExpressApp.framework in Frameworks */,
+				CF6FD9F62160CD7000CE83CD /* GoogleAppMeasurement.framework in Frameworks */,
+				CF6FD9F52160CD7000CE83CD /* nanopb.framework in Frameworks */,
+				CF6FD9F02160CD7000CE83CD /* FirebaseAnalytics.framework in Frameworks */,
+				CF6FD9F32160CD7000CE83CD /* FirebaseCoreDiagnostics.framework in Frameworks */,
+				CF6FD9FA2160D08600CE83CD /* FirebaseCore in Frameworks */,
+				CF6FD9F22160CD7000CE83CD /* FIRAnalyticsConnector.framework in Frameworks */,
+				CF6FD9FE2160D0A000CE83CD /* nanopb in Frameworks */,
+				CF6FD9F12160CD7000CE83CD /* FirebaseInstanceID.framework in Frameworks */,
+				CF6FD9FC2160D09700CE83CD /* GoogleUtilities in Frameworks */,
+				CF6FD9F42160CD7000CE83CD /* GoogleUtilities.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF6FD9C42160C84A00CE83CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FDA032160D0C400CE83CD /* nanopb in Frameworks */,
+				CF6FD9FF2160D0BD00CE83CD /* GoogleUtilities in Frameworks */,
+				CF6FDA012160D0C100CE83CD /* FirebaseCore in Frameworks */,
+				789D8588017EE89D56392FAD /* Pods_fundExpressAppTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF6FD9CF2160C84A00CE83CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FDA042160D0C500CE83CD /* nanopb in Frameworks */,
+				CF6FDA002160D0BE00CE83CD /* GoogleUtilities in Frameworks */,
+				CF6FDA022160D0C100CE83CD /* FirebaseCore in Frameworks */,
+				3004A90A91E0BCA5FD7ED051 /* Pods_fundExpressAppUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		35A13189591D5FB0E46C8325 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				287FFB9FED8FA9D5038DF378 /* Pods-fundExpressApp.debug.xcconfig */,
+				11F535853A82E03929E2C4CB /* Pods-fundExpressApp.release.xcconfig */,
+				E45F3EC295EC8C135F71F288 /* Pods-fundExpressAppTests.debug.xcconfig */,
+				C56E33518A8F00CB08A3F613 /* Pods-fundExpressAppTests.release.xcconfig */,
+				9294C2FA874728A26E05B782 /* Pods-fundExpressAppUITests.debug.xcconfig */,
+				F8E06DD2677DF84E0DEBC399 /* Pods-fundExpressAppUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		4AB52D2B38401EA2B9C3AA3B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CF6FDA0B2160D31300CE83CD /* module.modulemap */,
+				CF6FD9FB2160D09600CE83CD /* GoogleUtilities */,
+				CF6FD9F92160D08600CE83CD /* FirebaseCore */,
+				CF6FD9FD2160D0A000CE83CD /* nanopb */,
+				CFDE03CD2160DBC100CC3468 /* FirebaseCore.h */,
+				CF6FD9EA2160CD6F00CE83CD /* FIRAnalyticsConnector.framework */,
+				CF6FD9E82160CD6E00CE83CD /* FirebaseAnalytics.framework */,
+				CF6FD9E72160CD6E00CE83CD /* FirebaseCore.framework */,
+				CF6FD9EB2160CD6F00CE83CD /* FirebaseCoreDiagnostics.framework */,
+				CF6FD9E92160CD6E00CE83CD /* FirebaseInstanceID.framework */,
+				CF6FD9EE2160CD7000CE83CD /* GoogleAppMeasurement.framework */,
+				CF6FD9EC2160CD6F00CE83CD /* GoogleUtilities.framework */,
+				CF6FD9ED2160CD6F00CE83CD /* nanopb.framework */,
+				F6E4BE0574B195707B6DBDAF /* Pods_fundExpressApp.framework */,
+				1AF94294657828D28FB73E27 /* Pods_fundExpressAppTests.framework */,
+				DAC84BC58514546059FAD6C8 /* Pods_fundExpressAppUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CF6FD9A62160C84800CE83CD = {
+			isa = PBXGroup;
+			children = (
+				CF6FD9B12160C84800CE83CD /* fundExpressApp */,
+				CF6FD9CA2160C84A00CE83CD /* fundExpressAppTests */,
+				CF6FD9D52160C84A00CE83CD /* fundExpressAppUITests */,
+				CF6FD9B02160C84800CE83CD /* Products */,
+				CF6FD9E42160C88900CE83CD /* GoogleService-Info.plist */,
+				35A13189591D5FB0E46C8325 /* Pods */,
+				4AB52D2B38401EA2B9C3AA3B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		CF6FD9B02160C84800CE83CD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CF6FD9AF2160C84800CE83CD /* fundExpressApp.app */,
+				CF6FD9C72160C84A00CE83CD /* fundExpressAppTests.xctest */,
+				CF6FD9D22160C84A00CE83CD /* fundExpressAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CF6FD9B12160C84800CE83CD /* fundExpressApp */ = {
+			isa = PBXGroup;
+			children = (
+				CF6FDA0C2160D61800CE83CD /* Firebase.h */,
+				CF6FD9B22160C84800CE83CD /* AppDelegate.swift */,
+				CF6FD9B42160C84800CE83CD /* RootViewController.swift */,
+				CF6FD9B62160C84800CE83CD /* DataViewController.swift */,
+				CF6FD9B82160C84800CE83CD /* ModelController.swift */,
+				CF6FD9BA2160C84800CE83CD /* Main.storyboard */,
+				CF6FD9BD2160C84900CE83CD /* Assets.xcassets */,
+				CF6FD9BF2160C84900CE83CD /* LaunchScreen.storyboard */,
+				CF6FD9C22160C84900CE83CD /* Info.plist */,
+			);
+			path = fundExpressApp;
+			sourceTree = "<group>";
+		};
+		CF6FD9CA2160C84A00CE83CD /* fundExpressAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				CF6FD9CB2160C84A00CE83CD /* fundExpressAppTests.swift */,
+				CF6FD9CD2160C84A00CE83CD /* Info.plist */,
+			);
+			path = fundExpressAppTests;
+			sourceTree = "<group>";
+		};
+		CF6FD9D52160C84A00CE83CD /* fundExpressAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				CF6FD9D62160C84A00CE83CD /* fundExpressAppUITests.swift */,
+				CF6FD9D82160C84A00CE83CD /* Info.plist */,
+			);
+			path = fundExpressAppUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CF6FD9AE2160C84800CE83CD /* fundExpressApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF6FD9DB2160C84A00CE83CD /* Build configuration list for PBXNativeTarget "fundExpressApp" */;
+			buildPhases = (
+				79607335634091CFB533EA30 /* [CP] Check Pods Manifest.lock */,
+				CF6FD9AB2160C84800CE83CD /* Sources */,
+				CF6FD9AC2160C84800CE83CD /* Frameworks */,
+				CF6FD9AD2160C84800CE83CD /* Resources */,
+				7DDEF9868A43C71856913F41 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = fundExpressApp;
+			productName = fundExpressApp;
+			productReference = CF6FD9AF2160C84800CE83CD /* fundExpressApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CF6FD9C62160C84A00CE83CD /* fundExpressAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF6FD9DE2160C84A00CE83CD /* Build configuration list for PBXNativeTarget "fundExpressAppTests" */;
+			buildPhases = (
+				2505990463EFD0AA80070D72 /* [CP] Check Pods Manifest.lock */,
+				CF6FD9C32160C84A00CE83CD /* Sources */,
+				CF6FD9C42160C84A00CE83CD /* Frameworks */,
+				CF6FD9C52160C84A00CE83CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF6FD9C92160C84A00CE83CD /* PBXTargetDependency */,
+			);
+			name = fundExpressAppTests;
+			productName = fundExpressAppTests;
+			productReference = CF6FD9C72160C84A00CE83CD /* fundExpressAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CF6FD9D12160C84A00CE83CD /* fundExpressAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF6FD9E12160C84A00CE83CD /* Build configuration list for PBXNativeTarget "fundExpressAppUITests" */;
+			buildPhases = (
+				3AAF7CE764AD406A465708EE /* [CP] Check Pods Manifest.lock */,
+				CF6FD9CE2160C84A00CE83CD /* Sources */,
+				CF6FD9CF2160C84A00CE83CD /* Frameworks */,
+				CF6FD9D02160C84A00CE83CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF6FD9D42160C84A00CE83CD /* PBXTargetDependency */,
+			);
+			name = fundExpressAppUITests;
+			productName = fundExpressAppUITests;
+			productReference = CF6FD9D22160C84A00CE83CD /* fundExpressAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CF6FD9A72160C84800CE83CD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1000;
+				LastUpgradeCheck = 1000;
+				ORGANIZATIONNAME = "Fund Express";
+				TargetAttributes = {
+					CF6FD9AE2160C84800CE83CD = {
+						CreatedOnToolsVersion = 10.0;
+					};
+					CF6FD9C62160C84A00CE83CD = {
+						CreatedOnToolsVersion = 10.0;
+						TestTargetID = CF6FD9AE2160C84800CE83CD;
+					};
+					CF6FD9D12160C84A00CE83CD = {
+						CreatedOnToolsVersion = 10.0;
+						TestTargetID = CF6FD9AE2160C84800CE83CD;
+					};
+				};
+			};
+			buildConfigurationList = CF6FD9AA2160C84800CE83CD /* Build configuration list for PBXProject "fundExpressApp" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF6FD9A62160C84800CE83CD;
+			productRefGroup = CF6FD9B02160C84800CE83CD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CF6FD9AE2160C84800CE83CD /* fundExpressApp */,
+				CF6FD9C62160C84A00CE83CD /* fundExpressAppTests */,
+				CF6FD9D12160C84A00CE83CD /* fundExpressAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CF6FD9AD2160C84800CE83CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FD9C12160C84900CE83CD /* LaunchScreen.storyboard in Resources */,
+				CF6FD9E52160C88900CE83CD /* GoogleService-Info.plist in Resources */,
+				CF6FD9BE2160C84900CE83CD /* Assets.xcassets in Resources */,
+				CF6FD9BC2160C84800CE83CD /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF6FD9C52160C84A00CE83CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF6FD9D02160C84A00CE83CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2505990463EFD0AA80070D72 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-fundExpressAppTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3AAF7CE764AD406A465708EE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-fundExpressAppUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		79607335634091CFB533EA30 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-fundExpressApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7DDEF9868A43C71856913F41 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-fundExpressApp/Pods-fundExpressApp-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-fundExpressApp/Pods-fundExpressApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CF6FD9AB2160C84800CE83CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FD9B52160C84800CE83CD /* RootViewController.swift in Sources */,
+				CF6FD9B92160C84800CE83CD /* ModelController.swift in Sources */,
+				CF6FD9B72160C84800CE83CD /* DataViewController.swift in Sources */,
+				CF6FD9B32160C84800CE83CD /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF6FD9C32160C84A00CE83CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FD9CC2160C84A00CE83CD /* fundExpressAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF6FD9CE2160C84A00CE83CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6FD9D72160C84A00CE83CD /* fundExpressAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CF6FD9C92160C84A00CE83CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF6FD9AE2160C84800CE83CD /* fundExpressApp */;
+			targetProxy = CF6FD9C82160C84A00CE83CD /* PBXContainerItemProxy */;
+		};
+		CF6FD9D42160C84A00CE83CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF6FD9AE2160C84800CE83CD /* fundExpressApp */;
+			targetProxy = CF6FD9D32160C84A00CE83CD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CF6FD9BA2160C84800CE83CD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CF6FD9BB2160C84800CE83CD /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		CF6FD9BF2160C84900CE83CD /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CF6FD9C02160C84900CE83CD /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CF6FD9D92160C84A00CE83CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CF6FD9DA2160C84A00CE83CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CF6FD9DC2160C84A00CE83CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 287FFB9FED8FA9D5038DF378 /* Pods-fundExpressApp.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "";
+				INFOPLIST_FILE = fundExpressApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"FIRAnalyticsConnector\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseInstanceID\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"nanopb\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fundExpress.fundExpressApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CF6FD9DD2160C84A00CE83CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 11F535853A82E03929E2C4CB /* Pods-fundExpressApp.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = "";
+				INFOPLIST_FILE = fundExpressApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"FIRAnalyticsConnector\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseInstanceID\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"nanopb\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fundExpress.fundExpressApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CF6FD9DF2160C84A00CE83CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E45F3EC295EC8C135F71F288 /* Pods-fundExpressAppTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = fundExpressAppTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fundExpress.fundExpressAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/fundExpressApp.app/fundExpressApp";
+			};
+			name = Debug;
+		};
+		CF6FD9E02160C84A00CE83CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C56E33518A8F00CB08A3F613 /* Pods-fundExpressAppTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = fundExpressAppTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fundExpress.fundExpressAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/fundExpressApp.app/fundExpressApp";
+			};
+			name = Release;
+		};
+		CF6FD9E22160C84A00CE83CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9294C2FA874728A26E05B782 /* Pods-fundExpressAppUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = fundExpressAppUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fundExpress.fundExpressAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = fundExpressApp;
+			};
+			name = Debug;
+		};
+		CF6FD9E32160C84A00CE83CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F8E06DD2677DF84E0DEBC399 /* Pods-fundExpressAppUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = fundExpressAppUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fundExpress.fundExpressAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = fundExpressApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CF6FD9AA2160C84800CE83CD /* Build configuration list for PBXProject "fundExpressApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF6FD9D92160C84A00CE83CD /* Debug */,
+				CF6FD9DA2160C84A00CE83CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF6FD9DB2160C84A00CE83CD /* Build configuration list for PBXNativeTarget "fundExpressApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF6FD9DC2160C84A00CE83CD /* Debug */,
+				CF6FD9DD2160C84A00CE83CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF6FD9DE2160C84A00CE83CD /* Build configuration list for PBXNativeTarget "fundExpressAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF6FD9DF2160C84A00CE83CD /* Debug */,
+				CF6FD9E02160C84A00CE83CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF6FD9E12160C84A00CE83CD /* Build configuration list for PBXNativeTarget "fundExpressAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF6FD9E22160C84A00CE83CD /* Debug */,
+				CF6FD9E32160C84A00CE83CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CF6FD9A72160C84800CE83CD /* Project object */;
+}

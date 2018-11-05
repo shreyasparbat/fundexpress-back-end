@@ -7,6 +7,10 @@ const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const querystring = require('querystring');
 
+// Custom imports
+const {getAge} = require('../../utils/otherUtils');
+const PawnTicket = require('./pawnTicket');
+
 // Define User Schema
 const UserSchema = new mongoose.Schema({
     email: {
@@ -23,7 +27,8 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minlength: 6,
+        maxlength: 100
     },
     tokens: [{
         access: {
@@ -40,92 +45,64 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 1
     },
-    gender: {
-        type: String,
-        required: true,
-    },
-    dateOfBirth: {
-        type: Date,
-        required: false
-    },
-    age: {
-        type: Number,
-        required: false
-    },
+    gender: String,
+    dateOfBirth: Date,
+    age: Number,
     ic: {
         type: String,
-        required: true,
+        required: false,
         minlength: 9,
         maxlength: 9
     },
     mobileNumber: {
         type: Number,
-        required: true,
+        required: false,
         minlength: 8,
         maxlength: 8
     },
     landlineNumber: {
         type: Number,
+        required: false,
         minlength: 8,
         maxlength: 8
     },
-    address: {
-        type: String,
-        required: true,
-    },
-    addressType: {
-        type: String,
-        required: true
-    },
-    citizenship: {
-        type: String,
-        required: true
-    },
-    race: {
-        type: String,
-        required: true
-    },
+    address: String,
+    addressType: String,
+    citizenship: String,
+    race: String,
     noOfC: {
         type: Number,
-        required: true,
         default: 0
     },
     noOfL: {
         type: Number,
-        required: true,
         default: 0
     },
     noOfD: {
         type: Number,
-        required: true,
         default: 0
     },
     cPercent: {
         type: Number,
-        required: true,
         default: 0
     },
     lPercent: {
         type: Number,
-        required: true,
         default: 0
     },
     dPercent: {
         type: Number,
-        required: true,
         default: 0
     },
     initialCreditRating: {
-      type: String,
-      required: true,
-      default: 'B'
+        type: String,
+        default: 'B'
     },
     currentCreditRating: {
         type: String
     },
     initialLtvPercentage: {
         type: Number,
-        required: true,
         default: 0.9
     },
     currentLtvPercentage: {
@@ -134,26 +111,11 @@ const UserSchema = new mongoose.Schema({
     ethHash: {
         type: 'String',
         default: '0000000000'
-    }
-});
-
-// Add password hashing middleware
-UserSchema.pre('save', function (next) {
-    const user = this;
-
-    // Check if password has already been hashed
-    if (!user.isModified('password')) {
-        // Generate salt and hash password
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
-                // Update document
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        next();
-    }
+    },
+    expoPushToken: {
+        type: String
+    },
+    registrationCompleted: Boolean
 });
 
 // Override toJson (for returning user profile)
@@ -177,15 +139,46 @@ UserSchema.methods.toJSON = function () {
         'noOfC',
         'noOfL',
         'noOfD',
-        'ethHash'
-    ])
+        'ethHash',
+        'expoPushToken',
+        'registrationCompleted'
+    ]);
+};
+
+// Find user by credentials
+UserSchema.statics.findByCredentials = async function (email, password) {
+    const User = this;
+    
+    // Get user with that email
+    const user = await User.findOne({email});
+
+    // Check if user exists
+    if (!user) {
+        // Return reject promise
+        throw new Error('User does not exist');
+    } else {
+        // Compare passwords
+        const result = await bcrypt.compare(password, user.password);
+        if (result) {
+            return user;
+        } else {
+            throw new Error('Passwords do not match');
+        }
+    }
 };
 
 // Generate Authentication tokens
 UserSchema.methods.generateAuthToken = function () {
     // Create token
     const user = this;
-    const access = 'auth'; // to specify the type of token
+
+    // Check if token already exists
+    if (user.tokens['0'] !== undefined) {
+        throw new Error('User already logged in');
+    }
+
+    // Create token
+    const access = 'auth';
     const token = jwt.sign({
         _id: user._id,
         access
@@ -195,7 +188,7 @@ UserSchema.methods.generateAuthToken = function () {
     user.tokens = user.tokens.concat([{access, token}]);
     return user.save().then(() => {
         return token;
-    })
+    });
 };
 
 // Delete token (log out user)
@@ -207,49 +200,44 @@ UserSchema.methods.removeToken = function (token) {
         $pull: {
             tokens: {token}
         }
-    })
+    });
 };
 
 // Generate credit rating when signing up
 UserSchema.methods.generateCreditRating = async function () {
-    try {
-        const user = this;
+    const user = this;
 
-        // Setup request parameters
-        const requestBody = {
-            age: getAge(user.dateOfBirth),
-            nric: user.ic[0],
-            race: user.race[0],
-            sex: user.gender,
-            nation: user.citizenship[0],
-            address: user.addressType,
-            tel: user.landlineNumber === null ? 'L' : 'H'
-        };
-        const config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
+    // Setup request parameters
+    const requestBody = {
+        age: getAge(user.dateOfBirth),
+        nric: user.ic[0],
+        race: user.race[0],
+        sex: user.gender,
+        nation: user.citizenship[0],
+        address: user.addressType,
+        tel: user.landlineNumber === null ? 'L' : 'H'
+    };
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
 
-        // Get predicted default probabilities and credit rating
-        const response = await axios.post('http://0.0.0.0:5000/predict', querystring.stringify(requestBody), config);
-        console.log(response.data)
+    // Get predicted default probabilities and credit rating
+    const response = await axios.post('http://0.0.0.0:5000/predict', querystring.stringify(requestBody), config);
+    console.log(response.data);
 
-        // Update user
-        user.set({
-            cPercent: response.data.cPercent,
-            dPercent: response.data.dPercent,
-            lPercent: response.data.lPercent,
-            initialCreditRating: response.data.creditRating,
-            currentCreditRating: response.data.creditRating,
-            initialLtvPercentage: response.data.ltvPercentage,
-            currentLtvPercentage: response.data.ltvPercentage
-        });
-        return await user.save();
-    } catch (error) {
-        console.log(error)
-        throw error
-    }
+    // Update user
+    user.set({
+        cPercent: response.data.cPercent,
+        dPercent: response.data.dPercent,
+        lPercent: response.data.lPercent,
+        initialCreditRating: response.data.creditRating,
+        currentCreditRating: response.data.creditRating,
+        initialLtvPercentage: response.data.ltvPercentage,
+        currentLtvPercentage: response.data.ltvPercentage
+    });
+    return await user.save();
 };
 
 // TODO: Generate User's block
@@ -258,7 +246,7 @@ UserSchema.methods.generateBlock = function () {
 };
 
 // Update credit rating
-UserSchema.methods.updateCreditRating = async function (deal) {
+UserSchema.methods.updateCreditRating = async function (deal, ticketID) {
     const user = this;
     const userObject = user.toObject();
     let ltvPercentage = userObject.initialLtvPercentage;
@@ -275,7 +263,7 @@ UserSchema.methods.updateCreditRating = async function (deal) {
     } else if (deal === 'L') {
         let noOfL = userObject.noOfL;
         noOfL += 1;
-        user.set({noOfL})
+        user.set({noOfL});
         ltvPercentage -= 0.001;
     } else if (deal === 'D') {
         let noOfD = userObject.noOfD;
@@ -295,29 +283,36 @@ UserSchema.methods.updateCreditRating = async function (deal) {
     }
 
     // Update credit rating
+    let creditRating = undefined;
     if (ltvPercentage >= 0.95) {
-        const creditRating = 'A'; 
+        creditRating = 'A';
     } else if (ltvPercentage >= 0.9) {
-        const creditRating = 'B';
+        creditRating = 'B';
     } else if (ltvPercentage >= 0.85) {
-        const creditRating = 'C';
+        creditRating = 'C';
     } else if (ltvPercentage >= 0.8) {
-        const creditRating = 'D';
+        creditRating = 'D';
     } else if (ltvPercentage >= 0.75) {
-        const creditRating = 'E';
+        creditRating = 'E';
     } else if (ltvPercentage >= 0.7) {
-        const creditRating = 'F';
+        creditRating = 'F';
     } else {
         throw new Error('Credit rating has fallen too low');
     }
     user.set({
         currentCreditRating: creditRating,
         currentLtvPercentage: ltvPercentage
-    })
+    });
+
+    // Close deal in database
+    const pawnticket = await PawnTicket.findById(ticketID);
+    pawnticket.set({
+        closed: true
+    });
 
     // Save user
     return await user.save();
-}
+};
 
 // Find user by token
 UserSchema.statics.findByToken = function (token) {
@@ -334,41 +329,7 @@ UserSchema.statics.findByToken = function (token) {
         _id: decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
-    })
-};
-
-// Find user by credentials
-UserSchema.statics.findByCredentials = function (email, password) {
-    // Get user with that email
-    return User.findOne({email}).then((user) => {
-        // Check if user exists
-        if (!user) {
-            // Return reject promise
-            return Promise.reject('User does not exist');
-        } else {
-            return new Promise((resolve, reject) => {
-                // Check if password is correct
-                bcrypt.compare(password, user.password, (err, result) => {
-                    if (result) {
-                        resolve(user);
-                    } else {
-                        reject('Passwords do not match');
-                    }
-                });
-            });
-        }
     });
-};
-
-// Util: Get Age
-const getAge = (dateOfBirth) => {
-    const today = new Date();
-    let age = today.getFullYear() - dateOfBirth.getFullYear();
-    const m = today.getMonth() - dateOfBirth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
-        age--;
-    }
-    return age;
 };
 
 // Create model and export

@@ -1,8 +1,7 @@
 // Library imports
+const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
 const {ObjectID} = require('mongodb');
 
 // Custom imports
@@ -10,82 +9,203 @@ const {Item} = require('../db/models/item');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
+const {uploadItem} = require('../utils/digitalOceanSpaces');
+const {addMonths} = require('../utils/otherUtils');
 
 // Add middleware
 router.use(authenticate);
 
-// POST: add item
-
-
-// POST: pawn new item (create pawn ticket)
-router.post('/item/pawn', (req, res) => {
-  try {
-    let body = _.pick(req.body, [
-        'itemID',
-        'specifiedValue'
-    ]);
-    res.send({
-      // 'ticketNumber',
-      // 'dateCreated',
-      // 'expiryDate',
-      // 'interestPayable',
-      // 'offeredValue'
-    })
-  } catch (e) {
-      res.status(500).send(e);
-  }
-});
-
-
-// POST: sell new item (create sell ticket)
-router.post('/item/sell', (req, res) => {
-  try {
-    let body = _.pick(req.body, [
-        'itemID'
-    ]);
-    res.send({
-      // 'ticketNumber',
-      // 'dateCreated',
-      // 'offeredValue'
-    })
-  } catch (e) {
-    res.status(500).send(e);
-  }
-});
-
 // POST: upload an item image
-const itemImages = upload.fields([{ name: 'front', maxCount: 1}, {name: 'back', maxCount: 1}]);
-router.post('/uploadImage', itemImages, async (req, res) => {
+router.post('/uploadImage', async (req, res) => {
     try {
-    // create a new item
-    // upload item to digitalOcean
-    // if gold bar, get details from image
-    // send back item
-    console.log(req.files);
-
+        // Save the item
+        let type = req.get('type');
         let itemObject = {
-            'userId': new ObjectID (req.user._id),
-            'name': 'NA',
-            'type': req.body.type,
-            'material': 'NA',
-            'brand': 'NA',
-            'purity': -1,
-            'weight': -1,
-            'condition': 'NA',
-            'dateOfPurchase': new Date(1111,01,01),
-            'pawnOfferedValue': -1,
-            'sellOfferedValue': -1,
+            'userID': new Object(req.user._id),
+            type
+        };
+        let item = new Item(itemObject);
+        await item.save();
+
+        // Upload images to digital ocean
+        req.itemID = item._id;
+        uploadItem(req, res, function (e) {
+            if (e) {
+                console.log(e);
+                throw(e);
+            } else {
+                console.log('successfully uploaded');
+            }
+        });
+
+        // Run Image recognition if gold bar or coin
+        let responseBody = {
+            itemID: item._id
+        };
+        if (type === 'Gold Bar' || type === 'Gold Coin') {
+            let savedItem = await item.runImageRecognition(type);
+            responseBody.brand = savedItem.brand;
+            responseBody.material = savedItem.material;
+            responseBody.weight = savedItem.weight;
+            responseBody.purity = savedItem.purity;
         }
 
-        let item = new Item(itemObject);
+        // Send back relevant information
+        res.send(responseBody);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+});
 
-        // Save itemObject
-        let savedItem = await item.save();
+// POST: add item
+router.post('/add', async (req, res) => {
+    try {
+        // Get request body
+        const body = _.pick(req.body, [
+            'itemID',
+            'name',
+            'type',
+            'material',
+            'brand',
+            'purity',
+            'weight',
+            'condition',
+            'dateOfPurchase',
+            'otherComments'
+        ]);
 
-        res.send(savedItem);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e);
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) {
+            throw new Error('No item found');
+        }
+
+        // Update item information
+        item.set({
+            name: body.name,
+            type: body.type,
+            material: body.material,
+            brand: body.brand,
+            purity: body.purity,
+            weight: parseFloat(body.weight),
+            condition: body.condition,
+            otherComments: body.otherComments,
+            dateOfPurchase: new Date(body.dateOfPurchase)
+        });
+        await item.save();
+
+        // Calculate pawn and sell offered values
+        if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
+            await item.calculateGoldOfferedValues(req.user, body.purity);
+        } else {
+            await item.calculateOtherOfferedValues(req.user);
+        }
+
+        // Return objectID and offered values
+        res.send({
+            itemID: item._id,
+            pawnOfferedValue: item.pawnOfferedValue,
+            sellOfferedValue: item.sellOfferedValue
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+});
+
+// POST: pawn new item (create pawn ticket)
+router.post('/pawn', async (req, res) => {
+    try {
+        let body = _.pick(req.body, [
+            'itemID',
+            'specifiedValue'
+        ]);
+
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) {
+            throw new Error('No item found');
+        }
+
+        // Check whether specified value is greater than pawn value
+        if (body.specifiedValue > item.pawnOfferedValue) {
+            throw new Error('Specified value is greater than offered value');
+        }
+
+        // Check whether different user is trying to pawn the item
+        if (item.userID.toString() !== req.user._id.toString()) {
+            throw new Error('Item was added by a different user');
+        }
+
+        // Create Pawn ticket
+        let pawnTicketObject = {
+            'userID': req.user._id,
+            'item': item.toObject(),
+            'dateCreated': new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()),
+            'expiryDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 6),
+            'gracePeriodEndDate': addMonths(new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()), 7),
+            'indicativeTotalInterestPayable': body.specifiedValue * ((0.015 * 5) + 0.01),
+            'value': body.specifiedValue,
+            'approved': false,
+            'closed': false,
+            'outstandingPrincipal' : body.specifiedValue,
+            'outstandingInterest' : 0
+        };
+        let pawnTicket = new PawnTicket(pawnTicketObject);
+
+        // Save pawn ticket
+        await pawnTicket.save();
+        res.send(pawnTicketObject);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+});
+
+// POST: sell new item (create sell ticket)
+router.post('/sell', async (req, res) => {
+    try {
+        let body = _.pick(req.body, [
+            'itemID'
+        ]);
+
+        // Find item of that objectID
+        const item = await Item.findById(new ObjectID(body.itemID));
+        if (!item) {
+            throw new Error('No item found');
+        }
+
+        // Check whether different user is trying to pawn the item
+        if (item.userID.toString() !== req.user._id.toString()) {
+            throw new Error('Item was added by a different user');
+        }
+
+        // Create sell ticket
+        let sellTicketObject = {
+            'userID': req.user._id,
+            'item': item.toObject(),
+            'dateCreated': new Date(),
+            'value': item.sellOfferedValue,
+            'approved': false
+        };
+        let sellTicket = new SellTicket(sellTicketObject);
+
+        // Save sell ticket
+        await sellTicket.save();
+
+        res.send(sellTicketObject);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
     }
 });
 

@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+require('dotenv').config();
 
 // Router imports
 const indexRouter = require('./routes/index');
@@ -11,9 +12,12 @@ const userRouter = require('./routes/user');
 const profileRouter = require('./routes/profile');
 const itemRouter = require('./routes/item');
 const ticketsRouter = require('./routes/tickets');
+const adminRouter = require('./routes/admin');
+const adminViewsRouter = require('./routes/adminViews');
+const paymentRouter = require('./routes/payment');
 
 // Custom imports
-const {mongoose} = require('./db/mongoose'); // don't remove
+require('./db/mongoose');
 
 // Init express app
 const app = express();
@@ -35,6 +39,9 @@ app.use('/user', userRouter);
 app.use('/profile', profileRouter);
 app.use('/item', itemRouter);
 app.use('/tickets', ticketsRouter);
+app.use('/admin', adminRouter);
+app.use('/adminViews', adminViewsRouter);
+app.use('/payment', paymentRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {

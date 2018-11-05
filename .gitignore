@@ -62,3 +62,9 @@ typings/
 
 # IDE
 .idea
+.vs
+.vscode
+
+# Keys and passwords
+keys.js
+.DS_Store
