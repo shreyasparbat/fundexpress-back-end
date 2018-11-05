@@ -221,7 +221,7 @@ const sellTicketApprovedMessage = async (expoPushToken) => {
 
 };
 
-const sellTicketApprovedMessage = async (expoPushToken) => {
+const sellTicketRejectedMessage = async (expoPushToken) => {
     
     const messageInfo = {
         to: expoPushToken,

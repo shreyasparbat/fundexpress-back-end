@@ -16,9 +16,6 @@ const {sellTicketApprovedMessage} = require('../utils/notifications');
 const {sellTicketRejectedMessage} = require('../utils/notifications');
 
 
-// Define notification sender
-const sender = new gcm.Sender(serverKey);
-
 // Add middleware
 router.use(authenticateAdmin);
 
