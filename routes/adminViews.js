@@ -26,12 +26,13 @@ router.get('/updateInterestRates', async function(req, res) {
         if (!currentInterestRate) {
             throw new Error('No Interest Rate found');
         } else {
-            res.render('updateInterestRates', { 
-                title: 'Key in New Interest Rates' ,
-                currentFirstMonthRate: currentInterestRate[0].firstMonthRate,
-                currentNormalRate: currentInterestRate[0].normalRate,
-                dateUpdated: currentInterestRate[0].dateUpdated
-            })
+            // res.render('updateInterestRates', { 
+            //     title: 'Key in New Interest Rates' ,
+            //     currentFirstMonthRate: currentInterestRate[0].firstMonthRate,
+            //     currentNormalRate: currentInterestRate[0].normalRate,
+            //     dateUpdated: currentInterestRate[0].dateUpdated
+            // })
+            res.send(currentInterestRate);
         }
     }   catch (error) {
         console.log(error);
@@ -54,7 +55,7 @@ router.post('/updateInterestRate', async function(req, res) {
 
         console.log(newFirstMonthRate)
         console.log(newNormalRate)
-        // Create and save user
+        // Create and save interest rate
         let interestRate = new InterestRate({
             dateUpdated: new Date(),
             firstMonthRate: newFirstMonthRate,
