@@ -339,7 +339,6 @@ router.post('/getTicketsPendingApproval', async (req, res) => {
     }
 });
 
-
 // DELETE: log admin out
 router.delete('/logout', (req, res) => {
     req.admin.removeToken(req.token).then(() => {

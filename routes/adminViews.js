@@ -44,8 +44,24 @@ router.get('/updateInterestRates', async function(req, res) {
 // Update interest rates
 router.post('/updateInterestRate', async function(req, res) {
     try {
+        const body = _.pick(req.body, [
+            'firstMonthRate',
+            'normalRate'
+        ]);
+
+        var newFirstMonthRate = body.firstMonthRate;
+        var newNormalRate = body.normalRate;
+
         console.log(newFirstMonthRate)
         console.log(newNormalRate)
+        // Create and save user
+        let interestRate = new InterestRate({
+            dateUpdated: new Date(),
+            firstMonthRate: newFirstMonthRate,
+            normalRate: newNormalRate
+        });
+        await interestRate.save();
+        
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -53,5 +69,6 @@ router.post('/updateInterestRate', async function(req, res) {
         });
     }
 });
+
 
 module.exports = router;
