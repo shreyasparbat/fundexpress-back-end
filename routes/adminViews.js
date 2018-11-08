@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
+var csvObj = require('csv');
 
 // Custom imports
 const {InterestRate} = require('../db/models/interestRate');
@@ -16,6 +17,30 @@ router.get('/retrainCreditRatingModel', function(req, res) {
 // Page for uploading new CSV for watch brands
 router.get('/updateWatchPrices', function(req, res) {
     res.render('updateWatchPrices', { title: 'Upload New CSV' });
+});
+
+// Update watch price
+router.post('/updateWatchPrice', async function (req, res) {
+    try {
+        function myCSV(fieldOne, fieldTwo) {
+            this.fieldOne = fieldOne;
+            this.fieldTwo = fieldTwo;
+        };
+
+        var priceList = [];
+
+        csvObj.from.path('../newWatchPrice.csv').to.array(function (data) {
+            for (var index = 0; index < data.length; index++) {
+                priceList.push(new myCSV(data[index][0], data[index][1]));
+            }
+            console.log(priceList);
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
 });
 
 // Page for displaying and requesting new interest rates
@@ -70,6 +95,5 @@ router.post('/updateInterestRate', async function(req, res) {
         });
     }
 });
-
 
 module.exports = router;
