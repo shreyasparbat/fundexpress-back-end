@@ -221,8 +221,7 @@ router.post('/updateUser', async (req, res) => {
             'noOfC',
             'noOfL',
             'noOfD',
-            'ethHash',
-            'expoPushToken'
+            'ethHash'
         ]);
 
         // Update the user
