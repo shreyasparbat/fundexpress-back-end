@@ -14,22 +14,32 @@ cron.schedule('0 1 0 * * *', async function () {
         closed: false
     }).lean();
     
-    pawnTickets.forEach(ticket => {
+    pawnTickets.forEach(async (ticket) => {
+
+        var interestPayable = ticket.outstandingInterest;
+
         if (new Date().getDate() - ticket.dateCreated.getDate() === 1 && ticket.dateCreated.getMonth() === new Date()          .getMonth()) {
             // adds interest for the first month
-            ticket.outstandingInterest += ticket.value * config.firstMonthRate * 1 / 100;
+            interestPayable += ticket.value * config.firstMonthRate * 1 / 100;
 
         } else if (ticket.dateCreated.getDate() === lastday(new Date().getFullYear(), new Date().getMonth()-1) &&               new Date().getMonth() - ticket.dateCreated.getMonth() === 1 && new Date().getDate() === 1) {
             // adds interest for the first month
-            ticket.outstandingInterest += ticket.value * config.firstMonthRate * 1 / 100;
+            interestPayable += ticket.value * config.firstMonthRate * 1 / 100;
 
         } else if (ticket.dateCreated.getDate() === new Date().getDate()) {
                 // adds interest for every subsequent month
                 const numMonths = new Date().getMonth() - ticket.dateCreated.getMonth();
 
-                ticket.outstandingInterest = 0;
-                ticket.outstandingInterest += ticket.value * config.normalRate * numMonths / 100;
+                interestPayable = 0;
+                interestPayable += ticket.value * config.normalRate * numMonths / 100;
 
         }
+        ticket.set({
+            outstandingInterest: interestPayable
+        });
+        await ticket.save();
     })
+}, {
+    scheduled: true,
+    timezone: 'Asia/Singapore'
 });

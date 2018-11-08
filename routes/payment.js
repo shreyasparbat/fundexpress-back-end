@@ -40,6 +40,9 @@ router.post('/', async (req, res) => {
                 if (payment.paymentAmount >= pawnTicket.outstandingInterest) {
                     balanceInterest = 0;
                     balancePrincipal -= (payment.paymentAmount - pawnTicket.outstandingInterest);
+                    if (balancePrincipal === 0) {
+                        pawnTicket.closed = true;
+                    }
                 } else {
                     balanceInterest -= payment.paymentAmount;
                 }

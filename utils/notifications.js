@@ -1,11 +1,6 @@
 // Library imports
 const cron = require('node-cron');
-const FCM = require('fcm-node');
-const gcm = require('node-gcm');
-const serverKey = require('../keys').serverKey;
-const fcm = new FCM(serverKey);
 const axios = require('axios');
-
 
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
