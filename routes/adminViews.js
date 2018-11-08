@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
-const {ObjectID} = require('mongodb');
 
 // Custom imports
 const {InterestRate} = require('../db/models/interestRate');

@@ -149,9 +149,14 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
     return item.save();
 };
 
-ItemSchema.methods.runImageRecognition = function(type) {
+ItemSchema.methods.runImageRecognition = function() {
     const item = this;
-    return Promise.resolve(item);
+    item.set({
+        brand: 'Generic',
+        weight: 5,
+        purity: '24k/999'
+    });
+    item.save();
 };
 
 // Create model and export
