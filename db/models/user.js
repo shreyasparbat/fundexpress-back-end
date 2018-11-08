@@ -47,7 +47,6 @@ const UserSchema = new mongoose.Schema({
     },
     gender: String,
     dateOfBirth: Date,
-    age: Number,
     ic: {
         type: String,
         required: false,
@@ -108,42 +107,11 @@ const UserSchema = new mongoose.Schema({
     currentLtvPercentage: {
         type: Number
     },
-    ethHash: {
-        type: 'String',
-        default: '0000000000'
-    },
     expoPushToken: {
         type: String
     },
     registrationCompleted: Boolean
 });
-
-// Override toJson (for returning user profile)
-UserSchema.methods.toJSON = function () {
-    const user = this;
-    const userObject = user.toObject();
-    return _.pick(userObject, [
-        '_id',
-        'email',
-        'fullName',
-        'gender',
-        'dateOfBirth',
-        'age',
-        'ic',
-        'mobileNumber',
-        'landlineNumber',
-        'address',
-        'addressType',
-        'citizenship',
-        'race',
-        'noOfC',
-        'noOfL',
-        'noOfD',
-        'ethHash',
-        'expoPushToken',
-        'registrationCompleted'
-    ]);
-};
 
 // Find user by credentials
 UserSchema.statics.findByCredentials = async function (email, password) {

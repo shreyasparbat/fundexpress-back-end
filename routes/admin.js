@@ -206,11 +206,11 @@ router.post('/updateUser', async (req, res) => {
     try {
         const userID = req.body.userID;
         const body = _.pick(req.body, [
+            '_id',
             'email',
             'fullName',
             'gender',
             'dateOfBirth',
-            'age',
             'ic',
             'mobileNumber',
             'landlineNumber',
@@ -221,7 +221,11 @@ router.post('/updateUser', async (req, res) => {
             'noOfC',
             'noOfL',
             'noOfD',
-            'ethHash'
+            'initialCreditRating',
+            'currentCreditRating',
+            'initialLtvPercentage',
+            'currentLtvPercentage',
+            'registrationCompleted'
         ]);
 
         // Update the user
