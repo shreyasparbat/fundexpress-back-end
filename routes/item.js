@@ -161,6 +161,8 @@ router.post('/pawn', async (req, res) => {
             let pawnTicket = new PawnTicket(pawnTicketObject);
             await pawnTicket.save();
         }
+
+        res.send(pawnTicketObject);
     } catch (error) {
         console.log(error);
         res.status(500).send({
