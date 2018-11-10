@@ -1,7 +1,6 @@
 // Library imports
 const validator = require('validator');
 const mongoose = require('mongoose');
-const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
@@ -47,7 +46,6 @@ const UserSchema = new mongoose.Schema({
     },
     gender: String,
     dateOfBirth: Date,
-    age: Number,
     ic: {
         type: String,
         required: false,
@@ -99,51 +97,22 @@ const UserSchema = new mongoose.Schema({
         default: 'B'
     },
     currentCreditRating: {
-        type: String
+        type: String,
+        default: 'B'
     },
     initialLtvPercentage: {
         type: Number,
         default: 0.9
     },
     currentLtvPercentage: {
-        type: Number
-    },
-    ethHash: {
-        type: 'String',
-        default: '0000000000'
+        type: Number,
+        default: 0.9
     },
     expoPushToken: {
         type: String
     },
     registrationCompleted: Boolean
 });
-
-// Override toJson (for returning user profile)
-UserSchema.methods.toJSON = function () {
-    const user = this;
-    const userObject = user.toObject();
-    return _.pick(userObject, [
-        '_id',
-        'email',
-        'fullName',
-        'gender',
-        'dateOfBirth',
-        'age',
-        'ic',
-        'mobileNumber',
-        'landlineNumber',
-        'address',
-        'addressType',
-        'citizenship',
-        'race',
-        'noOfC',
-        'noOfL',
-        'noOfD',
-        'ethHash',
-        'expoPushToken',
-        'registrationCompleted'
-    ]);
-};
 
 // Find user by credentials
 UserSchema.statics.findByCredentials = async function (email, password) {

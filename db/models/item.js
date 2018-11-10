@@ -90,8 +90,8 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
     const item = this;
 
     // Calculate meltingPercentage and sellPercentage
-    let meltingPercentage = undefined;
-    let sellPercentage = undefined;
+    let meltingPercentage = 0.7;
+    let sellPercentage = 0.7;
     if (purity === '24k/999') {
         meltingPercentage = 0.985;
         sellPercentage = 0.97;
@@ -149,9 +149,14 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
     return item.save();
 };
 
-ItemSchema.methods.runImageRecognition = function(type) {
+ItemSchema.methods.runImageRecognition = function() {
     const item = this;
-    return Promise.resolve(item);
+    item.set({
+        brand: 'Generic',
+        weight: 5,
+        purity: '24k/999'
+    });
+    item.save();
 };
 
 // Create model and export

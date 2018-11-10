@@ -1,6 +1,5 @@
 // Library imports
 const mongoose = require('mongoose');
-const _ = require('lodash');
 
 // Define interestRate Schema
 const interestRateSchema = new mongoose.Schema({

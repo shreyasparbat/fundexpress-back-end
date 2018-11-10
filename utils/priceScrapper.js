@@ -20,6 +20,10 @@ const getGoldSilverPrice = async () => {
     const [rowsSilver] = await retrieveMarketValue('PSILVERbid');
     const PSILVERbid = parseFloat(rowsSilver.value) / 28.3495;
 
+    // Get platinum bid value
+    const [rowsPlatinum] = await retrieveMarketValue('PPLATINUMbid');
+    const PPLATINUMbid = parseFloat(rowsPlatinum.value) / 28.3495;
+
     // Get USD to SGD exchange rate (bid)
     const [rowsExchangeRate] = await retrieveMarketValue('USSGDbid');
     const USSGD = parseFloat(rowsExchangeRate.value);
@@ -27,7 +31,8 @@ const getGoldSilverPrice = async () => {
     // Calculate and return final values
     return {
         gold: PGOLDbid * USSGD,
-        silver: PSILVERbid * USSGD
+        silver: PSILVERbid * USSGD,
+        platinum: PPLATINUMbid * USSGD
     };
 };
 
