@@ -150,13 +150,11 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
 };
 
 ItemSchema.methods.runImageRecognition = function() {
-    const item = this;
-    item.set({
+    return {
         brand: 'Generic',
         weight: 5,
         purity: '24k/999'
-    });
-    return item.save();
+    };
 };
 
 // Create model and export

@@ -43,10 +43,10 @@ router.post('/uploadImage', async (req, res) => {
             itemID: item._id
         };
         if (type === 'Gold Bar') {
-            let savedItem = await item.runImageRecognition();
-            responseBody.brand = savedItem.brand;
-            responseBody.weight = savedItem.weight;
-            responseBody.purity = savedItem.purity;
+            const itemInformation = item.runImageRecognition();
+            responseBody.brand = itemInformation.brand;
+            responseBody.weight = itemInformation.weight;
+            responseBody.purity = itemInformation.purity;
         }
 
         // Send back relevant information
