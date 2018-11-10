@@ -42,10 +42,9 @@ router.post('/uploadImage', async (req, res) => {
         let responseBody = {
             itemID: item._id
         };
-        if (type === 'Gold Bar' || type === 'Gold Coin') {
-            let savedItem = await item.runImageRecognition(type);
+        if (type === 'Gold Bar') {
+            let savedItem = await item.runImageRecognition();
             responseBody.brand = savedItem.brand;
-            responseBody.material = savedItem.material;
             responseBody.weight = savedItem.weight;
             responseBody.purity = savedItem.purity;
         }
@@ -156,11 +155,12 @@ router.post('/pawn', async (req, res) => {
             'outstandingPrincipal' : body.specifiedValue,
             'outstandingInterest' : 0
         };
-        let pawnTicket = new PawnTicket(pawnTicketObject);
 
-        // Save pawn ticket
-        await pawnTicket.save();
-        res.send(pawnTicketObject);
+        // Save pawn ticket if registrationCompleted
+        if (req.user.registrationCompleted) {
+            let pawnTicket = new PawnTicket(pawnTicketObject);
+            await pawnTicket.save();
+        }
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -195,10 +195,11 @@ router.post('/sell', async (req, res) => {
             'value': item.sellOfferedValue,
             'approved': false
         };
-        let sellTicket = new SellTicket(sellTicketObject);
-
-        // Save sell ticket
-        await sellTicket.save();
+        // Save sell ticket if registrationCompleted
+        if (req.user.registrationCompleted) {
+            let sellTicket = new SellTicket(sellTicketObject);
+            await sellTicket.save();
+        }
 
         res.send(sellTicketObject);
     } catch (error) {
