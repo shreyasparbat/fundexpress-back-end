@@ -156,7 +156,7 @@ ItemSchema.methods.runImageRecognition = function() {
         weight: 5,
         purity: '24k/999'
     });
-    item.save();
+    return item.save();
 };
 
 // Create model and export
