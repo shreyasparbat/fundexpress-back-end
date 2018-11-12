@@ -65,7 +65,6 @@ pawnTicketSchema.methods.findExpiringTicket = function () {
     const pawnTicketObject = pawnTicket.toObject();
     var daysPrior = 7;
     var oneWeekBefore = new Date().setDate(pawnTicketObject.expiryDate - daysPrior);
-    var today = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
 
     if (new Date().getFullYear() === oneWeekBefore.getFullYear() && new Date().getMonth() === oneWeekBefore.getMonth() && new Date().getDate() === oneWeekBefore.getDate()) {
         return true;
@@ -76,7 +75,6 @@ pawnTicketSchema.methods.findExpiringTicket = function () {
 pawnTicketSchema.methods.findExpiredTicket = function() {
     const pawnTicket = this;
     const pawnTicketObject = pawnTicket.toObject();
-    var today = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
 
     if (new Date().getFullYear() === pawnTicketObject.expiryDate.getFullYear() && new Date().getMonth() === pawnTicketObject.expiryDate.getMonth() && new Date().getDate() === pawnTicketObject.expiryDate.getDate()) {
         pawnTicketObject.expired = true;

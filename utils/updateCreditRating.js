@@ -22,8 +22,7 @@ cron.schedule('0 1 0 * * *', async function () {
         }
 
     })
-
-
+    
 }, {
     scheduled: true,
     timezone: 'Asia/Singapore'
