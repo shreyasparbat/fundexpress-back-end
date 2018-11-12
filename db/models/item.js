@@ -121,10 +121,15 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
         sellPercentage = 0.27;
     }
 
-    // Get various parameters for formula
+    // Get gold prices
     const valuesPerGram = await getGoldSilverPrice();
-    const ltvPercentage = user.currentLtvPercentage;
 
+    // Get user's current ltv percentage
+    let ltvPercentage = user.currentLtvPercentage;
+    if (user.registrationCompleted == false) {
+        ltvPercentage = 0.9;
+    }
+    
     // Calulate and save final values
     let pawnOfferedValue = ltvPercentage * meltingPercentage * valuesPerGram.gold * item.weight;
     let sellOfferedValue = sellPercentage * valuesPerGram.gold * item.weight;
