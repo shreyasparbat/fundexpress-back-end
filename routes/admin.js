@@ -164,7 +164,7 @@ router.post('/rejectPawnTicket', async (req, res) => {
 // POST: Approve a sell ticket
 router.post('/approveSellTicket', async (req,res) => {
     try {
-        let body = _.pick(req.body, ['sellTicketID']);
+        let body = req.body;
 
         // Find Sell ticket
         const sellTicket = await SellTicket.findById(new ObjectID(body.sellTicketID));
@@ -172,7 +172,8 @@ router.post('/approveSellTicket', async (req,res) => {
             throw new Error('No sell ticket found');
         }
         
-        // Approve it
+        // Update and approve it
+        body.approved = true
         sellTicket.set({
             approved: true
         });
