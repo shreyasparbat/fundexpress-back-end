@@ -70,8 +70,6 @@ router.post('/approvePawnTicket', async (req, res) => {
         await pawnTicket.save();
 
         var user = await User.findById(new ObjectID (pawnTicket.userID));
-        
-        console.log(user.expoPushToken);
 
         // calling firebase to send the approval message
         pawnTicketApprovedMessage(user.expoPushToken);
@@ -98,7 +96,9 @@ router.post('/rejectPawnTicket', async (req, res) => {
             throw new Error('No pawn ticket found');
         }
 
-        var user = User.findById(pawnTicket.userID);
+        var user = await User.findById(pawnTicket.userID);
+
+        console.log(user.expoPushToken);
         
         // calling firebase to send rejection notification to user
         pawnTicketRejectedMessage(user.expoPushToken);
@@ -121,7 +121,7 @@ router.post('/rejectPawnTicket', async (req, res) => {
 // POST: Approve a sell ticket
 router.post('/approveSellTicket', async (req,res) => {
     try {
-        let body = _.pick(req.body, ['sellTicketID']);
+        let body = req.body;
 
         // Find Sell ticket
         const sellTicket = await SellTicket.findById(new ObjectID(body.sellTicketID));
@@ -129,13 +129,14 @@ router.post('/approveSellTicket', async (req,res) => {
             throw new Error('No sell ticket found');
         }
         
-        // Approve it
+        // Update and approve it
+        body.approved = true
         sellTicket.set({
             approved: true
         });
         await sellTicket.save();
 
-        var user = User.findById(sellTicket.userID);
+        var user = await User.findById(sellTicket.userID);
         
         //calling firebase to send sell ticket success notification
         sellTicketApprovedMessage(user.expoPushToken);
@@ -163,7 +164,7 @@ router.post('/rejectSellTicket', async (req, res) => {
             throw new Error('No sell ticket found');
         }
 
-        var user = User.findById(sellTicket.userID);
+        var user = await User.findById(sellTicket.userID);
         
         //calling firebase to send sell ticket rejection notification
         sellTicketRejectedMessage(user.expoPushToken);
@@ -206,11 +207,11 @@ router.post('/updateUser', async (req, res) => {
     try {
         const userID = req.body.userID;
         const body = _.pick(req.body, [
+            '_id',
             'email',
             'fullName',
             'gender',
             'dateOfBirth',
-            'age',
             'ic',
             'mobileNumber',
             'landlineNumber',
@@ -221,7 +222,11 @@ router.post('/updateUser', async (req, res) => {
             'noOfC',
             'noOfL',
             'noOfD',
-            'ethHash'
+            'initialCreditRating',
+            'currentCreditRating',
+            'initialLtvPercentage',
+            'currentLtvPercentage',
+            'registrationCompleted'
         ]);
 
         // Update the user
@@ -337,7 +342,6 @@ router.post('/getTicketsPendingApproval', async (req, res) => {
         });
     }
 });
-
 
 // DELETE: log admin out
 router.delete('/logout', (req, res) => {

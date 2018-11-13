@@ -90,8 +90,8 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
     const item = this;
 
     // Calculate meltingPercentage and sellPercentage
-    let meltingPercentage = undefined;
-    let sellPercentage = undefined;
+    let meltingPercentage = 0.7;
+    let sellPercentage = 0.7;
     if (purity === '24k/999') {
         meltingPercentage = 0.985;
         sellPercentage = 0.97;
@@ -121,10 +121,15 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
         sellPercentage = 0.27;
     }
 
-    // Get various parameters for formula
+    // Get gold prices
     const valuesPerGram = await getGoldSilverPrice();
-    const ltvPercentage = user.currentLtvPercentage;
 
+    // Get user's current ltv percentage
+    let ltvPercentage = user.currentLtvPercentage;
+    if (user.registrationCompleted == false) {
+        ltvPercentage = 0.9;
+    }
+    
     // Calulate and save final values
     let pawnOfferedValue = ltvPercentage * meltingPercentage * valuesPerGram.gold * item.weight;
     let sellOfferedValue = sellPercentage * valuesPerGram.gold * item.weight;
@@ -149,9 +154,12 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
     return item.save();
 };
 
-ItemSchema.methods.runImageRecognition = function(type) {
-    const item = this;
-    return Promise.resolve(item);
+ItemSchema.methods.runImageRecognition = function() {
+    return {
+        brand: 'Generic',
+        weight: 5,
+        purity: '24k/999'
+    };
 };
 
 // Create model and export

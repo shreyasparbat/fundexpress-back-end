@@ -1,6 +1,5 @@
 // Library imports
 const mongoose = require('mongoose');
-const _ = require('lodash');
 
 // Define sellTicket Schema
 const sellTicketSchema = new mongoose.Schema({

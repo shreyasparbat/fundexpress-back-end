@@ -15,6 +15,7 @@ const ticketsRouter = require('./routes/tickets');
 const adminRouter = require('./routes/admin');
 const adminViewsRouter = require('./routes/adminViews');
 const paymentRouter = require('./routes/payment');
+const homeRouter = require('./routes/home');
 
 // Custom imports
 require('./db/mongoose');
@@ -42,6 +43,7 @@ app.use('/tickets', ticketsRouter);
 app.use('/admin', adminRouter);
 app.use('/adminViews', adminViewsRouter);
 app.use('/payment', paymentRouter);
+app.use('/home', homeRouter);
 
 // Catch 404 and forward to error handler
 app.use(function (req, res, next) {
