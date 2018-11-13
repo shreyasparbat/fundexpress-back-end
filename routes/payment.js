@@ -7,6 +7,7 @@ const {ObjectID} = require('mongodb');
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {Payment} = require('../db/models/payment');
+var isClosed = false;
 
 // POST: create new payment item
 router.post('/', async (req, res) => {
@@ -37,16 +38,35 @@ router.post('/', async (req, res) => {
                 // Update pawnTicket information
                 var balanceInterest = pawnTicket.outstandingInterest;
                 var balancePrincipal = pawnTicket.outstandingPrincipal;
-                if (payment.paymentAmount >= pawnTicket.outstandingInterest) {
+                
+                if (payment.paymentAmount >= balanceInterest) {
                     balanceInterest = 0;
-                    balancePrincipal -= (payment.paymentAmount - pawnTicket.outstandingInterest);
+                    balancePrincipal -= (payment.paymentAmount - balanceInterest);
+                    if (balancePrincipal === 0) {
+                        isClosed = true;
+                        //check if pawnTicket is expired or not
+                        if (pawnTicket.expired) {
+
+                            var user = await User.findById(pawnTicket.userID);
+                            // if pawnTicket is expired, update user's credit rating with a 'Late'
+                            user.updateCreditRating('L', pawnTicket._id);
+
+                        } else {
+
+                            var user = await User.findById(pawnTicket.userID);
+                            //if pawnTicket is not expired, update user's credit rating with a 'Cleared'
+                            user.updateCreditRating('C', pawnTicket._id);
+
+                        }
+                    }
                 } else {
                     balanceInterest -= payment.paymentAmount;
                 }
 
                 pawnTicket.set({
                     outstandingInterest: balanceInterest,
-                    outstandingPrincipal: balancePrincipal
+                    outstandingPrincipal: balancePrincipal,
+                    closed: isClosed
                 });
                 await pawnTicket.save();
             }

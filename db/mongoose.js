@@ -1,7 +1,11 @@
+// Library imports
 const mongoose = require('mongoose');
 
+// Specify which promise library mongoose should use
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/FundExpressApi', {useNewUrlParser: true}).then(() => {
+
+// Connect to DB
+mongoose.connect(process.env.DB_URL, {useNewUrlParser: true}).then(() => {
     console.log('Connected to mongodb');
 }).catch((err) => {
     console.log({
@@ -10,6 +14,7 @@ mongoose.connect('mongodb://localhost:27017/FundExpressApi', {useNewUrlParser: t
     });
 });
 
+// Export mongoose
 module.exports = {
     mongoose
 };
