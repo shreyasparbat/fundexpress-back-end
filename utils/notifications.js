@@ -7,7 +7,7 @@ const {PawnTicket} = require('../db/models/pawnTicket');
 const {User} = require('../db/models/user');
 const url = 'https://exp.host/--/api/v2/push/send';
 
-cron.schedule('0 0 0 * * *', () => {
+cron.schedule('0 0 0 * * *', async function () {
     // run every day at midnight.
 
     const expiringTokens = new Array();
@@ -15,35 +15,39 @@ cron.schedule('0 0 0 * * *', () => {
     const expiringGracePeriodTokens = new Array();
     const closedTokens = new Array();
     
-    // retrieve all Pawn Tickets
-    PawnTicket.find().then((pawnTickets) => {
-        pawnTickets.forEach(async (ticket) => {
-            //check if pawn ticket is expiring in a week
-            if(ticket.findExpiringTicket()) {
+    // finds all the current pawn tickets
+    let pawnTickets = await PawnTicket.find({
+        approved: true,
+        closed: false
+    }).lean();
 
-                var user = await User.findById(ticket.userID);
-                expiringTokens.push(user.expoPushToken);
+    pawnTickets.forEach(async (ticket) => {
+    //check if pawn ticket is expiring in a week
+    if(ticket.findExpiringTicket()) {
 
-            //check if pawn ticket has expired
-            } else if (ticket.findExpiredTicket()) {
+        var user = await User.findById(ticket.userID);
+        expiringTokens.push(user.expoPushToken);
 
-                var user = await User.findById(ticket.userID);
-                expiredTokens.push(user.expoPushToken);
-            
-            //check if pawn ticket grace period is expiring in a week
-            } else if (ticket.findExpiringGracePeriod()) {
+        //check if pawn ticket has expired
+        } else if (ticket.findExpiredTicket()) {
 
-                var user = await User.findById(ticket.userID);
-                expiringGracePeriodTokens.push(user.expoPushToken);
+            var user = await User.findById(ticket.userID);
+            expiredTokens.push(user.expoPushToken);
+        
+        //check if pawn ticket grace period is expiring in a week
+        } else if (ticket.findExpiringGracePeriod()) {
 
-            //check if grace period has ended
-            } else if (ticket.findClosedTicket()) {
+            var user = await User.findById(ticket.userID);
+            expiringGracePeriodTokens.push(user.expoPushToken);
 
-                var user = await User.findById(ticket.userID);
-                closedTokens.push(user.expoPushToken);
+        //check if grace period has ended
+        } else if (ticket.findClosedTicket()) {
 
-            }
-        });
+            var user = await User.findById(ticket.userID);
+            closedTokens.push(user.expoPushToken);
+            user.updateCreditRating('D', ticket._id);
+
+        }
     });
     //expiry reminder notification template
     const expiryReminderMessage = async (expoPushToken) => {

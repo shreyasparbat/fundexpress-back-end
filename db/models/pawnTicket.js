@@ -51,7 +51,7 @@ const pawnTicketSchema = new mongoose.Schema({
     outstandingInterest: {
         type: Number,
         required: true
-    }
+    },
 });
 
 // Override toJson (for returning pawnTicket)
