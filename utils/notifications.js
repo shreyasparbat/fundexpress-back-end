@@ -158,7 +158,7 @@ cron.schedule('0 0 0 * * *', async function () {
     timezone: 'Asia/Singapore'
 });
 
-// setting message templates for gcm notifications
+// setting message templates for notifications
 const pawnTicketApprovedMessage = async (expoPushToken) => {
     
     const messageInfo = {
@@ -239,10 +239,52 @@ const sellTicketRejectedMessage = async (expoPushToken) => {
 
 };
 
+const newPawnTicketCreatedMessage = async (expoPushToken) => {
+    
+    const messageInfo = {
+        to: expoPushToken,
+        title: 'Pawn Ticket Approval',
+        body: 'Hello! A new Pawn Ticket has been created and required your acceptance/rejection. Please check the app.'
+    }
+
+    axios({
+        method: 'post',
+        url: url,
+        data: messageInfo
+    }).then(res =>
+        console.log(res.data)
+    ).catch(err =>
+        console.log(err)
+    )
+
+};
+
+const newSellTicketCreatedMessage = async (expoPushToken) => {
+    
+    const messageInfo = {
+        to: expoPushToken,
+        title: 'Sell Ticket Approval',
+        body: 'Hello! A new Sell Ticket has been created and required your acceptance/rejection. Please check the app.'
+    }
+
+    axios({
+        method: 'post',
+        url: url,
+        data: messageInfo
+    }).then(res =>
+        console.log(res.data)
+    ).catch(err =>
+        console.log(err)
+    )
+
+};
+
 
 module.exports = {
     pawnTicketApprovedMessage,
     pawnTicketRejectedMessage,
     sellTicketApprovedMessage,
-    sellTicketRejectedMessage
+    sellTicketRejectedMessage,
+    newPawnTicketCreatedMessage,
+    newSellTicketCreatedMessage
 };

@@ -8,9 +8,12 @@ const {ObjectID} = require('mongodb');
 const {Item} = require('../db/models/item');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
+const {Admin} = require('../db/models/admin');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
 const {addMonths} = require('../utils/otherUtils');
+const {newPawnTicketCreatedMessage} = require('../utils/notifications');
+const {newSellTicketCreatedMessage} = require('../utils/notifications');
 
 // Add middleware
 router.use(authenticate);
@@ -162,6 +165,11 @@ router.post('/pawn', async (req, res) => {
             await pawnTicket.save();
         }
 
+        let admin = await Admin.find().limit(1).sort({$natural:-1});
+
+        // calling expo to send message
+        newPawnTicketCreatedMessage(admin[0].expoPushToken);
+
         res.send(pawnTicketObject);
     } catch (error) {
         console.log(error);
@@ -202,6 +210,11 @@ router.post('/sell', async (req, res) => {
             let sellTicket = new SellTicket(sellTicketObject);
             await sellTicket.save();
         }
+
+        let admin = await Admin.find().limit(1).sort({$natural:-1});
+
+        //calling expo to send message
+        newSellTicketCreatedMessage(admin[0].expoPushToken);
 
         res.send(sellTicketObject);
     } catch (error) {
