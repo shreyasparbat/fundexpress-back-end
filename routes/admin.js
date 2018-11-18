@@ -69,10 +69,8 @@ router.post('/approvePawnTicket', async (req, res) => {
         });
         await pawnTicket.save();
 
-        var user = await User.findById(new ObjectID (pawnTicket.userID));
-
         // calling firebase to send the approval message
-        pawnTicketApprovedMessage(user.expoPushToken);
+        pawnTicketApprovedMessage(pawnTicket);
 
         // Send back success message
         res.write('Pawn Ticket successfully approved\n');
@@ -95,13 +93,9 @@ router.post('/rejectPawnTicket', async (req, res) => {
         if (!pawnTicket) {
             throw new Error('No pawn ticket found');
         }
-
-        var user = await User.findById(pawnTicket.userID);
-
-        console.log(user.expoPushToken);
         
         // calling firebase to send rejection notification to user
-        pawnTicketRejectedMessage(user.expoPushToken);
+        pawnTicketRejectedMessage(pawnTicket);
         
         // Delete (reject) it
         pawnTicket.remove();
@@ -136,10 +130,8 @@ router.post('/approveSellTicket', async (req,res) => {
         });
         await sellTicket.save();
 
-        var user = await User.findById(sellTicket.userID);
-        
         //calling firebase to send sell ticket success notification
-        sellTicketApprovedMessage(user.expoPushToken);
+        sellTicketApprovedMessage(sellTicket);
 
         // Send back success message
         res.send({
@@ -163,11 +155,9 @@ router.post('/rejectSellTicket', async (req, res) => {
         if (!sellTicket) {
             throw new Error('No sell ticket found');
         }
-
-        var user = await User.findById(sellTicket.userID);
         
         //calling firebase to send sell ticket rejection notification
-        sellTicketRejectedMessage(user.expoPushToken);
+        sellTicketRejectedMessage(sellTicket);
         
         // Delete (reject) it
         sellTicket.remove();

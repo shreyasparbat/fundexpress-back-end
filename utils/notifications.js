@@ -55,7 +55,7 @@ cron.schedule('0 0 0 * * *', async function () {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payemnt Expiry Date Reminder', 
-            body: 'Hello! This is a reminder that you have only 1 week left to complete the repayment for your pawned item.'
+            body: 'Hello! This is a reminder that you have only 1 week left to complete the repayment for your pawned item. You will be charged additional interest if you miss this deadline.'
         }
     
         axios({
@@ -81,7 +81,7 @@ cron.schedule('0 0 0 * * *', async function () {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payment Grace Period Started',
-            body: 'Hello! Your payment deadline for your pawned item has been passed. Your one month grace period for payment has started now.'
+            body: 'Hello! Your payment deadline for your pawned item has been passed. Your one month grace period has started now. You will be charged additional interest for this month.'
         }
     
         axios({
@@ -159,8 +159,11 @@ cron.schedule('0 0 0 * * *', async function () {
 });
 
 // setting message templates for notifications
-const pawnTicketApprovedMessage = async (expoPushToken) => {
+const pawnTicketApprovedMessage = async (pawnTicket) => {
     
+    var user = await pawnTicket.findById(pawnTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Approved!',
@@ -179,8 +182,11 @@ const pawnTicketApprovedMessage = async (expoPushToken) => {
 
 };
 
-const pawnTicketRejectedMessage = async (expoPushToken) => {
+const pawnTicketRejectedMessage = async (pawnTicket) => {
     
+    var user = await pawnTicket.findById(pawnTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Rejected!',
@@ -199,8 +205,11 @@ const pawnTicketRejectedMessage = async (expoPushToken) => {
 
 };
 
-const sellTicketApprovedMessage = async (expoPushToken) => {
+const sellTicketApprovedMessage = async (sellTicket) => {
     
+    var user = await sellTicket.findById(sellTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Approved!',
@@ -219,8 +228,11 @@ const sellTicketApprovedMessage = async (expoPushToken) => {
 
 };
 
-const sellTicketRejectedMessage = async (expoPushToken) => {
+const sellTicketRejectedMessage = async (sellTicket) => {
     
+    var user = await sellTicket.findById(sellTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Rejected!',
@@ -239,12 +251,15 @@ const sellTicketRejectedMessage = async (expoPushToken) => {
 
 };
 
-const newPawnTicketCreatedMessage = async (expoPushToken) => {
+const newPawnTicketCreatedMessage = async () => {
     
+    let admin = await Admin.find().limit(1).sort({$natural:-1});
+    var expoPushToken = admin.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Approval',
-        body: 'Hello! A new Pawn Ticket has been created and required your acceptance/rejection. Please check the app.'
+        body: 'Hello! A new Pawn Ticket has been created and requires your acceptance/rejection. Please check the app.'
     }
 
     axios({
@@ -259,12 +274,15 @@ const newPawnTicketCreatedMessage = async (expoPushToken) => {
 
 };
 
-const newSellTicketCreatedMessage = async (expoPushToken) => {
+const newSellTicketCreatedMessage = async () => {
+
+    let admin = await Admin.find().limit(1).sort({$natural:-1});
+    var expoPushToken = admin.expoPushToken;
     
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Approval',
-        body: 'Hello! A new Sell Ticket has been created and required your acceptance/rejection. Please check the app.'
+        body: 'Hello! A new Sell Ticket has been created and requires your acceptance/rejection. Please check the app.'
     }
 
     axios({

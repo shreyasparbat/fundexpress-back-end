@@ -165,10 +165,8 @@ router.post('/pawn', async (req, res) => {
             await pawnTicket.save();
         }
 
-        let admin = await Admin.find().limit(1).sort({$natural:-1});
-
         // calling expo to send message
-        newPawnTicketCreatedMessage(admin[0].expoPushToken);
+        newPawnTicketCreatedMessage();
 
         res.send(pawnTicketObject);
     } catch (error) {
@@ -211,10 +209,8 @@ router.post('/sell', async (req, res) => {
             await sellTicket.save();
         }
 
-        let admin = await Admin.find().limit(1).sort({$natural:-1});
-
         //calling expo to send message
-        newSellTicketCreatedMessage(admin[0].expoPushToken);
+        newSellTicketCreatedMessage();
 
         res.send(sellTicketObject);
     } catch (error) {
