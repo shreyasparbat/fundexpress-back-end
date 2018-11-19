@@ -35,6 +35,7 @@
     "react-native": "^0.57.4",
     "react-native-cli": "^2.0.1",
     "react-native-push-notification": "^3.1.2",
-    "validator": "^10.4.0"
+    "validator": "^10.4.0",
+    "xlsx": "^0.14.1"
   }
 }
