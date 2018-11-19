@@ -154,18 +154,7 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
     return item.save();
 };
 
-ItemSchema.methods.runImageRecognition = async function(front, back) {
-    // Get predicted default probabilities and credit rating
-    const response = await axios.post('http://0.0.0.0:5000/bar_ocr', {
-        front,
-        back
-    }, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
-    console.log(response.data);
-    
+ItemSchema.methods.runImageRecognition = function() {
     return {
         brand: 'Generic',
         weight: 5,
