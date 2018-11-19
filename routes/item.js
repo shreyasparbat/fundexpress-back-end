@@ -8,7 +8,6 @@ const {ObjectID} = require('mongodb');
 const {Item} = require('../db/models/item');
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {SellTicket} = require('../db/models/sellTicket');
-const {Admin} = require('../db/models/admin');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
 const {addMonths} = require('../utils/otherUtils');
@@ -46,7 +45,7 @@ router.post('/uploadImage', async (req, res) => {
             itemID: item._id
         };
         if (type === 'Gold Bar') {
-            const itemInformation = item.runImageRecognition();
+            const itemInformation = item.runImageRecognition(res.front, res.back);
             responseBody.brand = itemInformation.brand;
             responseBody.weight = itemInformation.weight;
             responseBody.purity = itemInformation.purity;
