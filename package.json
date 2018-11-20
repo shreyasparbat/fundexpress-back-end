@@ -21,6 +21,7 @@
     "fast-csv": "^2.4.1",
     "firebase-admin": "^6.0.0",
     "gradle": "^1.0.9",
+    "handlebars": "^4.0.12",
     "hbs": "~4.0.1",
     "http-errors": "^1.6.3",
     "jsonwebtoken": "^8.3.0",
