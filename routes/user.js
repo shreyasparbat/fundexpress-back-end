@@ -25,6 +25,7 @@ router.post('/registerTrial', async (req, res) => {
             expoPushToken: req.expoPushToken
         });
         await user.save();
+        console.log(req.expoPushToken);
 
         // Generate user's authentication token
         const token = await user.generateAuthToken();
