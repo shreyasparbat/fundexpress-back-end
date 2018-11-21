@@ -1,6 +1,7 @@
 // Library imports
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const axios = require('axios');
 
 // Custom imports
 const {getGoldSilverPrice} = require('../../utils/priceScrapper');
@@ -86,7 +87,7 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values (Gold products only)
-ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
+ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
     const item = this;
 
     // Calculate meltingPercentage and sellPercentage
