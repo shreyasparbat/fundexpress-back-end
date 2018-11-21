@@ -86,7 +86,7 @@ ItemSchema.methods.toJSON = function () {
 };
 
 // Calculate pawn and sell offered values (Gold products only)
-ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
+ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
     const item = this;
 
     // Calculate meltingPercentage and sellPercentage

@@ -99,8 +99,15 @@ router.post('/add', async (req, res) => {
         // Calculate pawn and sell offered values
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
             await item.calculateGoldOfferedValues(req.user, body.purity);
-        } else {
-            await item.calculateOtherOfferedValues(req.user);
+        }
+        if (body.type === 'Silver Bar' || body.type === 'Silver Coin') {
+            await item.calculateSilverOfferedValues(req.user, body.purity);
+        }
+        if (body.type === 'Jewel') {
+            await item.calculateJewelOfferedValues(req.user, body.purity);
+        }
+        if (body.type === 'Watch') {
+            await item.calculateWatchOfferedValues(req.user, body.purity);
         }
 
         // Return objectID and offered values
