@@ -2,38 +2,65 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
-var csvObj = require('csv');
+const xlsx = require('xlsx');
 
 // Custom imports
 const {InterestRate} = require('../db/models/interestRate');
+const {WatchPrice} = require('../db/models/watchPrice');
     
 // Page for uploading new CSV for retraining
 router.get('/retrainCreditRatingModel', function(req, res) {
-    res.render('retrainCreditRatingModel', { title: 'Upload New CSV' });
+    res.render('retrainCreditRatingModel', { title: 'Upload New CSV File' });
     console.log(req);
 });
 
 // Page for uploading new CSV for watch brands
 router.get('/updateWatchPrices', function(req, res) {
-    res.render('updateWatchPrices', { title: 'Upload New CSV' });
+    res.render('updateWatchPrices', { title: 'Upload New CSV File' });
 });
 
 // Update watch price
 router.post('/updateWatchPrice', async function (req, res) {
     try {
-        function myCSV(fieldOne, fieldTwo) {
-            this.fieldOne = fieldOne;
-            this.fieldTwo = fieldTwo;
-        };
+        // const body = _.pick(req.body, [
+        //     'newPriceList'
+        // ]);
 
-        var priceList = [];
+        // console.log(body.newPriceList)
 
-        csvObj.from.path('../newWatchPrice.csv').to.array(function (data) {
-            for (var index = 0; index < data.length; index++) {
-                priceList.push(new myCSV(data[index][0], data[index][1]));
+        const workbook = xlsx.readFile('Price List.xlsx');
+        const sheet_name_list = workbook.SheetNames;
+        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]])
+
+        for(var i = 0; i < jsonArray.length; i++) {
+            var obj = jsonArray[i];
+            var brandName = obj.Brand;
+            var newPrice = obj.Price;
+            
+            var retrieveWatchPrice = await WatchPrice.find({
+                brand: brandName
+            });
+            var currentWatchPrice = retrieveWatchPrice[0];
+
+            if(!currentWatchPrice) {
+                //create new watchPrice item
+                let newWatchPrice = new WatchPrice({
+                    brand: brandName,
+                    value: newPrice
+                });
+                await newWatchPrice.save();
+                console.log("I am here")
+            } else {
+                //code to update existing price
+                console.log(currentWatchPrice)
+                currentWatchPrice.set({
+                    brand: brandName,
+                    value: newPrice
+                });
+                await currentWatchPrice.save();
             }
-            console.log(priceList);
-        })
+        }
+
     } catch (error) {
         console.log(error);
         res.status(500).send({

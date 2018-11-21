@@ -5,11 +5,10 @@ const axios = require('axios');
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {User} = require('../db/models/user');
-const {InterestRate} = require('../db/models/interestRate');
-const config = require('../config');
+const {Admin} = require('../db/models/admin');
 const url = 'https://exp.host/--/api/v2/push/send';
 
-cron.schedule('0 0 0 * * *', () => {
+cron.schedule('0 0 0 * * *', async function () {
     // run every day at midnight.
 
     const expiringTokens = new Array();
@@ -17,35 +16,39 @@ cron.schedule('0 0 0 * * *', () => {
     const expiringGracePeriodTokens = new Array();
     const closedTokens = new Array();
     
-    // retrieve all Pawn Tickets
-    PawnTicket.find().then((pawnTickets) => {
-        pawnTickets.forEach(async (ticket) => {
-            //check if pawn ticket is expiring in a week
-            if(ticket.findExpiringTicket()) {
+    // finds all the current pawn tickets
+    let pawnTickets = await PawnTicket.find({
+        approved: true,
+        closed: false
+    }).lean();
 
-                var user = await User.findById(ticket.userID);
-                expiringTokens.push(user.expoPushToken);
+    pawnTickets.forEach(async (ticket) => {
+    //check if pawn ticket is expiring in a week
+    if(ticket.findExpiringTicket()) {
 
-            //check if pawn ticket has expired
-            } else if (ticket.findExpiredTicket()) {
+        var user = await User.findById(ticket.userID);
+        expiringTokens.push(user.expoPushToken);
 
-                var user = await User.findById(ticket.userID);
-                expiredTokens.push(user.expoPushToken);
-            
-            //check if pawn ticket grace period is expiring in a week
-            } else if (ticket.findExpiringGracePeriod()) {
+        //check if pawn ticket has expired
+        } else if (ticket.findExpiredTicket()) {
 
-                var user = await User.findById(ticket.userID);
-                expiringGracePeriodTokens.push(user.expoPushToken);
+            var user = await User.findById(ticket.userID);
+            expiredTokens.push(user.expoPushToken);
+        
+        //check if pawn ticket grace period is expiring in a week
+        } else if (ticket.findExpiringGracePeriod()) {
 
-            //check if grace period has ended
-            } else if (ticket.findClosedTicket()) {
+            var user = await User.findById(ticket.userID);
+            expiringGracePeriodTokens.push(user.expoPushToken);
 
-                var user = await User.findById(ticket.userID);
-                closedTokens.push(user.expoPushToken);
+        //check if grace period has ended
+        } else if (ticket.findClosedTicket()) {
 
-            }
-        });
+            var user = await User.findById(ticket.userID);
+            closedTokens.push(user.expoPushToken);
+            user.updateCreditRating('D', ticket._id);
+
+        }
     });
     //expiry reminder notification template
     const expiryReminderMessage = async (expoPushToken) => {
@@ -53,7 +56,7 @@ cron.schedule('0 0 0 * * *', () => {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payemnt Expiry Date Reminder', 
-            body: 'Hello! This is a reminder that you have only 1 week left to complete the repayment for your pawned item.'
+            body: 'Hello! This is a reminder that you have only 1 week left to complete the repayment for your pawned item. You will be charged additional interest if you miss this deadline.'
         }
     
         axios({
@@ -79,7 +82,7 @@ cron.schedule('0 0 0 * * *', () => {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payment Grace Period Started',
-            body: 'Hello! Your payment deadline for your pawned item has been passed. Your one month grace period for payment has started now.'
+            body: 'Hello! Your payment deadline for your pawned item has been passed. Your one month grace period has started now. You will be charged additional interest for this month.'
         }
     
         axios({
@@ -156,9 +159,12 @@ cron.schedule('0 0 0 * * *', () => {
     timezone: 'Asia/Singapore'
 });
 
-// setting message templates for gcm notifications
-const pawnTicketApprovedMessage = async (expoPushToken) => {
+// setting message templates for notifications
+const pawnTicketApprovedMessage = async (pawnTicket) => {
     
+    var user = await User.findById(pawnTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Approved!',
@@ -177,8 +183,11 @@ const pawnTicketApprovedMessage = async (expoPushToken) => {
 
 };
 
-const pawnTicketRejectedMessage = async (expoPushToken) => {
+const pawnTicketRejectedMessage = async (pawnTicket) => {
     
+    var user = await User.findById(pawnTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Rejected!',
@@ -197,8 +206,12 @@ const pawnTicketRejectedMessage = async (expoPushToken) => {
 
 };
 
-const sellTicketApprovedMessage = async (expoPushToken) => {
+const sellTicketApprovedMessage = async (sellTicket) => {
     
+    var user = await User.findById(sellTicket.userID);
+    console.log(user.expoPushToken);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Approved!',
@@ -217,8 +230,11 @@ const sellTicketApprovedMessage = async (expoPushToken) => {
 
 };
 
-const sellTicketRejectedMessage = async (expoPushToken) => {
+const sellTicketRejectedMessage = async (sellTicket) => {
     
+    var user = await User.findById(sellTicket.userID);
+    var expoPushToken = user.expoPushToken;
+
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Rejected!',
@@ -237,41 +253,58 @@ const sellTicketRejectedMessage = async (expoPushToken) => {
 
 };
 
-// scheduling task to add interest payments for existing pawn tickets
-cron.schedule('0 1 0 * * *', async function () {
-    // runs every day at 00:01
-
-    // finds all the current pawn tickets
-    let pawnTickets = await PawnTicket.find({
-        approved: true,
-        closed: false
-    }).lean();
+const newPawnTicketCreatedMessage = async () => {
     
-    const currentInterestRate = await InterestRate.find().limit(1).sort({$natural:-1});
-    pawnTickets.forEach(ticket => {
-        if (new Date().getDate() - ticket.dateCreated.getDate() === 1 && ticket.dateCreated.getMonth() === new Date()          .getMonth()) {
-            // adds interest for the first month
-            ticket.outstandingInterest += ticket.value * currentInterestRate[0].firstMonthRate * 1 / 100;
+    let admin = await Admin.find().limit(1).sort({$natural:-1});
+    var expoPushToken = admin.expoPushToken;
 
-        } else if (ticket.dateCreated.getDate() === lastday(new Date().getFullYear(), new Date().getMonth()-1) &&               new Date().getMonth() - ticket.dateCreated.getMonth() === 1 && new Date().getDate() === 1) {
-            // adds interest for the first month
-            ticket.outstandingInterest += ticket.value * currentInterestRate[0].firstMonthRate * 1 / 100;
+    const messageInfo = {
+        to: expoPushToken,
+        title: 'Pawn Ticket Approval',
+        body: 'Hello! A new Pawn Ticket has been created and requires your acceptance/rejection. Please check the app.'
+    }
 
-        } else if (ticket.dateCreated.getDate() === new Date().getDate()) {
-                // adds interest for every subsequent month
-                const numMonths = new Date().getMonth() - ticket.dateCreated.getMonth();
+    axios({
+        method: 'post',
+        url: url,
+        data: messageInfo
+    }).then(res =>
+        console.log(res.data)
+    ).catch(err =>
+        console.log(err)
+    )
 
-                ticket.outstandingInterest = 0;
-                ticket.outstandingInterest += ticket.value * currentInterestRate[0].normalRate * numMonths / 100;
+};
 
-        }
-    })
-});
+const newSellTicketCreatedMessage = async () => {
+
+    let admin = await Admin.find().limit(1).sort({$natural:-1});
+    var expoPushToken = admin.expoPushToken;
+    
+    const messageInfo = {
+        to: expoPushToken,
+        title: 'Sell Ticket Approval',
+        body: 'Hello! A new Sell Ticket has been created and requires your acceptance/rejection. Please check the app.'
+    }
+
+    axios({
+        method: 'post',
+        url: url,
+        data: messageInfo
+    }).then(res =>
+        console.log(res.data)
+    ).catch(err =>
+        console.log(err)
+    )
+
+};
 
 
 module.exports = {
     pawnTicketApprovedMessage,
     pawnTicketRejectedMessage,
     sellTicketApprovedMessage,
-    sellTicketRejectedMessage
+    sellTicketRejectedMessage,
+    newPawnTicketCreatedMessage,
+    newSellTicketCreatedMessage
 };

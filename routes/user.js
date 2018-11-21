@@ -71,6 +71,7 @@ router.post('/adminOnboard', async (req, res) => {
             'email',
             'password',
             'fullName',
+            'expoPushToken'
         ]);
 
         // Get password hash

@@ -11,6 +11,8 @@ const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
 const {addMonths} = require('../utils/otherUtils');
+const {newPawnTicketCreatedMessage} = require('../utils/notifications');
+const {newSellTicketCreatedMessage} = require('../utils/notifications');
 
 // Add middleware
 router.use(authenticate);
@@ -43,7 +45,7 @@ router.post('/uploadImage', async (req, res) => {
             itemID: item._id
         };
         if (type === 'Gold Bar') {
-            const itemInformation = item.runImageRecognition();
+            const itemInformation = item.runImageRecognition(res.front, res.back);
             responseBody.brand = itemInformation.brand;
             responseBody.weight = itemInformation.weight;
             responseBody.purity = itemInformation.purity;
@@ -169,6 +171,9 @@ router.post('/pawn', async (req, res) => {
             await pawnTicket.save();
         }
 
+        // calling expo to send message
+        newPawnTicketCreatedMessage();
+
         res.send(pawnTicketObject);
     } catch (error) {
         console.log(error);
@@ -209,6 +214,9 @@ router.post('/sell', async (req, res) => {
             let sellTicket = new SellTicket(sellTicketObject);
             await sellTicket.save();
         }
+
+        //calling expo to send message
+        newSellTicketCreatedMessage();
 
         res.send(sellTicketObject);
     } catch (error) {
