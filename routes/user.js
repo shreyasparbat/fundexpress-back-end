@@ -22,10 +22,9 @@ router.post('/registerTrial', async (req, res) => {
             fullName: req.body.fullName,
             registrationCompleted: false,
             password,
-            expoPushToken: req.expoPushToken
+            expoPushToken: req.body.expoPushToken
         });
         await user.save();
-        console.log(req.expoPushToken);
 
         // Generate user's authentication token
         const token = await user.generateAuthToken();
