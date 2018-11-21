@@ -1,14 +1,26 @@
-<h1>{{title}}</h1>
-<p>The current first month interest rate is: {{currentFirstMonthRate}}%<br>
-The current remaining months interest rate is: {{currentNormalRate}}%<br>
-Rates last updated on: {{dateUpdated}}</p>
+<style type="text/css">
+    td {border:3px solid silver; padding: 15px}
+    table {border-collapse: collapse; margin-left: 400px}
+    body {text-align: center; background-color: aliceblue}
+    img {width: 400px}
+    .firstMonth {font-weight: bold}
+    .normalRate {font-weight: bold}
+    .lastUpdate {font-weight: bold}
+</style>
 
-<h2>Update the Interest Rates:</h2>
+<body>
+    <img src="../feLogo.jpg" alt="fundExpressLogo">
+ <h2>Update the Interest Rates</h2> <br>
 
-<form action="/adminViews/updateInterestRate">
-  New first month interest rate:<br>
-  <input type="double" name="newFirstMonthRate"><br>
-  New normal rate:<br>
-  <input type="double" name="newNormalRate"><br>
-<input type="submit">
-</form>
+    <p>The current first month interest rate is: <span class="firstMonth">{{currentFirstMonthRate}}%</span> <br><br>
+       The current remaining months interest rate is: <span class="normalRate">{{currentNormalRate}}%</span> <br><br>
+       Rates last updated on: <span class="lastUpdate">{{dateUpdated}}</span> </p>
+
+    <form action="/adminViews/updateInterestRate">
+        New first month interest rate:<br>
+    <input type="double" name="newFirstMonthRate"><br>
+        New normal rate:<br>
+    <input type="double" name="newNormalRate"><br>
+    <input type="submit">
+    </form>
+</body>

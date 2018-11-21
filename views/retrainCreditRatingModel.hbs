@@ -2,13 +2,11 @@
     td {border:3px solid silver; padding: 15px}
     table {border-collapse: collapse; margin-left: 400px}
     body {text-align: center; background-color: aliceblue}
-    .header {text-align: center; background-color: red; color: white; font-size: 36}
+    img {width: 400px}
 </style>
 
 <body>
-    <div class="header">
-        <h1> Fund Express </h1>
-    </div>
+    <img src="../feLogo.jpg" alt="fundExpressLogo">
 
     <h2> Retrain Credit Rating Model </h2> <br>
     <h3>{{title}}</h3>
@@ -29,19 +27,4 @@
     <br>
     <input type="submit">
     <br><br>
-
-    <h2>Update the Interest Rates</h2> <br>
-    <h3>{{title}}</h3>
-
-    <p>The current first month interest rate is: {{currentFirstMonthRate}}%<br>
-       The current remaining months interest rate is: {{currentNormalRate}}%<br>
-       Rates last updated on: {{dateUpdated}}</p>
-
-<form action="/adminViews/updateInterestRate">
-  New first month interest rate:<br>
-  <input type="double" name="newFirstMonthRate"><br>
-  New normal rate:<br>
-  <input type="double" name="newNormalRate"><br>
-<input type="submit">
-</form>
 </body>

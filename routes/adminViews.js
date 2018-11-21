@@ -10,13 +10,13 @@ const {WatchPrice} = require('../db/models/watchPrice');
     
 // Page for uploading new CSV for retraining
 router.get('/retrainCreditRatingModel', function(req, res) {
-    res.render('retrainCreditRatingModel', { title: 'Upload New CSV' });
+    res.render('retrainCreditRatingModel', { title: 'Upload New CSV File' });
     console.log(req);
 });
 
 // Page for uploading new CSV for watch brands
 router.get('/updateWatchPrices', function(req, res) {
-    res.render('updateWatchPrices', { title: 'Upload New CSV' });
+    res.render('updateWatchPrices', { title: 'Upload New CSV File' });
 });
 
 // Update watch price
