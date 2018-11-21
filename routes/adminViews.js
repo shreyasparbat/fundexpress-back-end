@@ -70,7 +70,7 @@ router.post('/updateWatchPrice', async function (req, res) {
 });
 
 // Page for displaying and requesting new interest rates
-router.get('/updateInterestRates', async function(req, res) {
+router.get('/getInterestRate', async function(req, res) {
     try {
     
         const currentInterestRate = await InterestRate.find().limit(1).sort({$natural:-1});
