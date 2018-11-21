@@ -256,7 +256,9 @@ const sellTicketRejectedMessage = async (sellTicket) => {
 
 const newPawnTicketCreatedMessage = async () => {
     
-    let admin = await Admin.find().limit(1).sort({$natural:-1});
+    let admin = await Admin.findOne({
+        email: 'fundexpressfyp@gmail.com'
+    });
     var expoPushToken = admin.expoPushToken;
 
     const messageInfo = {
@@ -279,7 +281,9 @@ const newPawnTicketCreatedMessage = async () => {
 
 const newSellTicketCreatedMessage = async () => {
 
-    let admin = await Admin.find().limit(1).sort({$natural:-1});
+    let admin = await Admin.findOne({
+        email: 'fundexpressfyp@gmail.com'
+    });
     var expoPushToken = admin.expoPushToken;
     
     const messageInfo = {
