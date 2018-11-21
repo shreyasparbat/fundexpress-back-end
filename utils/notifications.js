@@ -5,6 +5,7 @@ const axios = require('axios');
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {User} = require('../db/models/user');
+const {Admin} = require('../db/models/admin');
 const url = 'https://exp.host/--/api/v2/push/send';
 
 cron.schedule('0 0 0 * * *', async function () {
@@ -161,7 +162,7 @@ cron.schedule('0 0 0 * * *', async function () {
 // setting message templates for notifications
 const pawnTicketApprovedMessage = async (pawnTicket) => {
     
-    var user = await pawnTicket.findById(pawnTicket.userID);
+    var user = await User.findById(pawnTicket.userID);
     var expoPushToken = user.expoPushToken;
 
     const messageInfo = {
@@ -184,7 +185,7 @@ const pawnTicketApprovedMessage = async (pawnTicket) => {
 
 const pawnTicketRejectedMessage = async (pawnTicket) => {
     
-    var user = await pawnTicket.findById(pawnTicket.userID);
+    var user = await User.findById(pawnTicket.userID);
     var expoPushToken = user.expoPushToken;
 
     const messageInfo = {
@@ -207,7 +208,8 @@ const pawnTicketRejectedMessage = async (pawnTicket) => {
 
 const sellTicketApprovedMessage = async (sellTicket) => {
     
-    var user = await sellTicket.findById(sellTicket.userID);
+    var user = await User.findById(sellTicket.userID);
+    console.log(user.expoPushToken);
     var expoPushToken = user.expoPushToken;
 
     const messageInfo = {
@@ -230,7 +232,7 @@ const sellTicketApprovedMessage = async (sellTicket) => {
 
 const sellTicketRejectedMessage = async (sellTicket) => {
     
-    var user = await sellTicket.findById(sellTicket.userID);
+    var user = await User.findById(sellTicket.userID);
     var expoPushToken = user.expoPushToken;
 
     const messageInfo = {
