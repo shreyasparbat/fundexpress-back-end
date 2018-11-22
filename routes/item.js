@@ -31,21 +31,14 @@ router.post('/uploadImage', async (req, res) => {
 
         // Upload images to digital ocean
         req.itemID = item._id;
-        uploadItem(req, res, function (e) {
-            if (e) {
-                console.log(e);
-                throw(e);
-            } else {
-                console.log('successfully uploaded');
-            }
-        });
+        await uploadSync(req, res);
 
         // Run Image recognition if gold bar or coin
         let responseBody = {
             itemID: item._id
         };
         if (type === 'Gold Bar') {
-            const itemInformation = item.runImageRecognition(res.front, res.back);
+            const itemInformation = await item.runImageRecognition(item._id);
             responseBody.brand = itemInformation.brand;
             responseBody.weight = itemInformation.weight;
             responseBody.purity = itemInformation.purity;
@@ -54,12 +47,23 @@ router.post('/uploadImage', async (req, res) => {
         // Send back relevant information
         res.send(responseBody);
     } catch (error) {
-        console.log(error);
+        console.log(error.stack);
         res.status(500).send({
-            error: error.toString()
+            error: error.stack
         });
     }
 });
+
+const uploadSync = async (req, res) => {
+    uploadItem(req, res, function (e) {
+        if (e) {
+            console.log(e);
+            throw(e);
+        } else {
+            console.log('successfully uploaded');
+        }
+    });
+}
 
 // POST: add item
 router.post('/add', async (req, res) => {

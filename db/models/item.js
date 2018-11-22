@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const axios = require('axios');
+const querystring = require('querystring');
 
 // Custom imports
 const {getGoldSilverPrice} = require('../../utils/priceScrapper');
@@ -145,7 +146,7 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
 };
 
 // Calculate pawn and sell offered values (other products)
-ItemSchema.methods.calculateOtherOfferedValues = function(user) {
+ItemSchema.methods.calculateWatchOfferedValues = function(user) {
     // Formula not implemented as of now
     const item = this;
     item.set({
@@ -155,23 +156,28 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
     return item.save();
 };
 
-ItemSchema.methods.runImageRecognition = async function(front, back) {
-    // Get predicted default probabilities and credit rating
-    const response = await axios.post('http://0.0.0.0:5000/bar_ocr', {
-        front,
-        back
-    }, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
-    console.log(response.data);
-    
-    return {
-        brand: 'Generic',
-        weight: 5,
-        purity: '24k/999'
-    };
+ItemSchema.methods.runImageRecognition = async function(itemID) {
+    try {
+        console.log(itemID)
+        // Get predicted default probabilities and credit rating
+        const response = await axios.post('http://0.0.0.0:5000/bar_ocr', querystring.stringify({
+            itemID: itemID.toString()
+        }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        console.log(response.data)
+          
+        
+        return {
+            brand: 'Generic',
+            weight: 5,
+            purity: '24k/999'
+        };
+    } catch (error) {
+        throw error;
+    }
 };
 
 // Create model and export
