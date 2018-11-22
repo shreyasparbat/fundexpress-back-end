@@ -24,11 +24,11 @@ cron.schedule('0 0 0 * * *', async function () {
     }).lean();
 
     pawnTickets.forEach(async (ticket) => {
-    //check if pawn ticket is expiring in a week
-    if(ticket.findExpiringTicket()) {
+        //check if pawn ticket is expiring in a week
+        if(ticket.findExpiringTicket()) {
 
-        var user = await User.findById(ticket.userID);
-        expiringTokens.push(user.expoPushToken);
+            var user = await User.findById(ticket.userID);
+            expiringTokens.push(user.expoPushToken);
 
         //check if pawn ticket has expired
         } else if (ticket.findExpiredTicket()) {
@@ -57,8 +57,8 @@ cron.schedule('0 0 0 * * *', async function () {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payemnt Expiry Date Reminder', 
-            body: 'Hello! This is a reminder that you have only 1 week left to complete the repayment for your pawned item. You will be charged additional interest if you miss this deadline.'
-        }
+            body: 'This is a reminder that you have only 1 week left to complete the repayment for your pawned item. You will be charged additional interest if you miss this deadline.'
+        };
     
         axios({
             method: 'post',
@@ -68,7 +68,7 @@ cron.schedule('0 0 0 * * *', async function () {
             console.log(res.data)
         ).catch(err =>
             console.log(err)
-        )
+        );
     
     };
 
@@ -83,8 +83,8 @@ cron.schedule('0 0 0 * * *', async function () {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payment Grace Period Started',
-            body: 'Hello! Your payment deadline for your pawned item has been passed. Your one month grace period has started now. You will be charged additional interest for this month.'
-        }
+            body: 'Your payment deadline for your pawned item has been passed. Your one month grace period has started now. You will be charged additional interest for this month.'
+        };
     
         axios({
             method: 'post',
@@ -94,7 +94,7 @@ cron.schedule('0 0 0 * * *', async function () {
             console.log(res.data)
         ).catch(err =>
             console.log(err)
-        )
+        );
     
     };
 
@@ -109,8 +109,8 @@ cron.schedule('0 0 0 * * *', async function () {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payment Grace Period Expiry Reminder',
-            body: 'Hello! Your one month grace period for payment will end in 1 week. Please complete your payment within that timeline.'
-        }
+            body: 'Your one month grace period for payment will end in 1 week. Please complete your payment within that timeline.'
+        };
     
         axios({
             method: 'post',
@@ -120,7 +120,7 @@ cron.schedule('0 0 0 * * *', async function () {
             console.log(res.data)
         ).catch(err =>
             console.log(err)
-        )
+        );
     
     };
 
@@ -135,8 +135,8 @@ cron.schedule('0 0 0 * * *', async function () {
         const messageInfo = {
             to: expoPushToken,
             title: 'Pawned Item Payment Grace Period Ended',
-            body: 'Hello! Your grace period for payment has passed. Your payment has been defaulted.'
-        }
+            body: 'Your grace period for payment has passed. Your payment has been defaulted.'
+        };
     
         axios({
             method: 'post',
@@ -146,7 +146,7 @@ cron.schedule('0 0 0 * * *', async function () {
             console.log(res.data)
         ).catch(err =>
             console.log(err)
-        )
+        );
     
     };
 
@@ -169,8 +169,8 @@ const pawnTicketApprovedMessage = async (pawnTicket) => {
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Approved!',
-        body: 'Hello! Your pawn ticket request has been sucessfully approved!'
-    }
+        body: 'Your pawn ticket request has been sucessfully approved!'
+    };
 
     axios({
         method: 'post',
@@ -180,7 +180,7 @@ const pawnTicketApprovedMessage = async (pawnTicket) => {
         console.log(res.data)
     ).catch(err =>
         console.log(err)
-    )
+    );
 
 };
 
@@ -192,8 +192,8 @@ const pawnTicketRejectedMessage = async (pawnTicket) => {
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Rejected!',
-        body: 'Hello! Your pawn ticket request has been rejected.'
-    }
+        body: 'Your pawn ticket request has been rejected.'
+    };
 
     axios({
         method: 'post',
@@ -203,7 +203,7 @@ const pawnTicketRejectedMessage = async (pawnTicket) => {
         console.log(res.data)
     ).catch(err =>
         console.log(err)
-    )
+    );
 
 };
 
@@ -216,8 +216,8 @@ const sellTicketApprovedMessage = async (sellTicket) => {
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Approved!',
-        body: 'Hello! Your sell ticket request has been sucessfully approved!'
-    }
+        body: 'Your sell ticket request has been sucessfully approved!'
+    };
 
     axios({
         method: 'post',
@@ -227,7 +227,7 @@ const sellTicketApprovedMessage = async (sellTicket) => {
         console.log(res.data)
     ).catch(err =>
         console.log(err)
-    )
+    );
 
 };
 
@@ -239,8 +239,8 @@ const sellTicketRejectedMessage = async (sellTicket) => {
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Rejected!',
-        body: 'Hello! Your sell ticket request has been rejected.'
-    }
+        body: 'Your sell ticket request has been rejected.'
+    };
 
     axios({
         method: 'post',
@@ -250,7 +250,7 @@ const sellTicketRejectedMessage = async (sellTicket) => {
         console.log(res.data)
     ).catch(err =>
         console.log(err)
-    )
+    );
 
 };
 
@@ -264,8 +264,8 @@ const newPawnTicketCreatedMessage = async () => {
     const messageInfo = {
         to: expoPushToken,
         title: 'Pawn Ticket Approval',
-        body: 'Hello! A new Pawn Ticket has been created and requires your acceptance/rejection. Please check the app.'
-    }
+        body: 'A new Pawn Ticket has been created and requires your acceptance/rejection. Please check the app.'
+    };
 
     axios({
         method: 'post',
@@ -275,7 +275,7 @@ const newPawnTicketCreatedMessage = async () => {
         console.log(res.data)
     ).catch(err =>
         console.log(err)
-    )
+    );
 
 };
 
@@ -289,8 +289,8 @@ const newSellTicketCreatedMessage = async () => {
     const messageInfo = {
         to: expoPushToken,
         title: 'Sell Ticket Approval',
-        body: 'Hello! A new Sell Ticket has been created and requires your acceptance/rejection. Please check the app.'
-    }
+        body: 'A new Sell Ticket has been created and requires your acceptance/rejection. Please check the app.'
+    };
 
     axios({
         method: 'post',
@@ -300,7 +300,7 @@ const newSellTicketCreatedMessage = async () => {
         console.log(res.data)
     ).catch(err =>
         console.log(err)
-    )
+    );
 
 };
 
