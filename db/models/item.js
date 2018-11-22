@@ -145,8 +145,51 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
     return item.save();
 };
 
-// Calculate pawn and sell offered values (other products)
-ItemSchema.methods.calculateWatchOfferedValues = function(user) {
+// Calculate pawn and sell offered values (Silver products only)
+ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
+    const item = this;
+
+    // Set meltingPercentage
+    let meltingPercentage = 0.65;
+
+    //Set purity
+    purity = parseInt(purity);
+    purity /= 100;
+
+    // Get gold prices
+    const valuesPerGram = await getGoldSilverPrice();
+
+    // Get user's current ltv percentage
+    let ltvPercentage = user.currentLtvPercentage;
+    if (user.registrationCompleted == false) {
+        ltvPercentage = 0.9;
+    }
+    
+    // Calulate and save final values
+    let pawnOfferedValue = ltvPercentage * purity * meltingPercentage * valuesPerGram.silver * item.weight;
+    let sellOfferedValue = meltingPercentage * purity * valuesPerGram.weight * item.weight;
+    item.set({
+        pawnOfferedValue,
+        sellOfferedValue,
+        meltingPercentage
+    });
+
+    return item.save();
+};
+
+// Calculate pawn and sell offered values (Watches)
+ItemSchema.methods.calculateWatchOfferedValues = function() {
+    // Formula not implemented as of now
+    const item = this;
+    item.set({
+        pawnOfferedValue: -1,
+        sellOfferedValue: -1
+    });
+    return item.save();
+};
+
+// Calculate pawn and sell offered values (Jewel)
+ItemSchema.methods.calculateJewelOfferedValues = function() {
     // Formula not implemented as of now
     const item = this;
     item.set({
@@ -158,17 +201,16 @@ ItemSchema.methods.calculateWatchOfferedValues = function(user) {
 
 ItemSchema.methods.runImageRecognition = async function(itemID) {
     try {
-        console.log(itemID)
+        console.log(itemID);
         // Get predicted default probabilities and credit rating
-        const response = await axios.post('http://0.0.0.0:5000/bar_ocr', querystring.stringify({
+        const response = await axios.post('http://206.189.145.2:5000/bar_ocr', querystring.stringify({
             itemID: itemID.toString()
         }), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-        console.log(response.data)
-          
+        console.log(response.data);
         
         return {
             brand: 'Generic',
