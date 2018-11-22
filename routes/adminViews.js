@@ -28,38 +28,45 @@ router.post('/updateWatchPrice', async function (req, res) {
 
         // console.log(body.newPriceList)
 
-        const workbook = xlsx.readFile('Price List.xlsx');
+        const workbook = xlsx.readFile('Watch price list v1.xlsx');
         const sheet_name_list = workbook.SheetNames;
         var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]])
 
+        console.log(sheet_name_list)
+
         for(var i = 0; i < jsonArray.length; i++) {
             var obj = jsonArray[i];
-            var brandName = obj.Brand;
-            var newPrice = obj.Price;
+            console.log(obj);
+            console.log(obj.S/N);
+        //     var source = obj.Source;
+        //     var brandName = obj.Brand;
+        //     var modelName = obj.Model;
+        //     var serialNumber = obj.S/N;
+        //     var newPrice = obj.Price;
             
-            var retrieveWatchPrice = await WatchPrice.find({
-                brand: brandName
-            });
-            var currentWatchPrice = retrieveWatchPrice[0];
+        //     var retrieveWatchPrice = await WatchPrice.find({
+        //         brand: brandName
+        //     });
+        //     var currentWatchPrice = retrieveWatchPrice[0];
 
-            if(!currentWatchPrice) {
-                //create new watchPrice item
-                let newWatchPrice = new WatchPrice({
-                    brand: brandName,
-                    value: newPrice
-                });
-                await newWatchPrice.save();
-                console.log("I am here")
-            } else {
-                //code to update existing price
-                console.log(currentWatchPrice)
-                currentWatchPrice.set({
-                    brand: brandName,
-                    value: newPrice
-                });
-                await currentWatchPrice.save();
-            }
-        }
+        //     if(!currentWatchPrice) {
+        //         //create new watchPrice item
+        //         let newWatchPrice = new WatchPrice({
+        //             brand: brandName,
+        //             value: newPrice
+        //         });
+        //         await newWatchPrice.save();
+        //         console.log("I am here")
+        //     } else {
+        //         //code to update existing price
+        //         console.log(currentWatchPrice)
+        //         currentWatchPrice.set({
+        //             brand: brandName,
+        //             value: newPrice
+        //         });
+        //         await currentWatchPrice.save();
+        //     }
+         }
 
     } catch (error) {
         console.log(error);
@@ -113,7 +120,7 @@ router.post('/updateInterestRate', async function(req, res) {
             normalRate: newNormalRate
         });
         await interestRate.save();
-        res.send(true);
+        res.send(interestRate);
     } catch (error) {
         console.log(error);
         res.status(500).send({
