@@ -63,7 +63,7 @@ const uploadSync = async (req, res) => {
             console.log('successfully uploaded');
         }
     });
-}
+};
 
 // POST: add item
 router.post('/add', async (req, res) => {
