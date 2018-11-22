@@ -113,7 +113,7 @@ router.post('/updateInterestRate', async function(req, res) {
             normalRate: newNormalRate
         });
         await interestRate.save();
-        
+        res.send(true);
     } catch (error) {
         console.log(error);
         res.status(500).send({
