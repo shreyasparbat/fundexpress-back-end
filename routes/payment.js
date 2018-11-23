@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
         // Update ccToken
         const user = await User.findById(new ObjectID(body.userID));
         user.set({
-            ccToken: ccToken
+            ccToken: body.ccToken
         });
 
         // Create payment object
@@ -74,16 +74,12 @@ router.post('/', async (req, res) => {
                     balancePrincipal -= (payment.paymentAmount - balanceInterest);
                     if (balancePrincipal === 0) {
                         isClosed = true;
+                        let user = await User.findById(pawnTicket.userID);
                         //check if pawnTicket is expired or not
                         if (pawnTicket.expired) {
-
-                            var user = await User.findById(pawnTicket.userID);
                             // if pawnTicket is expired, update user's credit rating with a 'Late'
                             user.updateCreditRating('L', pawnTicket._id);
-
                         } else {
-
-                            var user = await User.findById(pawnTicket.userID);
                             //if pawnTicket is not expired, update user's credit rating with a 'Cleared'
                             user.updateCreditRating('C', pawnTicket._id);
 
