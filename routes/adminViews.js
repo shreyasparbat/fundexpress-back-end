@@ -7,6 +7,10 @@ const xlsx = require('xlsx');
 // Custom imports
 const {InterestRate} = require('../db/models/interestRate');
 const {WatchPrice} = require('../db/models/watchPrice');
+
+router.get('/', function (req, res) {
+    res.render('index', {title: 'FundExpress Admin Home Page'});
+});
     
 // Page for uploading new CSV for retraining
 router.get('/retrainCreditRatingModel', function(req, res) {
