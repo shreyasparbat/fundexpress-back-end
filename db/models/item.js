@@ -201,7 +201,6 @@ ItemSchema.methods.calculateJewelOfferedValues = function() {
 
 ItemSchema.methods.runImageRecognition = async function(itemID) {
     try {
-        console.log(itemID);
         // Get predicted default probabilities and credit rating
         const response = await axios.post('http://206.189.145.2:5000/bar_ocr', querystring.stringify({
             itemID: itemID.toString()
@@ -210,7 +209,12 @@ ItemSchema.methods.runImageRecognition = async function(itemID) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-        console.log(response.data);
+        let front_text = response.data.front_text;
+        let back_text = response.data.back_text;
+        console.log(front_text);
+        console.log(back_text);
+
+        // Loop through arrays and get important info
         
         return {
             brand: 'Generic',
@@ -218,7 +222,13 @@ ItemSchema.methods.runImageRecognition = async function(itemID) {
             purity: '24k/999'
         };
     } catch (error) {
-        throw error;
+        console.log(error.stack);
+        return {
+            brand: 'Generic',
+            weight: 5,
+            purity: '24k/999',
+            err: 'An error occured during image recognition'
+        };
     }
 };
 

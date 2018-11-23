@@ -30,24 +30,24 @@ router.post('/updateWatchPrice', async function (req, res) {
 
         const workbook = xlsx.readFile('Watch price list v1.xlsx');
         const sheet_name_list = workbook.SheetNames;
-        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]])
+        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 
-        console.log(sheet_name_list)
+        console.log(sheet_name_list);
 
         for(var i = 0; i < jsonArray.length; i++) {
             var obj = jsonArray[i];
             console.log(obj);
-            console.log(obj.S/N);
-        //     var source = obj.Source;
-        //     var brandName = obj.Brand;
-        //     var modelName = obj.Model;
-        //     var serialNumber = obj.S/N;
-        //     var newPrice = obj.Price;
+            console.log(obj['S/N']);
+            //     var source = obj.Source;
+            //     var brandName = obj.Brand;
+            //     var modelName = obj.Model;
+            //     var serialNumber = obj.S/N;
+            //     var newPrice = obj.Price;
             
-        //     var retrieveWatchPrice = await WatchPrice.find({
-        //         brand: brandName
-        //     });
-        //     var currentWatchPrice = retrieveWatchPrice[0];
+            //     var retrieveWatchPrice = await WatchPrice.find({
+            //         brand: brandName
+            //     });
+            //     var currentWatchPrice = retrieveWatchPrice[0];
 
         //     if(!currentWatchPrice) {
         //         //create new watchPrice item
@@ -66,7 +66,7 @@ router.post('/updateWatchPrice', async function (req, res) {
         //         });
         //         await currentWatchPrice.save();
         //     }
-         }
+        }
 
     } catch (error) {
         console.log(error);
@@ -111,8 +111,8 @@ router.post('/updateInterestRate', async function(req, res) {
         var newFirstMonthRate = body.firstMonthRate;
         var newNormalRate = body.normalRate;
 
-        console.log(newFirstMonthRate)
-        console.log(newNormalRate)
+        console.log(newFirstMonthRate);
+        console.log(newNormalRate);
         // Create and save interest rate
         let interestRate = new InterestRate({
             dateUpdated: new Date(),
