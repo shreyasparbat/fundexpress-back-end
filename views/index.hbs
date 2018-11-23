@@ -1,2 +1,57 @@
-<h1>{{title}}</h1>
-<p>Welcome to the Fundexpress API homepage!</p>
+<style type="text/css">
+    /* Navigation bar design */
+    .topnav {
+        background-color: #333;
+        overflow: hidden;
+    }
+
+    /* Style the links inside the navigation bar */
+    .topnav a {
+        float: left;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    /* Change the color of links on hover */
+    .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    /* Add a color to the active/current link */
+    .topnav a.active {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    /* General page design */
+    td {border:3px solid silver; padding: 15px}
+    table {border-collapse: collapse; margin-left: 635px}
+    body {text-align: center; background-color: aliceblue}
+    img {width: 400px}
+</style>
+
+<body>
+    <!-- Navigation bar -->
+    <div class="topnav">
+        <a href="../views/index.hbs">Home</a>
+        <a href="../views/retrainCreditRatingModel.hbs">Update Credit Rating Model</a>
+        <a href="../views/updateInterestRates.hbs">Update Interest Rates</a>
+        <a href="../views/updateWatchPrices.hbs">Update Watch Prices</a>
+    </div>
+
+    <br><br>
+
+    <img src="../feLogo.jpg" alt="fundExpressLogo">
+
+    <h2>{{title}}</h2>
+    <h3>Welcome to the Fundexpress API homepage!</h3>
+
+    <a href="../views/retrainCreditRatingModel.hbs">Update Credit Rating Model</a> <br> <br>
+    <a href="../views/updateInterestRates.hbs">Update Interest Rates</a> <br> <br>
+    <a href="../views/updateWatchPrices.hbs">Update Watch Prices</a>
+
+</body>

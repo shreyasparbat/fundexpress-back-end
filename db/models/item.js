@@ -1,6 +1,8 @@
 // Library imports
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const axios = require('axios');
+const querystring = require('querystring');
 
 // Custom imports
 const {getGoldSilverPrice} = require('../../utils/priceScrapper');
@@ -143,8 +145,40 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
     return item.save();
 };
 
-// Calculate pawn and sell offered values (other products)
-ItemSchema.methods.calculateOtherOfferedValues = function(user) {
+// Calculate pawn and sell offered values (Silver products only)
+ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
+    const item = this;
+
+    // Set meltingPercentage
+    let meltingPercentage = 0.65;
+
+    //Set purity
+    purity = parseInt(purity);
+    purity /= 100;
+
+    // Get gold prices
+    const valuesPerGram = await getGoldSilverPrice();
+
+    // Get user's current ltv percentage
+    let ltvPercentage = user.currentLtvPercentage;
+    if (user.registrationCompleted == false) {
+        ltvPercentage = 0.9;
+    }
+    
+    // Calulate and save final values
+    let pawnOfferedValue = ltvPercentage * purity * meltingPercentage * valuesPerGram.silver * item.weight;
+    let sellOfferedValue = meltingPercentage * purity * valuesPerGram.weight * item.weight;
+    item.set({
+        pawnOfferedValue,
+        sellOfferedValue,
+        meltingPercentage
+    });
+
+    return item.save();
+};
+
+// Calculate pawn and sell offered values (Watches)
+ItemSchema.methods.calculateWatchOfferedValues = function() {
     // Formula not implemented as of now
     const item = this;
     item.set({
@@ -154,12 +188,48 @@ ItemSchema.methods.calculateOtherOfferedValues = function(user) {
     return item.save();
 };
 
-ItemSchema.methods.runImageRecognition = function() {
-    return {
-        brand: 'Generic',
-        weight: 5,
-        purity: '24k/999'
-    };
+// Calculate pawn and sell offered values (Jewel)
+ItemSchema.methods.calculateJewelOfferedValues = function() {
+    // Formula not implemented as of now
+    const item = this;
+    item.set({
+        pawnOfferedValue: -1,
+        sellOfferedValue: -1
+    });
+    return item.save();
+};
+
+ItemSchema.methods.runImageRecognition = async function(itemID) {
+    try {
+        // Get predicted default probabilities and credit rating
+        const response = await axios.post('http://206.189.145.2:5000/bar_ocr', querystring.stringify({
+            itemID: itemID.toString()
+        }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        let front_text = response.data.front_text;
+        let back_text = response.data.back_text;
+        console.log(front_text);
+        console.log(back_text);
+
+        // Loop through arrays and get important info
+        
+        return {
+            brand: 'Generic',
+            weight: 5,
+            purity: '24k/999'
+        };
+    } catch (error) {
+        console.log(error.stack);
+        return {
+            brand: 'Generic',
+            weight: 5,
+            purity: '24k/999',
+            err: 'An error occured during image recognition'
+        };
+    }
 };
 
 // Create model and export

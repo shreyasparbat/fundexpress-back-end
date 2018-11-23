@@ -2,38 +2,94 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
-var csvObj = require('csv');
+const xlsx = require('xlsx');
 
 // Custom imports
 const {InterestRate} = require('../db/models/interestRate');
+const {WatchPrice} = require('../db/models/watchPrice');
+
+router.get('/', function (req, res) {
+    res.render('index', {title: 'FundExpress Admin Home Page'});
+});
     
 // Page for uploading new CSV for retraining
 router.get('/retrainCreditRatingModel', function(req, res) {
-    res.render('retrainCreditRatingModel', { title: 'Upload New CSV' });
+    res.render('retrainCreditRatingModel', { title: 'Upload New CSV File' });
     console.log(req);
 });
 
 // Page for uploading new CSV for watch brands
 router.get('/updateWatchPrices', function(req, res) {
-    res.render('updateWatchPrices', { title: 'Upload New CSV' });
+    res.render('updateWatchPrices', { title: 'Upload New CSV File' });
 });
 
 // Update watch price
 router.post('/updateWatchPrice', async function (req, res) {
     try {
-        function myCSV(fieldOne, fieldTwo) {
-            this.fieldOne = fieldOne;
-            this.fieldTwo = fieldTwo;
-        };
+        // const body = _.pick(req.body, [
+        //     'newPriceList'
+        // ]);
 
-        var priceList = [];
+        // console.log(body.newPriceList)
 
-        csvObj.from.path('../newWatchPrice.csv').to.array(function (data) {
-            for (var index = 0; index < data.length; index++) {
-                priceList.push(new myCSV(data[index][0], data[index][1]));
+        const workbook = xlsx.readFile('Watch price list v1.xlsx');
+        const sheet_name_list = workbook.SheetNames;
+        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+
+        console.log(sheet_name_list);
+
+        var objSource = ""
+        var objBrandName = ""
+        var objModelName = ""
+        var objSerialNumber = ""
+        var objSellingPrice = 0
+        var objPawnValue = 0
+        var objBuybackValue = 0
+            
+        for(var i = 0; i < jsonArray.length; i++) {
+            obj = jsonArray[i];
+            if (obj["Source"]) {
+                objSource = obj["Source"];
             }
-            console.log(priceList);
-        })
+            if (obj["Brand"]) {
+                objBrandName = obj["Brand"];
+            }
+            
+            objModelName = obj["Model"];
+            objSerialNumber = obj["S/N"];
+            objSellingPrice = obj["Selling Price"];
+            objPawnValue = obj["Pawn Value"];
+            objBuybackValue = obj["Buyback value"];
+            
+            var retrieveWatchPrice = await WatchPrice.find({
+                serialNumber: objSerialNumber
+            });
+            var currentWatchPrice = retrieveWatchPrice[0];
+
+            if(!currentWatchPrice) {
+                //create new watchPrice item
+                let newWatchPrice = new WatchPrice({
+                    source: objSource,
+                    brand: objBrandName,
+                    model: objModelName,
+                    serialNumber: objSerialNumber,
+                    sellingPrice: objSellingPrice,
+                    pawnValue: objPawnValue,
+                    buybackValue: objBuybackValue
+                });
+                await newWatchPrice.save();
+            } else {
+                //code to update existing price
+                currentWatchPrice.set({
+                    source: objSource,
+                    sellingPrice: objSellingPrice,
+                    pawnValue: objPawnValue,
+                    buybackValue: objBuybackValue
+                });
+                await currentWatchPrice.save();
+            }
+         }
+
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -43,7 +99,7 @@ router.post('/updateWatchPrice', async function (req, res) {
 });
 
 // Page for displaying and requesting new interest rates
-router.get('/updateInterestRates', async function(req, res) {
+router.get('/getInterestRate', async function(req, res) {
     try {
     
         const currentInterestRate = await InterestRate.find().limit(1).sort({$natural:-1});
@@ -77,8 +133,8 @@ router.post('/updateInterestRate', async function(req, res) {
         var newFirstMonthRate = body.firstMonthRate;
         var newNormalRate = body.normalRate;
 
-        console.log(newFirstMonthRate)
-        console.log(newNormalRate)
+        console.log(newFirstMonthRate);
+        console.log(newNormalRate);
         // Create and save interest rate
         let interestRate = new InterestRate({
             dateUpdated: new Date(),
@@ -86,7 +142,7 @@ router.post('/updateInterestRate', async function(req, res) {
             normalRate: newNormalRate
         });
         await interestRate.save();
-        
+        res.send(interestRate);
     } catch (error) {
         console.log(error);
         res.status(500).send({

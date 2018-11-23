@@ -11,6 +11,8 @@ const {SellTicket} = require('../db/models/sellTicket');
 const {authenticate} = require('../middleware/authenticate');
 const {uploadItem} = require('../utils/digitalOceanSpaces');
 const {addMonths} = require('../utils/otherUtils');
+const {newPawnTicketCreatedMessage} = require('../utils/notifications');
+const {newSellTicketCreatedMessage} = require('../utils/notifications');
 
 // Add middleware
 router.use(authenticate);
@@ -29,21 +31,14 @@ router.post('/uploadImage', async (req, res) => {
 
         // Upload images to digital ocean
         req.itemID = item._id;
-        uploadItem(req, res, function (e) {
-            if (e) {
-                console.log(e);
-                throw(e);
-            } else {
-                console.log('successfully uploaded');
-            }
-        });
+        await uploadSync(req, res);
 
         // Run Image recognition if gold bar or coin
         let responseBody = {
             itemID: item._id
         };
         if (type === 'Gold Bar') {
-            const itemInformation = item.runImageRecognition();
+            const itemInformation = await item.runImageRecognition(item._id);
             responseBody.brand = itemInformation.brand;
             responseBody.weight = itemInformation.weight;
             responseBody.purity = itemInformation.purity;
@@ -52,12 +47,23 @@ router.post('/uploadImage', async (req, res) => {
         // Send back relevant information
         res.send(responseBody);
     } catch (error) {
-        console.log(error);
+        console.log(error.stack);
         res.status(500).send({
-            error: error.toString()
+            error: error.stack
         });
     }
 });
+
+const uploadSync = async (req, res) => {
+    uploadItem(req, res, function (e) {
+        if (e) {
+            console.log(e);
+            throw(e);
+        } else {
+            console.log('successfully uploaded');
+        }
+    });
+};
 
 // POST: add item
 router.post('/add', async (req, res) => {
@@ -99,8 +105,15 @@ router.post('/add', async (req, res) => {
         // Calculate pawn and sell offered values
         if (body.type === 'Gold Bar' || body.type === 'Gold Coin') {
             await item.calculateGoldOfferedValues(req.user, body.purity);
-        } else {
-            await item.calculateOtherOfferedValues(req.user);
+        }
+        if (body.type === 'Silver Bar' || body.type === 'Silver Coin') {
+            await item.calculateSilverOfferedValues(req.user, body.purity);
+        }
+        if (body.type === 'Jewel') {
+            await item.calculateJewelOfferedValues(req.user, body.purity);
+        }
+        if (body.type === 'Watch') {
+            await item.calculateWatchOfferedValues(req.user, body.purity);
         }
 
         // Return objectID and offered values
@@ -162,6 +175,9 @@ router.post('/pawn', async (req, res) => {
             await pawnTicket.save();
         }
 
+        // calling expo to send message
+        newPawnTicketCreatedMessage();
+
         res.send(pawnTicketObject);
     } catch (error) {
         console.log(error);
@@ -202,6 +218,9 @@ router.post('/sell', async (req, res) => {
             let sellTicket = new SellTicket(sellTicketObject);
             await sellTicket.save();
         }
+
+        //calling expo to send message
+        newSellTicketCreatedMessage();
 
         res.send(sellTicketObject);
     } catch (error) {

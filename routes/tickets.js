@@ -1,7 +1,6 @@
 // Library imports
 const express = require('express');
 const router = express.Router();
-const {ObjectID} = require('mongodb');
 
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');

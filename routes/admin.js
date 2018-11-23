@@ -54,28 +54,17 @@ router.post('/approvePawnTicket', async (req, res) => {
         }
         
         // Approve and update it
-        pawnTicket.set({
-            item: body.item,
-            dateCreated: body.dateCreated,
-            expiryDate: body.expiryDate,
-            gracePeriodEndDate: body.gracePeriodEndDate,
-            indicativeTotalInterestPayable: body.indicativeTotalInterestPayable,
-            value: body.value,
-            approved: true,
-            closed: body.closed,
-            expired: body.expired,
-            outstandingPrincipal: body.outstandingPrincipal, 
-            outstandingInterest: body.outstandingInterest,
-        });
+        body.approved = true;
+        pawnTicket.set(body);
         await pawnTicket.save();
 
-        var user = await User.findById(new ObjectID (pawnTicket.userID));
-
-        // calling firebase to send the approval message
-        pawnTicketApprovedMessage(user.expoPushToken);
+        // calling expo to send the approval message
+        pawnTicketApprovedMessage(pawnTicket);
 
         // Send back success message
-        res.write('Pawn Ticket successfully approved\n');
+        res.send({
+            msg: 'Pawn Ticket successfully Approved'
+        });
 
     } catch (error) {
         console.log(error.stack);
@@ -95,20 +84,16 @@ router.post('/rejectPawnTicket', async (req, res) => {
         if (!pawnTicket) {
             throw new Error('No pawn ticket found');
         }
-
-        var user = await User.findById(pawnTicket.userID);
-
-        console.log(user.expoPushToken);
         
-        // calling firebase to send rejection notification to user
-        pawnTicketRejectedMessage(user.expoPushToken);
+        // calling expo to send rejection notification to user
+        pawnTicketRejectedMessage(pawnTicket);
         
         // Delete (reject) it
         pawnTicket.remove();
 
         // Send back success message
         res.send({
-            msg: 'Pawn Ticket successfully deleted'
+            msg: 'Pawn Ticket successfully rejected (deleted from database)'
         });
     } catch (error) {
         console.log(error);
@@ -130,16 +115,12 @@ router.post('/approveSellTicket', async (req,res) => {
         }
         
         // Update and approve it
-        body.approved = true
-        sellTicket.set({
-            approved: true
-        });
+        body.approved = true;
+        sellTicket.set(body);
         await sellTicket.save();
 
-        var user = await User.findById(sellTicket.userID);
-        
-        //calling firebase to send sell ticket success notification
-        sellTicketApprovedMessage(user.expoPushToken);
+        //calling expo to send sell ticket success notification
+        sellTicketApprovedMessage(sellTicket);
 
         // Send back success message
         res.send({
@@ -163,11 +144,9 @@ router.post('/rejectSellTicket', async (req, res) => {
         if (!sellTicket) {
             throw new Error('No sell ticket found');
         }
-
-        var user = await User.findById(sellTicket.userID);
         
-        //calling firebase to send sell ticket rejection notification
-        sellTicketRejectedMessage(user.expoPushToken);
+        //calling expo to send sell ticket rejection notification
+        sellTicketRejectedMessage(sellTicket);
         
         // Delete (reject) it
         sellTicket.remove();

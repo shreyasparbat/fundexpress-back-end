@@ -22,7 +22,7 @@ router.post('/registerTrial', async (req, res) => {
             fullName: req.body.fullName,
             registrationCompleted: false,
             password,
-            expoPushToken: req.expoPushToken
+            expoPushToken: req.body.expoPushToken
         });
         await user.save();
 
@@ -71,6 +71,7 @@ router.post('/adminOnboard', async (req, res) => {
             'email',
             'password',
             'fullName',
+            'expoPushToken'
         ]);
 
         // Get password hash

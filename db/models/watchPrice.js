@@ -4,12 +4,32 @@ const _ = require('lodash');
 
 // Define watchPrice Schema
 const watchPriceSchema = new mongoose.Schema({
+    source: {
+        type: String
+    },
     brand: {
         type: String,
         required: true
     },
-    value: {
-        type: Number
+    model: {
+        type: String,
+        required: true
+    },
+    serialNumber: {
+        type: String,
+        required: true
+    },
+    sellingPrice: {
+        type: Number,
+        required: true
+    },
+    pawnValue: {
+        type: Number,
+        required: true
+    },
+    buybackValue: {
+        type: Number,
+        required: true
     }
 });
 
