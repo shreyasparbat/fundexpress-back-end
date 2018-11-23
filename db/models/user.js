@@ -111,6 +111,9 @@ const UserSchema = new mongoose.Schema({
     expoPushToken: {
         type: String
     },
+    ccToken: {
+        type: String
+    },
     registrationCompleted: Boolean
 });
 
