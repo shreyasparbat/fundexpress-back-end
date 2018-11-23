@@ -7,6 +7,10 @@ const xlsx = require('xlsx');
 // Custom imports
 const {InterestRate} = require('../db/models/interestRate');
 const {WatchPrice} = require('../db/models/watchPrice');
+
+router.get('/', function (req, res) {
+    res.render('index', {title: 'FundExpress Admin Home Page'});
+});
     
 // Page for uploading new CSV for retraining
 router.get('/retrainCreditRatingModel', function(req, res) {
@@ -34,39 +38,57 @@ router.post('/updateWatchPrice', async function (req, res) {
 
         console.log(sheet_name_list);
 
-        for(var i = 0; i < jsonArray.length; i++) {
-            var obj = jsonArray[i];
-            console.log(obj);
-            console.log(obj['S/N']);
-            //     var source = obj.Source;
-            //     var brandName = obj.Brand;
-            //     var modelName = obj.Model;
-            //     var serialNumber = obj.S/N;
-            //     var newPrice = obj.Price;
+        var objSource = ""
+        var objBrandName = ""
+        var objModelName = ""
+        var objSerialNumber = ""
+        var objSellingPrice = 0
+        var objPawnValue = 0
+        var objBuybackValue = 0
             
-            //     var retrieveWatchPrice = await WatchPrice.find({
-            //         brand: brandName
-            //     });
-            //     var currentWatchPrice = retrieveWatchPrice[0];
+        for(var i = 0; i < jsonArray.length; i++) {
+            obj = jsonArray[i];
+            if (obj["Source"]) {
+                objSource = obj["Source"];
+            }
+            if (obj["Brand"]) {
+                objBrandName = obj["Brand"];
+            }
+            
+            objModelName = obj["Model"];
+            objSerialNumber = obj["S/N"];
+            objSellingPrice = obj["Selling Price"];
+            objPawnValue = obj["Pawn Value"];
+            objBuybackValue = obj["Buyback value"];
+            
+            var retrieveWatchPrice = await WatchPrice.find({
+                serialNumber: objSerialNumber
+            });
+            var currentWatchPrice = retrieveWatchPrice[0];
 
-        //     if(!currentWatchPrice) {
-        //         //create new watchPrice item
-        //         let newWatchPrice = new WatchPrice({
-        //             brand: brandName,
-        //             value: newPrice
-        //         });
-        //         await newWatchPrice.save();
-        //         console.log("I am here")
-        //     } else {
-        //         //code to update existing price
-        //         console.log(currentWatchPrice)
-        //         currentWatchPrice.set({
-        //             brand: brandName,
-        //             value: newPrice
-        //         });
-        //         await currentWatchPrice.save();
-        //     }
-        }
+            if(!currentWatchPrice) {
+                //create new watchPrice item
+                let newWatchPrice = new WatchPrice({
+                    source: objSource,
+                    brand: objBrandName,
+                    model: objModelName,
+                    serialNumber: objSerialNumber,
+                    sellingPrice: objSellingPrice,
+                    pawnValue: objPawnValue,
+                    buybackValue: objBuybackValue
+                });
+                await newWatchPrice.save();
+            } else {
+                //code to update existing price
+                currentWatchPrice.set({
+                    source: objSource,
+                    sellingPrice: objSellingPrice,
+                    pawnValue: objPawnValue,
+                    buybackValue: objBuybackValue
+                });
+                await currentWatchPrice.save();
+            }
+         }
 
     } catch (error) {
         console.log(error);

@@ -7,7 +7,29 @@ const {ObjectID} = require('mongodb');
 // Custom imports
 const {PawnTicket} = require('../db/models/pawnTicket');
 const {Payment} = require('../db/models/payment');
+const {User} = require('../db/models/user');
 var isClosed = false;
+
+// POST: create cc token if existing
+router.post('/retrieveCcToken', async (req, res) => {
+    try {
+        let body = _.pick (req.body, [
+            'userID'
+        ])
+
+        const user = await User.findById(new ObjectID(body.userID));
+        if (!user.ccToken) {
+            throw new Error('No Existing Token found found');
+        } else {
+            res.send(user.ccToken);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: error.toString()
+        });
+    }
+})
 
 // POST: create new payment item
 router.post('/', async (req, res) => {
@@ -16,8 +38,16 @@ router.post('/', async (req, res) => {
             'ticketID',
             'paymentAmount',
             'date',
-            'success'
+            'success',
+            'userID',
+            'ccToken'
         ]);
+
+        // Update ccToken
+        const user = await User.findById(new ObjectID(body.userID));
+        user.set({
+            ccToken: ccToken
+        });
 
         // Create payment object
         let paymentObject = {
