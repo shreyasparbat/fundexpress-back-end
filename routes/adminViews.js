@@ -47,7 +47,7 @@ router.post('/updateWatchPrice', async function (req, res) {
         var objBuybackValue = 0
             
         for(var i = 0; i < jsonArray.length; i++) {
-            obj = jsonArray[i];
+            let obj = jsonArray[i];
             if (obj["Source"]) {
                 objSource = obj["Source"];
             }

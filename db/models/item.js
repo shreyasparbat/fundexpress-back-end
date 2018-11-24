@@ -214,12 +214,68 @@ ItemSchema.methods.runImageRecognition = async function(itemID) {
         console.log(front_text);
         console.log(back_text);
 
-        // Loop through arrays and get important info
+        // Define brand and purity lists
+        const brand_list = ['pamp', 'credit', 'perth', 'argor', 'royal', 'talor'];
+        const purity_list = [999, 916, 835, 750, 585, 375];
+
+        // Create placeholder variables
+        let brand = 'Generic';
+        let weight = 5;
+        let purity = '24k/999';
+
+        // Create flags
+        let brand_found = false;
+        let weight_found = false;
+        let purity_found = false;
+
+        // Loop through both array
+        const combined_text = front_text.concat(back_text);
+        for (let word in combined_text) {
+            // Make word lowercase
+            word = word.toLowerCase();
+
+            // Get numbers from  word
+            let number = parseInt(word);
+
+            // Search for brand
+            for (let given_brand in brand_list) {
+                if (brand_found) {
+                    break;
+                }
+                if (word.includes(given_brand) && !brand_found) {
+                    brand = word;
+                    brand_found = true;
+                }
+            }
+
+            // Search for purity
+            for (let given_purity in purity_list) {
+                if (purity_found) {
+                    break;
+                }
+                if (number <= given_purity + 10 && number >= given_purity - 10 && !purity_found) {
+                    purity = given_purity;
+                    purity_found = true;
+                }
+            }
+
+            // Search for weight
+            if (number <= 500 && !weight_found) {
+                weight = number;
+                weight_found = true;
+            }
+
+            // Break if everything found
+            if (purity_found && weight_found && brand_found) {
+                break;
+            }
+        } 
         
+        // Return detected information
         return {
-            brand: 'Generic',
-            weight: 5,
-            purity: '24k/999'
+            brand,
+            weight,
+            purity
         };
     } catch (error) {
         console.log(error.stack);
