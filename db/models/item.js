@@ -215,7 +215,7 @@ ItemSchema.methods.runImageRecognition = async function(itemID) {
         console.log(back_text);
 
         // Define brand and purity lists
-        const brand_list = ['pamp', 'credit', 'perth', 'argor', 'royal', 'talor'];
+        const brand_list = ['PAMP', 'CREDIT', 'PERTH', 'ARGOR', 'ROYAL', 'TALOR'];
         const purity_list = [999, 916, 835, 750, 585, 375];
 
         // Create placeholder variables
@@ -275,7 +275,8 @@ ItemSchema.methods.runImageRecognition = async function(itemID) {
         return {
             brand,
             weight,
-            purity
+            purity,
+            err: 'None'
         };
     } catch (error) {
         console.log(error.stack);

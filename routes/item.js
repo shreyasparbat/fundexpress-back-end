@@ -42,6 +42,7 @@ router.post('/uploadImage', async (req, res) => {
             responseBody.brand = itemInformation.brand;
             responseBody.weight = itemInformation.weight;
             responseBody.purity = itemInformation.purity;
+            responseBody.err = itemInformation.err;
         }
 
         // Send back relevant information
