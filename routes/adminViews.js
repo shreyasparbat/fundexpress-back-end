@@ -34,9 +34,9 @@ router.post('/updateWatchPrice', async function (req, res) {
 
         const workbook = xlsx.readFile('Watch price list v1.xlsx');
         const sheet_name_list = workbook.SheetNames;
-        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]])
+        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 
-        console.log(sheet_name_list)
+        console.log(sheet_name_list);
 
         var objSource = ""
         var objBrandName = ""
@@ -47,7 +47,7 @@ router.post('/updateWatchPrice', async function (req, res) {
         var objBuybackValue = 0
             
         for(var i = 0; i < jsonArray.length; i++) {
-            obj = jsonArray[i];
+            let obj = jsonArray[i];
             if (obj["Source"]) {
                 objSource = obj["Source"];
             }
@@ -133,8 +133,8 @@ router.post('/updateInterestRate', async function(req, res) {
         var newFirstMonthRate = body.firstMonthRate;
         var newNormalRate = body.normalRate;
 
-        console.log(newFirstMonthRate)
-        console.log(newNormalRate)
+        console.log(newFirstMonthRate);
+        console.log(newNormalRate);
         // Create and save interest rate
         let interestRate = new InterestRate({
             dateUpdated: new Date(),

@@ -6,6 +6,7 @@ const querystring = require('querystring');
 
 // Custom imports
 const {getGoldSilverPrice} = require('../../utils/priceScrapper');
+const {get_information} = require('../../utils/imageRec');
 
 // Define Item Schema
 const ItemSchema = new mongoose.Schema({
@@ -122,7 +123,6 @@ ItemSchema.methods.calculateGoldOfferedValues = async function(user, purity) {
         meltingPercentage = 0.3;
         sellPercentage = 0.27;
     }
-
     // Get gold prices
     const valuesPerGram = await getGoldSilverPrice();
 
@@ -201,7 +201,6 @@ ItemSchema.methods.calculateJewelOfferedValues = function() {
 
 ItemSchema.methods.runImageRecognition = async function(itemID) {
     try {
-        console.log(itemID);
         // Get predicted default probabilities and credit rating
         const response = await axios.post('http://206.189.145.2:5000/bar_ocr', querystring.stringify({
             itemID: itemID.toString()
@@ -210,15 +209,19 @@ ItemSchema.methods.runImageRecognition = async function(itemID) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-        console.log(response.data);
-        
+        let front_text = response.data.front_text;
+        let back_text = response.data.back_text;
+
+        // Get and return information
+        return get_information(front_text, back_text);
+    } catch (error) {
+        console.log(error.stack);
         return {
             brand: 'Generic',
             weight: 5,
-            purity: '24k/999'
+            purity: '24k/999',
+            err: 'An error occured during image recognition'
         };
-    } catch (error) {
-        throw error;
     }
 };
 

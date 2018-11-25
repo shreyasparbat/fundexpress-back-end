@@ -14,18 +14,18 @@ const pool = mysql.createPool({
 const getGoldSilverPrice = async () => {
     // Get gold bid value
     const [rowsGold] = await retrieveMarketValue('PGOLDbid');
-    const PGOLDbid = parseFloat(rowsGold.value) / 28.3495;
+    const PGOLDbid = parseFloat(rowsGold.value) / 31.1035;
 
     // Get silver bid value
     const [rowsSilver] = await retrieveMarketValue('PSILVERbid');
-    const PSILVERbid = parseFloat(rowsSilver.value) / 28.3495;
+    const PSILVERbid = parseFloat(rowsSilver.value) / 31.1035;
 
     // Get platinum bid value
     const [rowsPlatinum] = await retrieveMarketValue('PPLATINUMbid');
-    const PPLATINUMbid = parseFloat(rowsPlatinum.value) / 28.3495;
+    const PPLATINUMbid = parseFloat(rowsPlatinum.value) / 31.1035;
 
     // Get USD to SGD exchange rate (bid)
-    const [rowsExchangeRate] = await retrieveMarketValue('USSGDbid');
+    const [rowsExchangeRate] = await retrieveMarketValue('USSGD');
     const USSGD = parseFloat(rowsExchangeRate.value);
 
     // Calculate and return final values
@@ -38,17 +38,14 @@ const getGoldSilverPrice = async () => {
 
 const retrieveMarketValue = async (type) => {
     const [rows] = await pool.query(
-        'select t2.type, t2.value, t2.date, t2.time'
-        + ' from goldsilv_db.exc t2'
-        + ' inner join'
-        + ' ('
-            + ' select type, max(date) as max_date'
-            + ' FROM goldsilv_db.exc'
-            + ' WHERE type = ?'
-            + ' group by type'
-        + ' )t1'
-        + ' on t1.type = t2.type and t1.max_date = date'
-        + ' order by t2.time desc'
+        'select type, value, date, time'
+        + ' from goldsilv_db.exc t1'
+        + ' where date = ('
+        +     ' select max(date)'
+        +     ' from goldsilv_db.exc'
+        +     ' )'
+        + ' and type = ?'
+        + ' order by time desc'
         + ' limit 1',
         [type]
     );
