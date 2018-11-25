@@ -179,38 +179,48 @@ ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
 };
 
 // Calculate pawn and sell offered values (Watches)
-ItemSchema.methods.calculateWatchOfferedValues = function() {
-    // Formula not implemented as of now
-    const item = this;
+ItemSchema.methods.calculateWatchOfferedValues = async function() {
+    try {
+        // Formula not implemented as of now
+        const item = this;
 
-    var watchPawnOfferedValue = -1
-    var watchSellOfferedValue = -1
+        var watchPawnOfferedValue = -1
+        var watchSellOfferedValue = -1
 
-    var retrieveWatchPrice = await WatchPrice.find({
-        serialNumber: objSerialNumber
-    });
-    var existingWatchPrice = retrieveWatchPrice[0];
-
-    if (!existingWatchPrice) {
-        retrieveWatchPrice = await WatchPrice.find({
-            brand: brand,
-            model: model
+        var retrieveWatchPrice = await WatchPrice.find({
+            serialNumber: objSerialNumber
         });
         var existingWatchPrice = retrieveWatchPrice[0];
+
         if (!existingWatchPrice) {
-            throw new Error('Watch does not exist in database, please approach Staff for assistance');
-        }
-    } 
+            retrieveWatchPrice = await WatchPrice.find({
+                brand: brand,
+                model: model
+            });
+            var existingWatchPrice = retrieveWatchPrice[0];
+            if (!existingWatchPrice) {
+                throw new Error('Watch does not exist in database, please approach Staff for assistance');
+            }
+        } 
 
-    watchPawnOfferedValue = existingWatchPrice.pawnValue
-    watchSellOfferedValue = existingWatchPrice.buybackValue
-    
+        watchPawnOfferedValue = existingWatchPrice.pawnValue
+        watchSellOfferedValue = existingWatchPrice.buybackValue
+        
 
-    item.set({
-        pawnOfferedValue: watchPawnOfferedValue,
-        sellOfferedValue: watchSellOfferedValue
-    });
-    return item.save();
+        item.set({
+            pawnOfferedValue: watchPawnOfferedValue,
+            sellOfferedValue: watchSellOfferedValue
+        });
+        return item.save();
+    } catch (error) {
+        console.log(error.stack);
+        return {
+            brand: 'Generic',
+            weight: 5,
+            purity: '24k/999',
+            err: 'An error occured during image recognition'
+        };
+    }
 };
 
 // Calculate pawn and sell offered values (Jewel)
