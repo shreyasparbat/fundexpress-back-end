@@ -13,9 +13,22 @@ const {uploadItem} = require('../utils/digitalOceanSpaces');
 const {addMonths} = require('../utils/otherUtils');
 const {newPawnTicketCreatedMessage} = require('../utils/notifications');
 const {newSellTicketCreatedMessage} = require('../utils/notifications');
+const {get_information} = require('../utils/imageRec');
 
 // Add middleware
 router.use(authenticate);
+
+// POST: test image rec
+router.post('/testImageRec', async (req, res) => {
+    try {
+        return get_information(req.body.front_text, req.body.back_text);
+    } catch (error) {
+        console.log(error.stack);
+        res.status(500).send({
+            error: error.stack
+        });
+    }
+});
 
 // POST: upload an item image
 router.post('/uploadImage', async (req, res) => {
