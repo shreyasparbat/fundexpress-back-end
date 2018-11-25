@@ -29,14 +29,60 @@ router.post('/updateWatchPrice', async function (req, res) {
 
         const workbook = xlsx.readFile('Watch price list v1.xlsx');
         const sheet_name_list = workbook.SheetNames;
-        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]])
+        var jsonArray = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 
-        console.log(sheet_name_list)
+        console.log(sheet_name_list);
 
+        var objSource = ""
+        var objBrandName = ""
+        var objModelName = ""
+        var objSerialNumber = ""
+        var objSellingPrice = 0
+        var objPawnValue = 0
+        var objBuybackValue = 0
+            
         for(var i = 0; i < jsonArray.length; i++) {
-            var obj = jsonArray[i];
-            console.log(obj);
-            console.log(obj.S/N);
+            let obj = jsonArray[i];
+            if (obj["Source"]) {
+                objSource = obj["Source"];
+            }
+            if (obj["Brand"]) {
+                objBrandName = obj["Brand"];
+            }
+            
+            objModelName = obj["Model"];
+            objSerialNumber = obj["S/N"];
+            objSellingPrice = obj["Selling Price"];
+            objPawnValue = obj["Pawn Value"];
+            objBuybackValue = obj["Buyback value"];
+            
+            var retrieveWatchPrice = await WatchPrice.find({
+                serialNumber: objSerialNumber
+            });
+            var currentWatchPrice = retrieveWatchPrice[0];
+
+            if(!currentWatchPrice) {
+                //create new watchPrice item
+                let newWatchPrice = new WatchPrice({
+                    source: objSource,
+                    brand: objBrandName,
+                    model: objModelName,
+                    serialNumber: objSerialNumber,
+                    sellingPrice: objSellingPrice,
+                    pawnValue: objPawnValue,
+                    buybackValue: objBuybackValue
+                });
+                await newWatchPrice.save();
+            } else {
+                //code to update existing price
+                currentWatchPrice.set({
+                    source: objSource,
+                    sellingPrice: objSellingPrice,
+                    pawnValue: objPawnValue,
+                    buybackValue: objBuybackValue
+                });
+                await currentWatchPrice.save();
+            }
          }
 
     } catch (error) {
@@ -76,8 +122,8 @@ router.post('/updateInterestRate', async function(req, res) {
         var newFirstMonthRate = body.firstMonthRate;
         var newNormalRate = body.normalRate;
 
-        console.log(newFirstMonthRate)
-        console.log(newNormalRate)
+        console.log(newFirstMonthRate);
+        console.log(newNormalRate);
         // Create and save interest rate
         let interestRate = new InterestRate({
             dateUpdated: new Date(),
