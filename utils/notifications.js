@@ -165,6 +165,8 @@ const pawnTicketApprovedMessage = async (pawnTicket) => {
     
     var user = await User.findById(new ObjectID(pawnTicket.userID));
     var expoPushToken = user.expoPushToken;
+    console.log(user.toObject());
+    console.log(expoPushToken);
 
     const messageInfo = {
         to: expoPushToken,

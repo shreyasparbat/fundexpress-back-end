@@ -22,7 +22,8 @@ router.post('/registerTrial', async (req, res) => {
             fullName: req.body.fullName,
             registrationCompleted: false,
             password,
-            expoPushToken: req.body.expoPushToken
+            expoPushToken: req.body.expoPushToken,
+            ccToken: ""
         });
         await user.save();
 

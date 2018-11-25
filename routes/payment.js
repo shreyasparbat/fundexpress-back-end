@@ -18,7 +18,7 @@ router.post('/retrieveCcToken', async (req, res) => {
         ])
 
         const user = await User.findById(new ObjectID(body.userID));
-        if (!user.ccToken) {
+        if (!user.ccToken || user.ccToken.length == 0) {
             throw new Error('No Existing Token found found');
         } else {
             res.send(user.ccToken);

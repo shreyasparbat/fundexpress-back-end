@@ -8,7 +8,7 @@ const xlsx = require('xlsx');
 const {InterestRate} = require('../db/models/interestRate');
 const {WatchPrice} = require('../db/models/watchPrice');
 
-router.get('/', function (req, res) {
+router.get('/home', function (req, res) {
     res.render('index', {title: 'FundExpress Admin Home Page'});
 });
     
@@ -26,11 +26,6 @@ router.get('/updateWatchPrices', function(req, res) {
 // Update watch price
 router.post('/updateWatchPrice', async function (req, res) {
     try {
-        // const body = _.pick(req.body, [
-        //     'newPriceList'
-        // ]);
-
-        // console.log(body.newPriceList)
 
         const workbook = xlsx.readFile('Watch price list v1.xlsx');
         const sheet_name_list = workbook.SheetNames;
@@ -106,12 +101,6 @@ router.get('/getInterestRate', async function(req, res) {
         if (!currentInterestRate) {
             throw new Error('No Interest Rate found');
         } else {
-            // res.render('updateInterestRates', { 
-            //     title: 'Key in New Interest Rates' ,
-            //     currentFirstMonthRate: currentInterestRate[0].firstMonthRate,
-            //     currentNormalRate: currentInterestRate[0].normalRate,
-            //     dateUpdated: currentInterestRate[0].dateUpdated
-            // })
             res.send(currentInterestRate);
         }
     }   catch (error) {
