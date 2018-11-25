@@ -21,7 +21,7 @@ router.use(authenticate);
 // POST: test image rec
 router.post('/testImageRec', async (req, res) => {
     try {
-        return get_information(req.body.front_text, req.body.back_text);
+        res.send(get_information(req.body.front_text, req.body.back_text));
     } catch (error) {
         console.log(error.stack);
         res.status(500).send({

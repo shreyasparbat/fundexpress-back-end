@@ -1,7 +1,9 @@
 const get_information = (front_text, back_text) => {
     // Define brand and purity lists
-    const brand_list = ['PAMP', 'CREDIT', 'PERTH', 'ARGOR', 'ROYAL', 'TALOR'];
-    const purity_list = [999, 916, 835, 750, 585, 375];
+    const brandList = ['PAMP', 'CREDIT', 'PERTH', 'ARGOR', 'ROYAL', 'TALOR'];
+    const brandTrueList = ['PAMP SUISSE', 'CREDIT SUISSE', 'PERTH MINT', 'ARGOR-HERAEUS', 'ROYAL CANADIAN MINT', 'METALOR'];
+    const purityList = [999, 916, 835, 750, 585, 375];
+    const purityTrueList = ['24k/999', '22k/916', '20k/835', '18k/750 (Yellow gold)', '14k/585', '9k/375'];
 
     // Create placeholder variables
     let brand = 'Generic';
@@ -16,20 +18,21 @@ const get_information = (front_text, back_text) => {
     // Loop through both array
     const combined_text = front_text.concat(back_text);
     console.log(combined_text);
-    for (let word in combined_text) {
+    for (let wordIndex = 0; wordIndex < combined_text.length; wordIndex++) {
         // Make word lowercase
-        word = word.toUpperCase();
+        const word = combined_text[wordIndex].toUpperCase();
         console.log(word);
 
         // Get numbers from  word
-        let number = parseInt(word);
+        const number = parseInt(word);
         console.log(number);
 
         // Search for brand
-        for (let given_brand in brand_list) {
+        for (let brandIndex = 0; brandIndex < brand_list.length; brandIndex++) {
             if (brand_found) {
                 break;
             }
+            let given_brand = brand_list[brandIndex];
             if (word.includes(given_brand) && !brand_found) {
                 brand = given_brand;
                 brand_found = true;
@@ -37,7 +40,7 @@ const get_information = (front_text, back_text) => {
         }
 
         // Search for purity
-        for (let given_purity in purity_list) {
+        for (let purityIndex) {
             if (purity_found) {
                 break;
             }
