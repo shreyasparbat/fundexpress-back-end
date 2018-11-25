@@ -37,6 +37,10 @@ const get_information = (front_text, back_text) => {
                 brand = brandTrueList[j];
                 brand_found = true;
             }
+            if (word.includes('PAM') && !brand_found) {
+                brand = 'PAMP SUISSE';
+                brand_found = true;
+            }
         }
 
         // Search for purity
