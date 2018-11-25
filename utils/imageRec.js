@@ -14,7 +14,7 @@ const get_information = (front_text, back_text) => {
     let brand_found = false;
     let weight_found = false;
     let purity_found = false;
-    let ounce_found = true;
+    let ounce_found = false;
 
     // Loop through both array
     const combined_text = front_text.concat(back_text);
@@ -54,6 +54,14 @@ const get_information = (front_text, back_text) => {
         if (!isNaN(number) && number <= 500 && !weight_found) {
             weight = number;
             weight_found = true;
+        }
+
+        // Search if ounce found
+        if (word.includes('OUNCE')) {
+            ounce_found = true;
+        }
+        if (ounce_found) {
+            weight /= 31.1035;
         }
 
         // Break if everything found
