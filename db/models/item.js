@@ -7,6 +7,7 @@ const querystring = require('querystring');
 // Custom imports
 const {getGoldSilverPrice} = require('../../utils/priceScrapper');
 const {get_information} = require('../../utils/imageRec');
+const WatchPrice = require('./watchPrice');
 
 // Define Item Schema
 const ItemSchema = new mongoose.Schema({
@@ -181,9 +182,33 @@ ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
 ItemSchema.methods.calculateWatchOfferedValues = function() {
     // Formula not implemented as of now
     const item = this;
+
+    var watchPawnOfferedValue = -1
+    var watchSellOfferedValue = -1
+
+    var retrieveWatchPrice = await WatchPrice.find({
+        serialNumber: objSerialNumber
+    });
+    var existingWatchPrice = retrieveWatchPrice[0];
+
+    if (!existingWatchPrice) {
+        retrieveWatchPrice = await WatchPrice.find({
+            brand: brand,
+            model: model
+        });
+        var existingWatchPrice = retrieveWatchPrice[0];
+        if (!existingWatchPrice) {
+            throw new Error('Watch does not exist in database, please approach Staff for assistance');
+        }
+    } 
+
+    watchPawnOfferedValue = existingWatchPrice.pawnValue
+    watchSellOfferedValue = existingWatchPrice.buybackValue
+    
+
     item.set({
-        pawnOfferedValue: -1,
-        sellOfferedValue: -1
+        pawnOfferedValue: watchPawnOfferedValue,
+        sellOfferedValue: watchSellOfferedValue
     });
     return item.save();
 };
