@@ -14,13 +14,14 @@ const get_information = (front_text, back_text) => {
     let brand_found = false;
     let weight_found = false;
     let purity_found = false;
+    let ounce_found = true;
 
     // Loop through both array
     const combined_text = front_text.concat(back_text);
     console.log(combined_text);
-    for (let wordIndex = 0; wordIndex < combined_text.length; wordIndex++) {
+    for (let i = 0; i < combined_text.length; i++) {
         // Make word lowercase
-        const word = combined_text[wordIndex].toUpperCase();
+        const word = combined_text[i].toUpperCase();
         console.log(word);
 
         // Get numbers from  word
@@ -28,30 +29,29 @@ const get_information = (front_text, back_text) => {
         console.log(number);
 
         // Search for brand
-        for (let brandIndex = 0; brandIndex < brand_list.length; brandIndex++) {
-            if (brand_found) {
+        for (let j = 0; j < brandList.length; j++) {
+            if (!isNaN(number) || brand_found) {
                 break;
             }
-            let given_brand = brand_list[brandIndex];
-            if (word.includes(given_brand) && !brand_found) {
-                brand = given_brand;
+            if (word.includes(brandList[j]) && !brand_found) {
+                brand = brandTrueList[j];
                 brand_found = true;
             }
         }
 
         // Search for purity
-        for (let purityIndex) {
-            if (purity_found) {
+        for (let j = 0; j < purityList.length; j++) {
+            if (isNaN(number) || purity_found) {
                 break;
             }
-            if (number <= given_purity + 10 && number >= given_purity - 10 && !purity_found) {
-                purity = given_purity;
+            if (number <= purityList[j] + 10 && number >= purityList[j] - 10 && !purity_found) {
+                purity = purityTrueList[j];
                 purity_found = true;
             }
         }
 
         // Search for weight
-        if (number <= 500 && !weight_found) {
+        if (!isNaN(number) && number <= 500 && !weight_found) {
             weight = number;
             weight_found = true;
         }
