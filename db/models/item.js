@@ -217,19 +217,29 @@ ItemSchema.methods.calculateWatchOfferedValues = async function() {
         return {
             brand: 'Generic',
             weight: 5,
-            purity: '24k/999',
-            err: 'An error occured during image recognition'
+            purity: '24k/999'
         };
     }
 };
 
 // Calculate pawn and sell offered values (Jewel)
-ItemSchema.methods.calculateJewelOfferedValues = function() {
+ItemSchema.methods.calculateJewelOfferedValues = async function(user) {
     // Formula not implemented as of now
     const item = this;
+
+    // Get user's current ltv percentage
+    let ltvPercentage = user.currentLtvPercentage;
+    if (user.registrationCompleted == false) {
+        ltvPercentage = 0.9;
+    }
+
+    // Get gold prices
+    const valuesPerGram = await getGoldSilverPrice();
+
+    // Set prices
     item.set({
-        pawnOfferedValue: -1,
-        sellOfferedValue: -1
+        pawnOfferedValue: ltvPercentage * 0.985 * valuesPerGram.gold * item.weight,
+        sellOfferedValue: 0.97 * valuesPerGram.gold * item.weight
     });
     return item.save();
 };
