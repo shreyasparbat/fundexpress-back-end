@@ -168,7 +168,7 @@ ItemSchema.methods.calculateSilverOfferedValues = async function(user, purity) {
     
     // Calulate and save final values
     let pawnOfferedValue = ltvPercentage * purity * meltingPercentage * valuesPerGram.silver * item.weight;
-    let sellOfferedValue = meltingPercentage * purity * valuesPerGram.weight * item.weight;
+    let sellOfferedValue = meltingPercentage * purity * valuesPerGram.silver * item.weight;
     item.set({
         pawnOfferedValue,
         sellOfferedValue,
