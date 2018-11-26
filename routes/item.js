@@ -124,7 +124,7 @@ router.post('/add', async (req, res) => {
             await item.calculateSilverOfferedValues(req.user, body.purity);
         }
         if (body.type === 'Jewel') {
-            await item.calculateJewelOfferedValues(req.user, body.purity);
+            await item.calculateJewelOfferedValues(req.user);
         }
         if (body.type === 'Watch') {
             await item.calculateWatchOfferedValues(req.user, body.purity);
