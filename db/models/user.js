@@ -181,7 +181,7 @@ UserSchema.methods.generateCreditRating = async function () {
 
     // Setup request parameters
     const requestBody = {
-        age: getAge(user.dateOfBirth),
+        age: 65, //getAge(user.dateOfBirth),
         nric: user.ic[0],
         race: user.race[0],
         sex: user.gender,
